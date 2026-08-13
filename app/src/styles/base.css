@@ -77,3 +77,20 @@ a:hover {
   font-size: var(--t-label);
   letter-spacing: var(--ls-label);
 }
+
+/* Temoin de synchronisation du corpus, retire avec la coque en T08. */
+.amorce-brut {
+  max-width: var(--l-lecture);
+  max-height: 40vh;
+  margin: 0;
+  overflow: auto;
+  padding: var(--e7);
+  background: var(--console);
+  color: var(--phosphore-3);
+  border: 1px solid var(--trait-console);
+  border-radius: var(--r-carte);
+  font-family: var(--mono);
+  font-size: var(--t-code);
+  line-height: var(--li-corps);
+  white-space: pre-wrap;
+}
