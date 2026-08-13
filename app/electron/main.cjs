@@ -144,6 +144,23 @@ function creerFenetre () {
             machine: lire('.salle-machine')
           }
 
+          // Le lecteur se lit aussi sans rien cliquer d'autre que l'item de
+          // navigation : afficher un sujet ne touche pas a la progression.
+          if (items[2]) items[2].click()
+          await attendre(60)
+          const sujet = {
+            titreEcran: titre(),
+            adresse: lire('.lecteur-entete .etiquette-mono'),
+            titre: lire('.lecteur-titre'),
+            reperes: lire('.lecteur-reperes'),
+            paragraphes: document.querySelectorAll('.md .md-p').length,
+            codes: document.querySelectorAll('.md .md-code').length,
+            tableaux: document.querySelectorAll('.md .md-tableau').length,
+            largeur: Math.round((document.querySelector('.lecteur-colonne') || {}).clientWidth || 0),
+            bords: document.querySelectorAll('.lecteur-voisine').length,
+            absent: document.querySelectorAll('.lecteur-absent').length
+          }
+
           const theme = document.querySelector('.bouton-theme')
           const sombreDepart = racine.dataset.sombre
           if (theme) theme.click()
@@ -165,7 +182,8 @@ function creerFenetre () {
             effets: racine.dataset.effets,
             profil: (document.querySelector('.profil') || {}).innerText || '',
             tableau,
-            plan
+            plan,
+            sujet
           }
         })()`)
         const profil = typeof rapport.profil === 'string' ? rapport.profil : ''
@@ -190,6 +208,19 @@ function creerFenetre () {
           plan.etats.every((e) => etatsConnus.includes(e)) &&
           plan.ouvrables >= 1 &&
           (plan.machine ?? '').includes('PHASE 3 ·')
+        // Le sujet du moment depend lui aussi de la progression de la machine :
+        // on controle la forme (adresse, reperes, texte rendu, deux bords).
+        const s = rapport.sujet ?? {}
+        const lecteur =
+          s.titreEcran === 'Le sujet' &&
+          /^(LA PISCINE|LES MISSIONS|LA SALLE MACHINE) ·/.test(s.adresse ?? '') &&
+          (s.titre ?? '').length > 0 &&
+          (s.reperes ?? '').includes('exercice') &&
+          s.absent === 0 &&
+          s.paragraphes >= 1 &&
+          s.bords >= 1 &&
+          s.largeur > 0 &&
+          s.largeur <= 760
         verdict =
           rapport.pont &&
           rapport.ipc?.ok === true &&
@@ -200,7 +231,8 @@ function creerFenetre () {
           rapport.effets === '1' &&
           profil.includes('Échelon') &&
           bord &&
-          carte
+          carte &&
+          lecteur
             ? 0
             : 1
         console.log(
@@ -208,6 +240,7 @@ function creerFenetre () {
             `navigation ${rapport.navigation ? 'ok' : 'ko'}, ` +
             `tableau de bord ${bord ? 'complet' : 'incomplet'}, ` +
             `plan ${carte ? plan.salles + ' salles' : 'incomplet'}, ` +
+            `sujet ${lecteur ? s.paragraphes + ' paragraphes, ' + s.codes + ' blocs de code, ' + s.tableaux + ' tableaux' : 'incomplet'}, ` +
             `theme ${rapport.theme ? 'bascule' : 'fige'}, ` +
             `reglage ${rapport.ecrit ? 'ecrit et repris' : 'inchange'}`
         )
