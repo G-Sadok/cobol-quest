@@ -61,6 +61,26 @@
   box-shadow: var(--ombre-bouton-survol);
 }
 
+/* Secondaire : l'action de repli, a cote de la primaire (design 6.1). */
+.bouton-secondaire {
+  padding: var(--e4) var(--e7);
+  background: var(--carte);
+  color: var(--encre);
+  border: 1px solid var(--trait-fort);
+  border-radius: var(--r-bouton);
+  font: inherit;
+  font-size: var(--t-corps-2);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--d-etat) var(--courbe-etat),
+    border-color var(--d-etat) var(--courbe-etat);
+}
+
+.bouton-secondaire:hover {
+  background: var(--survol-doux);
+}
+
 /* Lien : une navigation discrete, sans fond ni bordure. */
 .bouton-lien {
   padding: 0;
