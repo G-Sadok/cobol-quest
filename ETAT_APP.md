@@ -8,7 +8,7 @@ l'itération suivante avant de continuer.
 - [x] T01 — Dépôt git à la racine si absent (`.gitignore` : node_modules, dist,
       release, app/src/corpus/, .MISSION_TERMINEE, boucle.log) ; projet Vite +
       React (JS) dans `app/` ; gabarit nettoyé ; commit.
-- [ ] T02 — Lecture du design : inventorier `design/` (DESIGN_SYSTEM.md,
+- [x] T02 — Lecture du design : inventorier `design/` (DESIGN_SYSTEM.md,
       maquettes, icône) et consigner dans le JOURNAL les tokens retenus ; si le
       dossier est vide, consigner l'usage de la DA de repli (§7 du cahier des
       charges). Créer `app/src/styles/tokens.css` (variables CSS) à partir de
@@ -69,3 +69,11 @@ l'itération suivante avant de continuer.
   `preview` seulement (les scripts `dev:app`, `test`, `dist:mac` viendront avec
   leurs tâches T03/T04/T07). `base: './'` dans `vite.config.js` pour le futur
   chargement `file://` sous Electron. Build vert, pas encore de tests.
+- 2026-08-13 T02 : `design/` est fourni et complet (DESIGN_SYSTEM.md, maquette
+  interactive `COBOL QUEST.dc.html` + `support.js`, `icone.png` 1024, notes
+  d'integration) : pas de repli §7. `app/src/styles/tokens.css` transcrit les
+  deux themes tels quels depuis la maquette (elle prime en cas de doute), plus
+  la typographie, l'echelle 2..72, les largeurs de coque, rayons, ombres et
+  durees. `base.css` importe les tokens, la racine porte `data-sombre="0"`.
+  Ecarts de nommage tranches en faveur de la maquette (`--tete`,
+  `--vert-survol`, `--lecture`). Build vert.

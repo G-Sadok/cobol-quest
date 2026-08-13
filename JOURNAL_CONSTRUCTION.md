@@ -44,3 +44,55 @@ Commits créés :
 - `app: versionner la configuration de la boucle de construction`
 - `app: initialiser le projet Vite + React dans app/`
 - `doc: consigner l'iteration T01`
+
+## 2026-08-13 - T02 : lecture du design et tokens CSS
+
+Tâche : inventorier `design/`, consigner les tokens retenus, créer
+`app/src/styles/tokens.css`.
+
+Inventaire de `design/` (dossier fourni et complet, la direction artistique de
+repli du §7 du cahier des charges ne s'applique donc PAS) :
+- `DESIGN_SYSTEM.md` (17 ko) : la version v2 « Dossier CGBA ». Couleurs des deux
+  thèmes, typographie, espacements, composants, règles d'usage.
+- `COBOL QUEST.dc.html` (66 ko) + `support.js` : la maquette interactive de
+  référence, avec les blocs `:root` et `[data-sombre="1"]` complets.
+- `icone.png` (1024x1024) : servira en T18.
+- `NOTES_INTEGRATION.md` : ce qui est sacré et ce qui est sacrifiable.
+- `A_LIRE.md`, `COBOL Quest Design System.zip` (archive du même contenu).
+
+Décisions :
+- La direction artistique retenue n'est pas le « terminal 1987 » du repli mais la
+  coque macOS claire sur papier crème : le sombre `#16160F` est réservé à la
+  console BERTHA, aux blocs de code, au bandeau Salle machine et au toast. Le
+  cahier des charges le prévoit explicitement : `design/` fait loi.
+- Tokens transcrits depuis la maquette plutôt que depuis le tableau du
+  DESIGN_SYSTEM.md : les notes d'intégration précisent que la maquette prime en
+  cas de doute, et elle est plus complète (surfaces dérivées, traits fins,
+  opacités). Écarts de nommage tranchés en sa faveur : `--tete` (et non
+  `--carte-tete`), `--vert-survol` (et non `--vert-fonce`), `--lecture` (et non
+  `--encre-lecture`).
+- Un seul fichier `tokens.css` : bloc `:root, [data-sombre="0"]` pour le clair,
+  bloc `[data-sombre="1"]` en surcharge pour le sombre, puis un bloc `:root`
+  invariant pour la typographie, l'échelle d'espacement (2 · 5 · 7 · 9 · 11 · 14
+  · 18 · 22 · 26 · 30 · 40 · 52 · 72), les largeurs de coque (barre 248,
+  toolbar 52, contenus 1020/1080/720/680, colonne de lecture 68ch), les rayons,
+  les trois ombres et les durées d'animation.
+- Le phosphore n'est pas redéclaré dans le bloc sombre : il est identique dans
+  les deux thèmes, c'est le point fixe de l'identité.
+- `data-sombre="0"` posé sur `<html>` dans `index.html` : l'attribut existe dès
+  maintenant pour que la bascule de thème (T17) n'ait qu'à le changer.
+- `base.css` réécrit pour ne plus contenir aucune couleur en dur : fond, encre,
+  familles, barres de défilement et coque provisoire passent par les variables.
+- Aucune dépendance ajoutée.
+
+Fichiers touchés : `app/src/styles/tokens.css` (nouveau),
+`app/src/styles/base.css`, `app/index.html`, `ETAT_APP.md`,
+`JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert (27 modules, CSS 5,79 ko). Vérifié que les
+variables sont bien présentes dans le CSS produit et `data-sombre="0"` dans le
+`dist/index.html`. Pas encore de tests : vitest arrive en T07.
+
+Commits créés :
+- `design: poser les tokens CSS du design system`
+- `doc: consigner l'iteration T02`
