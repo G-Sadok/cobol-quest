@@ -240,6 +240,12 @@
   --l-reglages: 680px;
   --l-lecture: 68ch;
 
+  /* Le lecteur : marges propres et volet de la feuille de route (section 3). */
+  --l-panneau: 340px;
+  --lecteur-y: 44px;
+  --lecteur-x: 48px;
+  --lecteur-bas: 80px;
+
   /* Rayons */
   --r-modale: 13px;
   --r-grande-carte: 12px;

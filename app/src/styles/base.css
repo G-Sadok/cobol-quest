@@ -4,6 +4,7 @@
 @import './composants.css';
 @import './terminal.css';
 @import './carte.css';
+@import './lecteur.css';
 
 *,
 *::before,
