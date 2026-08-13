@@ -10,9 +10,10 @@ import {
 import { aUnQuiz, epreuveParId, idsAvecQuiz } from './programme.js'
 import { QUESTIONS_PAR_QUIZ, SCORE_QUIZ_REQUIS } from '../store/progression.js'
 
-// Les épreuves dont le quiz est rédigé à ce jour. T15 y ajoutera J06 à J09 et
-// les deux rushs ; la liste sert de garde-fou contre un fichier oublié.
-const REDIGES = ['J01', 'J02', 'J03', 'J04', 'J05']
+// Les onze épreuves qui portent un quiz du soir, toutes rédigées : la liste est
+// écrite en dur, dans l'ordre de progression, pour servir de garde-fou contre un
+// fichier oublié ou mal nommé.
+const REDIGES = ['J01', 'J02', 'J03', 'J04', 'J05', 'RUSH01', 'J06', 'J07', 'J08', 'J09', 'RUSH02']
 
 /** Tous les textes d'un quiz, pour les contrôles qui portent sur l'écriture. */
 function textes(q) {
@@ -32,11 +33,11 @@ describe('les quiz du soir', () => {
     expect(quiz).toHaveLength(REDIGES.length)
   })
 
-  it('ne quiz que des épreuves qui en portent un', () => {
+  it('ne quiz que des épreuves qui en portent un, et les couvre toutes', () => {
     for (const q of quiz) {
       expect(aUnQuiz(q.epreuve), `${q.epreuve} sans quiz au programme`).toBe(true)
     }
-    expect(REDIGES.every((id) => idsAvecQuiz.includes(id))).toBe(true)
+    expect(REDIGES).toEqual([...idsAvecQuiz])
   })
 
   it('reprend le titre du sujet', () => {
@@ -90,11 +91,12 @@ describe('les quiz du soir', () => {
 })
 
 describe('quizParEpreuve', () => {
-  it('rend null pour une épreuve sans quiz rédigé', () => {
+  it('rend null pour une épreuve qui ne porte pas de quiz', () => {
     expect(quizParEpreuve('J00')).toBeNull()
-    expect(quizParEpreuve('J09')).toBeNull()
+    expect(quizParEpreuve('J10')).toBeNull()
     expect(quizParEpreuve('inconnu')).toBeNull()
     expect(quizRedige('J01')).toBe(true)
+    expect(quizRedige('RUSH02')).toBe(true)
     expect(quizRedige('M01')).toBe(false)
   })
 })
@@ -108,7 +110,7 @@ describe('questionParRang', () => {
   it('rend null hors bornes ou sans quiz', () => {
     expect(questionParRang('J01', -1)).toBeNull()
     expect(questionParRang('J01', 8)).toBeNull()
-    expect(questionParRang('J09', 0)).toBeNull()
+    expect(questionParRang('J10', 0)).toBeNull()
   })
 })
 
@@ -134,8 +136,8 @@ describe('noterCopie', () => {
     expect(noterCopie('J03', copie)).toBe(SCORE_QUIZ_REQUIS)
   })
 
-  it('rend 0 sur une copie absente ou un quiz non rédigé', () => {
+  it('rend 0 sur une copie absente ou une épreuve sans quiz', () => {
     expect(noterCopie('J01', null)).toBe(0)
-    expect(noterCopie('J09', bonnes('J01'))).toBe(0)
+    expect(noterCopie('J10', bonnes('J01'))).toBe(0)
   })
 })
