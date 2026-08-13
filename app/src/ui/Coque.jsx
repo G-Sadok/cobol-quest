@@ -3,10 +3,11 @@
 
 import BarreLaterale from './BarreLaterale.jsx'
 import BarreOutils from './BarreOutils.jsx'
+import Toast from './Toast.jsx'
 import { useApp } from './contexte.js'
 
 export default function Coque({ children }) {
-  const { alerte } = useApp()
+  const { alerte, toast } = useApp()
 
   return (
     <div className="coque">
@@ -20,6 +21,7 @@ export default function Coque({ children }) {
         ) : null}
         <main className="coque-defile">{children}</main>
       </div>
+      <Toast toast={toast} />
     </div>
   )
 }

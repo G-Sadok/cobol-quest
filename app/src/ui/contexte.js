@@ -12,6 +12,8 @@
 //   ecran       l'identifiant de l'ecran ouvert
 //   aller       aller(idEcran) : change d'ecran
 //   ouvrirSujet ouvrirSujet(idEpreuve) : retient l'epreuve et ouvre le lecteur
+//   annoncer    annoncer(texte, ton) : leve le toast « BERTHA DIT OUI / NON »
+//   toast       le toast en cours, ou null
 
 import { createContext, useContext } from 'react'
 
