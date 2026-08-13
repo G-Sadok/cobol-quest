@@ -1,0 +1,110 @@
+{
+  "epreuve": "J04",
+  "titre": "Les boucles du batch",
+  "questions": [
+    {
+      "id": "q1",
+      "categorie": "memo",
+      "enonce": "Quelle forme de PERFORM garantit au moins un tour de boucle ?",
+      "choix": [
+        "`PERFORM UNTIL ...`",
+        "`PERFORM WITH TEST AFTER UNTIL ...`",
+        "`PERFORM VARYING ... UNTIL ...`",
+        "`PERFORM 1 TIMES`"
+      ],
+      "bonne": 1,
+      "commentaire": "Par défaut, le test a lieu AVANT le corps : une condition déjà vraie n'exécute rien. WITH TEST AFTER déplace le test à la fin, donc le corps passe au moins une fois."
+    },
+    {
+      "id": "q2",
+      "categorie": "memo",
+      "enonce": "Que se passe-t-il si le paragraphe 0000-PRINCIPAL oublie son STOP RUN ?",
+      "choix": [
+        "Le programme s'arrête quand même à la fin du paragraphe",
+        "L'exécution continue en séquence dans le paragraphe suivant",
+        "Le compilateur refuse le programme",
+        "Le programme boucle indéfiniment sur 0000-PRINCIPAL"
+      ],
+      "bonne": 1,
+      "commentaire": "C'est le piège numéro un du débutant : sans STOP RUN, l'exécution tombe dans le paragraphe suivant et le rejoue hors de son PERFORM. Source classique des bugs fantômes."
+    },
+    {
+      "id": "q3",
+      "categorie": "memo",
+      "enonce": "Pourquoi la Norme CGBA interdit-elle GO TO (Article 7) ?",
+      "choix": [
+        "Parce que GnuCOBOL ne le compile pas",
+        "Parce qu'un saut sans retour rend le code impossible à suivre, à tester et à modifier",
+        "Parce qu'il est plus lent qu'un PERFORM",
+        "Parce qu'il empêche l'usage des niveaux 88"
+      ],
+      "bonne": 1,
+      "commentaire": "GO TO saute sans revenir ; multiplié par deux cents dans un programme de 1978, cela donne le code spaghetti. PERFORM, lui, revient toujours à la maison : c'est la différence entre une visite et une fugue."
+    },
+    {
+      "id": "q4",
+      "categorie": "memo",
+      "enonce": "Comment écrit-on la boucle d'un compte à rebours de 10 à 1 ?",
+      "choix": [
+        "`PERFORM VARYING WS-I FROM 10 BY -1 UNTIL WS-I < 1`",
+        "`PERFORM VARYING WS-I FROM 1 BY 1 UNTIL WS-I > 10`",
+        "`PERFORM 10 TIMES DOWNTO 1`",
+        "`PERFORM UNTIL WS-I = 0 SUBTRACT 1 FROM WS-I END-PERFORM`"
+      ],
+      "bonne": 0,
+      "commentaire": "Le pas d'un VARYING peut être négatif : FROM 10 BY -1 descend, et la condition UNTIL dit quand s'arrêter. La quatrième forme tourne aussi, mais elle oublie d'initialiser le compteur."
+    },
+    {
+      "id": "q5",
+      "categorie": "sortie",
+      "enonce": "Les nombres du rebours sortent par une édition Z9. Quelles sont les deux premières lignes affichées ?",
+      "choix": [
+        "`10` puis `9`",
+        "`10` puis ` 9`",
+        "`10` puis `09`",
+        "` 10` puis ` 9`"
+      ],
+      "bonne": 1,
+      "commentaire": "Z9 réserve deux positions : 10 les occupe toutes les deux, 9 laisse un espace devant. Un zéro de tête devient un espace, il ne disparaît pas : la colonne garde sa largeur."
+    },
+    {
+      "id": "q6",
+      "categorie": "sortie",
+      "enonce": "La table de 7 s'affiche avec les éditions Z9, Z9 et ZZZ9. Quelle est la première ligne exacte ?",
+      "choix": [
+        "`7 X 1 = 7`",
+        "` 7 X  1 =    7`",
+        "`07 X 01 = 0007`",
+        "` 7 X 1 =  7`"
+      ],
+      "bonne": 1,
+      "commentaire": "Chaque zone garde sa largeur : Z9 donne ` 7` et ` 1`, ZZZ9 donne `   7` sur quatre positions. Les colonnes restent alignées de la première ligne à la douzième, et c'est bien pour cela qu'on édite."
+    },
+    {
+      "id": "q7",
+      "categorie": "sortie",
+      "enonce": "La factorielle s'accumule dans une zone 9(18) protégée par ON SIZE ERROR. Que sort le programme pour N = 25 ?",
+      "choix": [
+        "`FACTORIELLE DE 25 = 0`",
+        "`DEPASSEMENT DE CAPACITE A N = 21`",
+        "Le programme plante sans message",
+        "`FACTORIELLE DE 25 = 999999999999999999`"
+      ],
+      "bonne": 1,
+      "commentaire": "18 chiffres suffisent jusqu'à 20! ; à l'étape 21, le produit déborde et ON SIZE ERROR reprend la main dans la boucle pour nommer l'étape fautive. Déborder proprement vaut mieux que déborder en silence."
+    },
+    {
+      "id": "q8",
+      "categorie": "memo",
+      "enonce": "Comment afficher un nombre édité sans ses espaces de tête, et comment construire une ligne morceau par morceau ?",
+      "choix": [
+        "`DISPLAY FUNCTION TRIM(WS-EDIT)` et `DISPLAY \"*\" WITH NO ADVANCING`",
+        "`DISPLAY WS-EDIT NO SPACES` et `DISPLAY \"*\" CONTINUED`",
+        "`MOVE WS-EDIT TO WS-X` suffit dans les deux cas",
+        "`DISPLAY WS-EDIT COMPRESSED` et `DISPLAY \"*\" INLINE`"
+      ],
+      "bonne": 0,
+      "commentaire": "FUNCTION TRIM coupe les espaces d'une zone éditée (cadeau en avance sur J06), et WITH NO ADVANCING garde le curseur sur la ligne : la pyramide se dessine étoile par étoile, sans chaîne pré-construite."
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "epreuve": "J01",
+  "titre": "Les quatre divisions",
+  "questions": [
+    {
+      "id": "q1",
+      "categorie": "memo",
+      "enonce": "Dans quel ordre les quatre divisions se suivent-elles dans un programme COBOL ?",
+      "choix": [
+        "IDENTIFICATION, ENVIRONMENT, DATA, PROCEDURE",
+        "IDENTIFICATION, DATA, ENVIRONMENT, PROCEDURE",
+        "PROGRAM-ID, WORKING-STORAGE, DATA, PROCEDURE",
+        "L'ordre est libre : le compilateur remet tout en place"
+      ],
+      "bonne": 0,
+      "commentaire": "L'IDENTIFICATION dit QUI, l'ENVIRONMENT dit OÙ, la DATA dit CE QUE l'on possède, la PROCEDURE dit CE QUE l'on fait. Toujours dans cet ordre : mélanger les étages, c'est finir au sous-sol avec la climatisation."
+    },
+    {
+      "id": "q2",
+      "categorie": "memo",
+      "enonce": "Quelles divisions le compilateur exige-t-il vraiment, et qu'exige la Norme CGBA ?",
+      "choix": [
+        "Les quatre pour le compilateur, les quatre pour la Norme",
+        "IDENTIFICATION et PROCEDURE pour le compilateur, les quatre pour la Norme",
+        "IDENTIFICATION seule pour le compilateur, deux pour la Norme",
+        "DATA et PROCEDURE pour le compilateur, les quatre pour la Norme"
+      ],
+      "bonne": 1,
+      "commentaire": "Seules IDENTIFICATION et PROCEDURE sont strictement obligatoires pour compiler. La Norme CGBA, elle, veut les quatre : un programme de la maison se lit toujours de la même façon."
+    },
+    {
+      "id": "q3",
+      "categorie": "memo",
+      "enonce": "Que produit la commande `cobc -x -Wall -o monprog monprog.cob` ?",
+      "choix": [
+        "Un module appelable, sans point d'entrée",
+        "Un exécutable `monprog`, avec tous les avertissements affichés",
+        "Une simple vérification de syntaxe, sans fichier produit",
+        "Un listing de compilation dans `monprog.lst`"
+      ],
+      "bonne": 1,
+      "commentaire": "L'option -x demande un exécutable (sans elle, cobc fabrique un module). L'option -Wall allume tous les avertissements : à la CGBA, un avertissement ignoré est un bug en sursis."
+    },
+    {
+      "id": "q4",
+      "categorie": "sortie",
+      "enonce": "Comment met-on une ligne entière en commentaire, en format fixe ?",
+      "choix": [
+        "Un `*` en colonne 1",
+        "Un `*` en colonne 7",
+        "Un `*>` obligatoirement en colonne 12",
+        "Deux barres obliques `//` n'importe où"
+      ],
+      "bonne": 1,
+      "commentaire": "En format fixe, la colonne 7 est la colonne indicateur : un `*` posé là met toute la ligne en commentaire. Le `*>` sert au commentaire flottant, en fin de ligne de code."
+    },
+    {
+      "id": "q5",
+      "categorie": "sortie",
+      "enonce": "WS-NOM est en PIC X(20) et reçoit MARCEL. Combien d'espaces séparent MARCEL de la virgule dans `BONJOUR MARCEL              , BIENVENUE A LA CGBA` ?",
+      "choix": ["Aucun", "6", "14", "20"],
+      "bonne": 2,
+      "commentaire": "Une zone X(20) qui reçoit 6 caractères garde 14 espaces de remplissage, et le DISPLAY les montre. Ces espaces ne sont pas un défaut : c'est la largeur déclarée qui respire. J06 apprendra à les couper."
+    },
+    {
+      "id": "q6",
+      "categorie": "sortie",
+      "enonce": "Que contient une zone PIC 9(8) après `ACCEPT WS-DATE-SYS FROM DATE YYYYMMDD`, le 12 août 2026 ?",
+      "choix": ["12082026", "20260812", "08122026", "260812"],
+      "bonne": 1,
+      "commentaire": "YYYYMMDD veut dire année sur 4, mois sur 2, jour sur 2, dans cet ordre : 20260812. Sans la clause YYYYMMDD, la date arrive sur 6 chiffres seulement (AAMMJJ), et l'an 2000 n'est jamais loin."
+    },
+    {
+      "id": "q7",
+      "categorie": "memo",
+      "enonce": "`ACCEPT WS-HEURE FROM TIME` remplit 8 chiffres au format HHMMSSCC. Que faut-il garder pour afficher `HEURE : 09H41` ?",
+      "choix": [
+        "Les 4 premiers chiffres (heures et minutes)",
+        "Les 4 derniers chiffres (secondes et centièmes)",
+        "Les 2 premiers chiffres seulement",
+        "Les chiffres 3 à 6"
+      ],
+      "bonne": 0,
+      "commentaire": "HHMMSSCC : heures, minutes, secondes, centièmes. Les deux premières paires suffisent au pointage ; les centièmes ne servent qu'à mesurer les temps de traitement."
+    },
+    {
+      "id": "q8",
+      "categorie": "memo",
+      "enonce": "Pourquoi déclarer WS-DATE-SYS en variable groupe avec 05 WS-AAAA, 05 WS-MM, 05 WS-JJ ?",
+      "choix": [
+        "Parce qu'un ACCEPT refuse les zones simples",
+        "Parce que l'ACCEPT remplit le groupe entier et que chaque sous-zone se lit ensuite toute seule",
+        "Parce que le niveau 01 ne peut pas porter de clause PIC",
+        "Parce que la date doit être stockée dans trois variables indépendantes"
+      ],
+      "bonne": 1,
+      "commentaire": "L'ACCEPT sert le groupe d'un bloc, et le découpage se fait tout seul : WS-JJ contient le jour sans une instruction de plus. C'est l'avant-goût du J05 (structures et REDEFINES)."
+    }
+  ]
+}
