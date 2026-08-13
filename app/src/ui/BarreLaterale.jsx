@@ -10,6 +10,7 @@ import { echelons, echelonSuivant, progressionVersEchelonSuivant } from '../data
 import { badgesObtenus, echelonCourant, epreuveCourante, epreuvesDebloquees, xpTotal } from '../store/progression.js'
 import { useApp } from './contexte.js'
 import { ecrans } from './ecrans.js'
+import { espacerMilliers } from './format.js'
 
 // Le matricule de l'apprenti, repris tel quel de la maquette : la CGBA numerote
 // ses pupitreurs, le corpus ne nomme pas celui-ci.
@@ -22,11 +23,6 @@ function compteur(id, etat) {
   if (id === 'lecteur') return epreuveCourante(etat).id
   if (id === 'livret') return String(badgesObtenus(etat).length)
   return ''
-}
-
-function espacerMilliers(nombre) {
-  // Espace insecable etroit : le nombre ne se coupe jamais en fin de ligne.
-  return String(nombre).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 
 export default function BarreLaterale() {
