@@ -1,0 +1,217 @@
+/* LE LIVRET : le mur des decorations (design 6.4) et la grille des echelons.
+   La maquette pose deux colonnes, le mur a gauche et la grille a droite dans
+   une carte de 360px. */
+
+.livret-grille {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: var(--e9);
+  align-items: start;
+}
+
+.livret-titre-bloc {
+  margin-bottom: var(--e6);
+}
+
+.decorations-mur {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--e5);
+}
+
+/* La tuile : meme boite qu'elle soit inerte (div) ou cliquable (button). */
+.decoration-tuile {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 0;
+  padding: var(--e7) var(--e7);
+  background: var(--badge-off);
+  color: inherit;
+  border: 1px solid var(--trait-doux4);
+  border-radius: var(--r-carte);
+  font: inherit;
+  text-align: left;
+  transition:
+    background var(--d-etat) var(--courbe-etat),
+    border-color var(--d-etat) var(--courbe-etat);
+}
+
+.decoration-tuile[data-obtenue='1'] {
+  background: var(--carte);
+  border-color: var(--trait);
+  box-shadow: var(--ombre-1);
+}
+
+.decoration-tuile[data-honneur='1'] {
+  cursor: pointer;
+}
+
+.decoration-tuile[data-honneur='1']:hover {
+  border-color: var(--trait-fort);
+}
+
+.decoration-tuile[data-honneur='1']:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--lueur);
+}
+
+.medaille {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--e6);
+  color: var(--encre-3);
+  border: 1px solid var(--trait-barre);
+  border-radius: 50%;
+  font-size: 17px;
+}
+
+.decoration-tuile[data-obtenue='1'] .medaille {
+  background: var(--medaille-bg);
+  color: var(--ambre);
+  border-color: var(--bd-medaille);
+}
+
+.medaille-nom {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: var(--ls-tableau);
+  color: var(--badge-off-txt);
+}
+
+.decoration-tuile[data-obtenue='1'] .medaille-nom {
+  color: var(--encre);
+}
+
+.medaille-origine {
+  margin-top: var(--e1);
+  font-size: var(--t-meta-2);
+  color: var(--encre-3);
+}
+
+/* La condition reste lisible dans les deux etats (design 6.4). */
+.medaille-condition {
+  margin-top: var(--e5);
+  font-size: var(--t-meta-2);
+  line-height: 1.5;
+  color: var(--encre-3);
+}
+
+.medaille-mention {
+  margin-top: var(--e5);
+  padding-top: var(--e4);
+  border-top: 1px solid var(--trait-doux3);
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--encre-3);
+}
+
+.decoration-tuile[data-obtenue='1'] .medaille-mention {
+  color: var(--vert);
+}
+
+.livret-note {
+  margin: var(--e8) 0 0;
+  font-size: var(--t-meta);
+  line-height: var(--li-corps);
+  color: var(--encre-3);
+}
+
+/* ------------------------------------------------ la grille des echelons */
+
+.livret-echelons {
+  padding: 0;
+  overflow: hidden;
+}
+
+.echelons-liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.echelon-ligne {
+  display: flex;
+  align-items: center;
+  gap: var(--e6);
+  padding: var(--e5) var(--e8);
+  border-top: 1px solid var(--trait-doux3);
+}
+
+.echelon-ligne[data-position='actuel'] {
+  background: var(--validee-bg);
+}
+
+.echelon-rang {
+  width: 20px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--encre-3);
+}
+
+.echelon-corps {
+  flex: 1;
+  min-width: 0;
+}
+
+.echelon-titre {
+  display: block;
+  font-size: 13.5px;
+  color: var(--badge-off-txt);
+}
+
+.echelon-ligne[data-position='passe'] .echelon-titre {
+  color: var(--encre-2);
+}
+
+.echelon-ligne[data-position='actuel'] .echelon-titre {
+  font-weight: 640;
+  color: var(--encre);
+}
+
+.echelon-condition {
+  display: block;
+  margin-top: var(--e1);
+  font-size: var(--t-meta-2);
+  line-height: 1.45;
+  color: var(--encre-3);
+}
+
+.echelon-seuil {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--encre-3);
+  white-space: nowrap;
+}
+
+/* Les XP tenus se voient : le barreau n'attend plus que sa condition. */
+.echelon-seuil[data-tenu='1'] {
+  color: var(--vert);
+}
+
+.echelon-marque {
+  width: 40px;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-align: right;
+  color: var(--encre-3);
+}
+
+.echelon-ligne[data-position='actuel'] .echelon-marque {
+  color: var(--vert);
+}
+
+/* Sous 1200px, la grille des echelons passe sous le mur des decorations. */
+@media (max-width: 1200px) {
+  .livret-grille {
+    grid-template-columns: 1fr;
+  }
+}
