@@ -190,6 +190,57 @@ function creerFenetre () {
             ton: ton()
           }
 
+          // Le quiz du soir se visite AVANT de rendre la case : sur un dossier
+          // vierge, c'est elle qui valide la journee du pupitre et ouvre la
+          // seance du soir suivante.
+          //
+          // On repond a la premiere question, on lit la correction, puis on
+          // passe a la deuxieme. On s'arrete la : c'est la HUITIEME reponse qui
+          // porte la note au dossier, et une tentative, elle, ne se reprend pas.
+          // Si la seance reste verrouillee, l'autotest controle cet ecran-la.
+          if (items[3]) items[3].click()
+          await attendre(60)
+          const puces = [...document.querySelectorAll('.quiz-puce')]
+          const compteur = () => lire('.quiz-compteur')
+          const enonce = () => lire('.quiz-enonce')
+          const soirAvant = {
+            titreEcran: titre(),
+            puces: puces.length,
+            ouvertes: puces.filter((p) => !p.disabled).length,
+            verrou: lire('.quiz-verrou'),
+            compteur: compteur(),
+            enonce: enonce(),
+            choix: document.querySelectorAll('.quiz-reponse').length,
+            corrections: document.querySelectorAll('.quiz-correction').length,
+            score: lire('.quiz-score')
+          }
+
+          const reponse = document.querySelector('.quiz-reponse')
+          if (reponse) reponse.click()
+          await attendre(60)
+          const soirPendant = {
+            correction: lire('.quiz-correction'),
+            ton: ((document.querySelector('.quiz-correction') || {}).dataset || {}).ton || '',
+            bonnes: document.querySelectorAll('.quiz-reponse[data-etat="bonne"]').length,
+            bloquees: [...document.querySelectorAll('.quiz-reponse')].filter((r) => r.disabled).length,
+            toast: lire('.toast'),
+            tonToast: ton(),
+            suite: lire('.quiz-suite .bouton-primaire')
+          }
+
+          const suite = document.querySelector('.quiz-suite .bouton-primaire')
+          if (suite) suite.click()
+          await attendre(60)
+          const soirApres = {
+            compteur: compteur(),
+            enonce: enonce(),
+            corrections: document.querySelectorAll('.quiz-correction').length
+          }
+
+          // Retour au pupitre : la case se rend, la progression de
+          // l'utilisateur revient exactement comme elle etait.
+          if (items[2]) items[2].click()
+          await attendre(60)
           if (premiere()) premiere().click()
           await attendre(60)
           const routeApres = { cochees: cochees(), jauge: jauge(), ton: ton() }
@@ -244,6 +295,7 @@ function creerFenetre () {
             plan,
             sujet,
             route: { avant: routeAvant, pendant: routePendant, apres: routeApres },
+            soir: { avant: soirAvant, pendant: soirPendant, apres: soirApres },
             livret: { avant: livretAvant, pendant: livretPendant, apres: livretApres }
           }
         })()`)
@@ -301,6 +353,34 @@ function creerFenetre () {
           apresRoute.ton !== pendant.ton &&
           apresRoute.cochees === avant.cochees &&
           apresRoute.jauge === avant.jauge
+        // Le quiz du soir porte les onze seances redigees. Quand la seance du
+        // moment est ouverte, une reponse revele la correction, fige les
+        // quatre choix et fait avancer d'une question ; quand elle ne l'est
+        // pas encore, l'ecran dit ce qui l'ouvrira.
+        const soirAvant = rapport.soir?.avant ?? {}
+        const soirPendant = rapport.soir?.pendant ?? {}
+        const soirApres = rapport.soir?.apres ?? {}
+        const seanceOuverte = soirAvant.choix === 4
+        const soir =
+          soirAvant.titreEcran === 'Le quiz du soir' &&
+          soirAvant.puces === 11 &&
+          (seanceOuverte
+            ? soirAvant.compteur === 'QUESTION 1 / 8' &&
+              (soirAvant.enonce ?? '').length > 0 &&
+              soirAvant.corrections === 0 &&
+              (soirAvant.score ?? '').startsWith('Score ') &&
+              (soirPendant.correction ?? '').startsWith('BERTHA DIT') &&
+              ['oui', 'non'].includes(soirPendant.ton) &&
+              soirPendant.bonnes === 1 &&
+              soirPendant.bloquees === 4 &&
+              (soirPendant.toast ?? '').startsWith('BERTHA DIT') &&
+              soirPendant.suite === 'Question suivante' &&
+              soirApres.compteur === 'QUESTION 2 / 8' &&
+              soirApres.enonce !== soirAvant.enonce &&
+              soirApres.corrections === 0
+            : soirAvant.ouvertes === 0 &&
+              soirAvant.verrou.includes('SEANCE VERROUILLEE') &&
+              soirAvant.corrections === 0)
         // Le livret porte les 26 decorations du catalogue, dont les 5 qui se
         // cochent sur l'honneur, et les 9 echelons dont un seul est tenu.
         const l = rapport.livret ?? {}
@@ -332,6 +412,7 @@ function creerFenetre () {
           carte &&
           lecteur &&
           feuille &&
+          soir &&
           dossier
             ? 0
             : 1
@@ -342,6 +423,7 @@ function creerFenetre () {
             `plan ${carte ? plan.salles + ' salles' : 'incomplet'}, ` +
             `sujet ${lecteur ? s.paragraphes + ' paragraphes, ' + s.codes + ' blocs de code, ' + s.tableaux + ' tableaux' : 'incomplet'}, ` +
             `feuille de route ${feuille ? avant.lignes + ' case' + (avant.lignes > 1 ? 's' : '') + ' dont ' + avant.bonus + ' bonus, cochee puis rendue' : 'incomplete'}, ` +
+            `quiz ${soir ? soirAvant.puces + ' seances, ' + (seanceOuverte ? 'question corrigee puis suivante' : 'seance encore verrouillee') : 'incomplet'}, ` +
             `livret ${dossier ? livretAvant.tuiles + ' medailles dont ' + livretAvant.obtenues + ' obtenues, ' + livretAvant.echelons + ' echelons, decoration accordee puis rendue' : 'incomplet'}, ` +
             `theme ${rapport.theme ? 'bascule' : 'fige'}, ` +
             `reglage ${rapport.ecrit ? 'ecrit et repris' : 'inchange'}`
