@@ -161,6 +161,39 @@ function creerFenetre () {
             absent: document.querySelectorAll('.lecteur-absent').length
           }
 
+          // La feuille de route, elle, se coche : c'est tout son objet. On
+          // bascule la premiere case, on releve le toast et la jauge, puis on
+          // la rebascule pour ne rien laisser dans la progression.
+          const lignes = () => [...document.querySelectorAll('.feuille-ligne')]
+          const cochees = () => lignes().filter((l) => l.dataset.coche === '1').length
+          const jauge = () => (document.querySelector('.feuille-jauge-remplissage') || {}).style.width || ''
+          const ton = () => ((document.querySelector('.toast') || {}).dataset || {}).ton || ''
+          const premiere = () => document.querySelector('.feuille-case-native')
+
+          const routeAvant = {
+            lignes: lignes().length,
+            bonus: document.querySelectorAll('.feuille-registre[data-bonus="1"] .feuille-ligne').length,
+            cochees: cochees(),
+            jauge: jauge(),
+            repere: (document.querySelector('.feuille-jauge-repere') || {}).style.left || '',
+            total: lire('.feuille-total'),
+            bertha: lire('.feuille-bertha')
+          }
+
+          if (premiere()) premiere().click()
+          await attendre(60)
+          const routePendant = {
+            cochees: cochees(),
+            jauge: jauge(),
+            total: lire('.feuille-total'),
+            toast: lire('.toast'),
+            ton: ton()
+          }
+
+          if (premiere()) premiere().click()
+          await attendre(60)
+          const routeApres = { cochees: cochees(), jauge: jauge(), ton: ton() }
+
           const theme = document.querySelector('.bouton-theme')
           const sombreDepart = racine.dataset.sombre
           if (theme) theme.click()
@@ -183,7 +216,8 @@ function creerFenetre () {
             profil: (document.querySelector('.profil') || {}).innerText || '',
             tableau,
             plan,
-            sujet
+            sujet,
+            route: { avant: routeAvant, pendant: routePendant, apres: routeApres }
           }
         })()`)
         const profil = typeof rapport.profil === 'string' ? rapport.profil : ''
@@ -221,6 +255,25 @@ function creerFenetre () {
           s.bords >= 1 &&
           s.largeur > 0 &&
           s.largeur <= 760
+        // La feuille de route se coche puis se decoche : la jauge bouge, le
+        // toast annonce le verdict dans les deux sens, et la progression de
+        // l'utilisateur se retrouve exactement comme avant.
+        const r = rapport.route ?? {}
+        const avant = r.avant ?? {}
+        const pendant = r.pendant ?? {}
+        const apresRoute = r.apres ?? {}
+        const feuille =
+          avant.lignes >= 1 &&
+          avant.total.includes('Total du jour') &&
+          avant.bertha.includes('BERTHA') &&
+          avant.repere.endsWith('%') &&
+          pendant.cochees !== avant.cochees &&
+          pendant.jauge !== avant.jauge &&
+          ['oui', 'non'].includes(pendant.ton) &&
+          pendant.toast.startsWith('BERTHA DIT') &&
+          apresRoute.ton !== pendant.ton &&
+          apresRoute.cochees === avant.cochees &&
+          apresRoute.jauge === avant.jauge
         verdict =
           rapport.pont &&
           rapport.ipc?.ok === true &&
@@ -232,7 +285,8 @@ function creerFenetre () {
           profil.includes('Échelon') &&
           bord &&
           carte &&
-          lecteur
+          lecteur &&
+          feuille
             ? 0
             : 1
         console.log(
@@ -241,6 +295,7 @@ function creerFenetre () {
             `tableau de bord ${bord ? 'complet' : 'incomplet'}, ` +
             `plan ${carte ? plan.salles + ' salles' : 'incomplet'}, ` +
             `sujet ${lecteur ? s.paragraphes + ' paragraphes, ' + s.codes + ' blocs de code, ' + s.tableaux + ' tableaux' : 'incomplet'}, ` +
+            `feuille de route ${feuille ? avant.lignes + ' case' + (avant.lignes > 1 ? 's' : '') + ' dont ' + avant.bonus + ' bonus, cochee puis rendue' : 'incomplete'}, ` +
             `theme ${rapport.theme ? 'bascule' : 'fige'}, ` +
             `reglage ${rapport.ecrit ? 'ecrit et repris' : 'inchange'}`
         )
