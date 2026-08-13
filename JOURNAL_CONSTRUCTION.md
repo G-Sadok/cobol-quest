@@ -492,3 +492,71 @@ Commits créés :
 - `tests: verrouiller le registre des ecrans et les raccourcis clavier`
 - `electron: controler la coque et la bascule de theme dans l autotest`
 - `doc: consigner l'iteration T08`
+
+## T09 - L'écran LE TERMINAL branché sur le store
+
+**La tâche.** Remplir le tableau de bord du §5.1 : échelon et titre CGBA, barre
+d'XP vers l'échelon suivant, épreuve en cours avec bouton « reprendre », trois
+derniers badges, citation de Marcel piochée dans les sujets, rappel de la
+commande BERTHA du moment.
+
+**Le principe tenu.** L'écran ne calcule rien. Un module pur de plus,
+`src/ui/tableauDeBord.js`, dérive tout de l'état (comme `ui/ecrans.js` pour la
+navigation) et se teste sans monter un seul composant : `epreuveDuMoment`,
+`dernieresDecorations`, `salles`, `releveDeService`, `carriere`. `Terminal.jsx`
+n'est plus que de la mise en page.
+
+**Trois arbitrages.**
+1. *Où mettre la barre d'XP.* Le cahier des charges l'exige sur le Terminal, la
+   maquette ne la dessine que dans la carte de profil de la barre latérale. Elle
+   entre donc dans la carte de service de droite, en tête du « relevé de
+   service » que les notes d'intégration déclarent sacrifiable : même idiome de
+   carte, aucun composant inventé, échelon + jauge + XP + ce qu'il reste à
+   gagner avant le barreau suivant.
+2. *Comment jauger l'épreuve en cours.* En XP d'exercices contre le seuil du
+   jour (le quiz, lui, ne fait pas franchir un seuil : règle tranchée en T07).
+   La phase 3, que BERTHA ne juge pas, se compte en jalons cochés, et sa console
+   affiche qu'elle se valide sur l'honneur au lieu d'une commande.
+3. *Le glyphe des médailles.* Le design donne un glyphe par badge ; le catalogue
+   des badges est le sujet de T13. En attendant, un signe unique
+   (`GLYPHE_DECORATION`) plutôt qu'un signe faux. Le nom, lui, est exact :
+   `src/data/badges.js` le reconstruit à partir de l'identifiant, et son test
+   vérifie les 25 badges du manifeste contre le livret.
+
+**La commande BERTHA du moment** est celle du premier exercice non coché de
+l'épreuve en cours, ou du dernier de la liste quand tout est fait : il y a
+toujours quelque chose à copier. Le bouton « COPIER » de la console passe à
+« COPIE » pendant 2 secondes.
+
+**États vides.** Aucune décoration au départ : au lieu de trois tuiles grises,
+une phrase dans un encart pointillé. L'épreuve du moment, elle, n'est jamais
+vide (le store rend J00 sur un état neuf).
+
+**Vérification.** L'autotest Electron lit le tableau de bord avant de quitter
+l'écran : code de l'épreuve, libellé du bouton de reprise, commande BERTHA, mémo
+de Marcel, relevé de service. Il ne clique sur rien dans cet écran, précisément
+pour ne rien écrire dans la progression de l'utilisateur (un clic sur
+« Reprendre » retiendrait l'épreuve ouverte).
+
+Fichiers touchés : `app/src/data/citations.js` et `citations.test.js`,
+`app/src/data/badges.js` et `badges.test.js`, `app/src/ui/tableauDeBord.js` et
+`tableauDeBord.test.js`, `app/src/ui/format.js` et `format.test.js` (tous
+nouveaux), `app/src/ecrans/Terminal.jsx` (réécrit),
+`app/src/styles/terminal.css` (nouveau), `app/src/styles/composants.css`
+(boutons primaire, lien et console), `app/src/styles/base.css` (import),
+`app/src/ui/BarreLaterale.jsx` (son séparateur de milliers part dans
+`format.js`), `app/electron/main.cjs` (autotest), `ETAT_APP.md`,
+`JOURNAL_CONSTRUCTION.md`. Aucune dépendance ajoutée.
+
+Verdict : `npm run build` vert (75 modules, JS 337,67 ko, CSS 15,94 ko - le
+corpus revient dans le bundle avec les citations), `npx vitest run` vert
+(9 fichiers, 135 tests), autotest Electron vert (sortie 0).
+
+Commits créés :
+- `app: piocher les citations des sujets dans le corpus`
+- `app: nommer les badges d apres le livret`
+- `app: partager le formatage des milliers`
+- `app: derouler les donnees du tableau de bord`
+- `app: brancher l ecran LE TERMINAL sur le store`
+- `electron: lire le tableau de bord dans l autotest`
+- `doc: consigner l'iteration T09`

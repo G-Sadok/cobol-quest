@@ -33,7 +33,7 @@ l'itération suivante avant de continuer.
       export→import identique).
 - [x] T08 — Gabarit d'app conforme au design : layout, navigation 6 écrans,
       thème appliqué (tokens), effets (scanlines désactivables).
-- [ ] T09 — Écran LE TERMINAL branché sur le store.
+- [x] T09 — Écran LE TERMINAL branché sur le store.
 - [ ] T10 — Écran LA CARTE (couloir piscine, bureaux missions, salle machine ;
       4 états de salle conformes aux maquettes ; navigation vers le lecteur).
 - [ ] T11 — Écran LECTEUR DE SUJET : rendu markdown (code, tableaux), navigation
@@ -147,3 +147,15 @@ l'itération suivante avant de continuer.
   feux de la barre laterale est vide a dessein : macOS y dessine les vrais
   boutons de fenetre. Build vert, 101 tests verts, autotest Electron vert
   (6 ecrans, passage terminal vers carte, bascule de theme ecrite puis reprise).
+- 2026-08-13 T09 : le terminal est branche. Tout ce qu'il affiche sort d'un
+  module pur de plus, `src/ui/tableauDeBord.js` (epreuve du moment, dernieres
+  decorations, releve de service, carriere) : l'ecran n'est plus que de la mise
+  en page. Trois arbitrages : la barre d'XP vers l'echelon suivant, exigee par
+  le §5.1, se pose dans la carte de service a droite (la maquette ne la montre
+  qu'en barre laterale, et elle declare son releve de service sacrifiable) ;
+  l'epreuve du moment se jauge en XP d'exercices contre le seuil du jour, sauf
+  la phase 3 qui se compte en jalons faute de moulinette ; la medaille des
+  decorations porte un glyphe unique en attendant le catalogue de T13. La
+  citation vient de `citations.js`, piochee dans les sujets. Build vert,
+  135 tests verts, autotest Electron vert (tableau de bord lu sans rien
+  cliquer, donc sans rien ecrire dans la progression).
