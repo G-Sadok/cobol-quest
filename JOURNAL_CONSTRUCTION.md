@@ -96,3 +96,57 @@ variables sont bien présentes dans le CSS produit et `data-sombre="0"` dans le
 Commits créés :
 - `design: poser les tokens CSS du design system`
 - `doc: consigner l'iteration T02`
+
+## 2026-08-13 - T03 : synchronisation et embarquement du corpus
+
+Tâche : rendre les sujets lisibles par l'application sans aucune lecture disque à
+l'exécution, conformément à la section 3 du cahier des charges (le piège
+`fetch()` en `file://` dans une app empaquetée).
+
+Décisions :
+- `app/scripts/sync-corpus.mjs` recopie les `.md` de `piscine/`, `missions/`,
+  `phase3/`, `progression/`, `bertha/` et des trois fichiers de racine
+  (`00_PLAN_MAITRE.md`, `01_NORME_CGBA.md`, `02_J00_INSTALLATION.md`) vers
+  `app/src/corpus/`, arborescence conservée. Soit 24 fichiers.
+- La destination est purgée au début de chaque passage : un sujet supprimé du
+  corpus ne doit pas survivre dans une copie périmée. Le corpus source n'est
+  jamais touché, le script ne fait que lire.
+- Un dossier ou un fichier absent est signalé en avertissement sans faire échouer
+  le build ; en revanche zéro fichier copié est une erreur (code de sortie 1),
+  parce que cela signifie que le corpus n'est pas à la racine attendue.
+- Branchement npm : `sync:corpus` porte la commande, `predev` et `prebuild`
+  l'appellent. La copie est donc toujours fraîche, en dev comme au build, et
+  `app/src/corpus/` reste ignoré par git (vérifié : `git status` ne le voit pas).
+- `app/src/data/corpus.js` embarque le tout avec
+  `import.meta.glob('../corpus/**/*.md', { query: '?raw', import: 'default',
+  eager: true })`. Les clés du glob sont normalisées en chemins relatifs à
+  `src/corpus/` (« piscine/J01_les_quatre_divisions.md »), c'est-à-dire la forme
+  exacte que `programme.js` utilisera comme « chemin du sujet » en T05/T06.
+  L'API exposée : `sujets`, `cheminsSujets`, `lireSujet(chemin)` et
+  `corpusPresent()`.
+- Relevé pour T05 : J00 ne se trouve pas dans `piscine/` mais à la racine du
+  corpus (`02_J00_INSTALLATION.md`). La piscine contient J01 à J10 plus RUSH01 et
+  RUSH02, ce qui correspond au manifeste attendu.
+- Aucune dépendance ajoutée (le script n'utilise que `node:fs/promises`,
+  `node:path` et `node:url`).
+
+Vérification de l'affichage : les serveurs de développement sont interdits par le
+protocole, la preuve passe donc par le build. La coque provisoire affiche le
+nombre de sujets embarqués et les 600 premiers caractères de J01 dans un bloc de
+console (tokens `--console` / `--phosphore-3`, aucune couleur en dur). Le JS
+produit contient bien le texte des sujets : la chaîne « IDENTIFICATION DIVISION »
+y apparaît 4 fois et les noms de fichiers du corpus y figurent. Ce témoin sera
+retiré avec la coque en T08.
+
+Fichiers touchés : `app/scripts/sync-corpus.mjs` (nouveau),
+`app/src/data/corpus.js` (nouveau), `app/package.json`, `app/src/App.jsx`,
+`app/src/styles/base.css`, `ETAT_APP.md`, `JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert (52 modules, JS 298,84 ko, CSS 6,11 ko). La taille
+du bundle triple, c'est le corpus embarqué et c'est le comportement voulu. Pas
+encore de tests : vitest arrive en T07.
+
+Commits créés :
+- `app: synchroniser le corpus vers src/corpus avant dev et build`
+- `app: embarquer le corpus a la compilation et afficher un sujet brut`
+- `doc: consigner l'iteration T03`

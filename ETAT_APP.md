@@ -13,7 +13,7 @@ l'itération suivante avant de continuer.
       dossier est vide, consigner l'usage de la DA de repli (§7 du cahier des
       charges). Créer `app/src/styles/tokens.css` (variables CSS) à partir de
       cette source.
-- [ ] T03 — `app/scripts/sync-corpus.mjs` (+ hooks predev/prebuild) copiant les
+- [x] T03 — `app/scripts/sync-corpus.mjs` (+ hooks predev/prebuild) copiant les
       .md du corpus vers `app/src/corpus/` ; module `src/data/corpus.js` avec
       `import.meta.glob(..., { query: '?raw', eager: true })` ; vérifier qu'un
       sujet s'affiche brut dans l'app de dev.
@@ -77,3 +77,14 @@ l'itération suivante avant de continuer.
   durees. `base.css` importe les tokens, la racine porte `data-sombre="0"`.
   Ecarts de nommage tranches en faveur de la maquette (`--tete`,
   `--vert-survol`, `--lecture`). Build vert.
+- 2026-08-13 T03 : `sync-corpus.mjs` recopie les 24 .md du corpus (5 dossiers
+  sacres + 3 fichiers de racine) vers `app/src/corpus/`, destination purgee a
+  chaque passage pour ne pas garder de sujet mort ; branche en `predev` et
+  `prebuild` via `sync:corpus`. `src/data/corpus.js` les embarque avec
+  `import.meta.glob('../corpus/**/*.md', { query: '?raw', eager: true })` et
+  expose `sujets`, `cheminsSujets`, `lireSujet(chemin)`, `corpusPresent()`,
+  clefs relatives a `src/corpus/`. A retenir pour T05 : J00 n'est pas dans
+  `piscine/` mais a la racine (`02_J00_INSTALLATION.md`). Verification faite par
+  le build (serveurs interdits) : bundle a 298 kB, sujet J01 present dans le
+  JS emis et affiche brut par la coque provisoire. Build vert, tests pas encore
+  en place (T07).
