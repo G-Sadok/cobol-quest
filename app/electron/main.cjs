@@ -103,39 +103,65 @@ function creerFenetre () {
       fermetureAutorisee = true
       let verdict = 1
       try {
-        // Le temoin de la coque provisoire (T07) : on lit le fichier, on clique,
-        // et on le relit pour verifier que la progression a bien fait
-        // l'aller-retour jusqu'au disque (l'ecriture est amortie a 500 ms).
+        // On controle la coque (T08) : les 6 items de navigation, le passage
+        // d'un ecran a l'autre, la carte de profil, et la bascule de theme, qui
+        // est un reglage donc doit descendre jusqu'au fichier (ecriture amortie
+        // a 500 ms). Le second clic remet le theme comme il etait : l'autotest
+        // ne laisse aucune trace dans la progression de l'utilisateur.
         const rapport = await fenetre.webContents.executeJavaScript(`(async () => {
-          const coche = (r) => Boolean(r && r.progression && r.progression.epreuves
-            && r.progression.epreuves.J00 && r.progression.epreuves.J00.exercices.ex00)
+          const attendre = (ms) => new Promise((suite) => setTimeout(suite, ms))
+          const sombreDe = (r) => Boolean(r && r.progression && r.progression.reglages
+            && r.progression.reglages.sombre)
+          const titre = () => (document.querySelector('.toolbar-titre') || {}).textContent || ''
+          const racine = document.documentElement
           const pont = Boolean(window.cgba && window.cgba.present)
           const avant = pont ? await window.cgba.charger() : null
-          const bascule = document.querySelector('.amorce-bascule')
-          if (bascule) {
-            bascule.click()
-            await new Promise((suite) => setTimeout(suite, 800))
-          }
+
+          const items = [...document.querySelectorAll('.nav-item')]
+          const titreDepart = titre()
+          if (items[1]) items[1].click()
+          await attendre(60)
+          const titreCarte = titre()
+
+          const theme = document.querySelector('.bouton-theme')
+          const sombreDepart = racine.dataset.sombre
+          if (theme) theme.click()
+          await attendre(800)
+          const sombreApres = racine.dataset.sombre
+          const pendant = pont ? await window.cgba.charger() : null
+
+          if (theme) theme.click()
+          await attendre(800)
           const apres = pont ? await window.cgba.charger() : null
+
           return {
             pont,
             ipc: apres,
-            bascule: Boolean(bascule) && coche(avant) !== coche(apres),
-            aBascule: Boolean(bascule),
-            rendu: (document.querySelector('main.amorce') || {}).innerText || ''
+            nav: items.length,
+            navigation: titreDepart === 'Le terminal' && titreCarte === 'La carte',
+            theme: sombreDepart !== sombreApres,
+            ecrit: sombreDe(avant) !== sombreDe(pendant) && sombreDe(avant) === sombreDe(apres),
+            effets: racine.dataset.effets,
+            profil: (document.querySelector('.profil') || {}).innerText || ''
           }
         })()`)
-        const rendu = typeof rapport.rendu === 'string' ? rapport.rendu : ''
+        const profil = typeof rapport.profil === 'string' ? rapport.profil : ''
         verdict =
           rapport.pont &&
           rapport.ipc?.ok === true &&
-          rendu.includes('Échelon') &&
-          (!rapport.aBascule || rapport.bascule)
+          rapport.nav === 6 &&
+          rapport.navigation &&
+          rapport.theme &&
+          rapport.ecrit &&
+          rapport.effets === '1' &&
+          profil.includes('Échelon')
             ? 0
             : 1
         console.log(
-          `autotest : pont ${rapport.pont ? 'actif' : 'absent'}, rendu ${rendu.length} car., ` +
-            `progression ${rapport.bascule ? 'ecrite et relue' : 'inchangee'}`
+          `autotest : pont ${rapport.pont ? 'actif' : 'absent'}, ${rapport.nav} ecrans, ` +
+            `navigation ${rapport.navigation ? 'ok' : 'ko'}, ` +
+            `theme ${rapport.theme ? 'bascule' : 'fige'}, ` +
+            `reglage ${rapport.ecrit ? 'ecrit et repris' : 'inchange'}`
         )
         if (verdict !== 0) console.error('autotest : rapport', rapport)
       } catch (erreur) {
