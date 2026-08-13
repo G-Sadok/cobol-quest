@@ -11,7 +11,9 @@
 //   epreuves        { [idEpreuve]: { exercices: { [idExercice]: true },
 //                                    quiz: { tentatives, meilleurScore,
 //                                            xpCredite } } }
-//   badges          { [idBadge]: 'auto' | 'honneur' }
+//   badges          { [idBadge]: 'auto' | 'honneur' } : les badges DECLARES,
+//                   c'est-a-dire ceux que l'application ne sait pas mesurer ;
+//                   les autres se deduisent de l'etat (voir badgeObtenu)
 //   reglages        { rythme, scanlines, sombre }
 //   epreuveOuverte  la derniere epreuve ouverte dans le lecteur, ou null
 //
@@ -24,6 +26,7 @@
 //   - la VALIDATION d'une epreuve ne compte que les XP d'exercices : le quiz
 //     est un bonus de revision, il ne fait pas franchir le seuil du jour.
 
+import { badgeAutomatique, badgeParId, idsBadges } from '../data/badges.js'
 import { echelons } from '../data/echelons.js'
 import {
   aUnQuiz,
@@ -135,8 +138,10 @@ export function enregistrerQuiz(etat, idEpreuve, score) {
 }
 
 /**
- * Attribue ou retire un badge. La source dit qui a tranche : 'auto' quand la
- * condition est mesurable, 'honneur' quand l'apprenti se juge lui-meme (§5.5).
+ * Attribue ou retire un badge DECLARE. La source dit qui a tranche : 'auto'
+ * quand la condition est mesurable, 'honneur' quand l'apprenti se juge lui-meme
+ * (§5.5). Les badges que l'application sait mesurer n'ont pas besoin d'etre
+ * ecrits ici : ils se deduisent de l'etat (voir badgeMerite).
  */
 export function definirBadge(etat, idBadge, obtenu, source = 'auto') {
   if (typeof idBadge !== 'string' || idBadge === '') return etat
@@ -150,8 +155,13 @@ export function definirBadge(etat, idBadge, obtenu, source = 'auto') {
   return { ...etat, badges }
 }
 
-/** Bascule un badge « sur l'honneur » depuis la grille du livret. */
+/**
+ * Bascule un badge « sur l'honneur » depuis la grille du livret. Un badge que
+ * l'application mesure ne se coche pas a la main : c'est le travail rendu qui
+ * l'accorde, et lui seul qui le reprend.
+ */
 export function basculerBadge(etat, idBadge) {
+  if (badgeAutomatique(idBadge)) return etat
   return definirBadge(etat, idBadge, !badgeObtenu(etat, idBadge), 'honneur')
 }
 
@@ -273,14 +283,52 @@ export function epreuveCourante(etat) {
   return aFaire ?? epreuves[epreuves.length - 1]
 }
 
-/** Vrai quand le badge est obtenu, quelle qu'en soit la source. */
-export function badgeObtenu(etat, idBadge) {
-  return idBadge in etat.badges
+/**
+ * Vrai quand la condition MESURABLE d'un badge est tenue par l'etat courant
+ * (data/badges.js decrit la regle, le store l'evalue). Faux pour un badge « sur
+ * l'honneur » ou inconnu : personne d'autre que l'apprenti ne les accorde.
+ */
+export function badgeMerite(etat, idBadge) {
+  const badge = badgeParId(idBadge)
+  if (!badge?.regle) return false
+  const { regle, idEpreuve } = badge
+  switch (regle.type) {
+    case 'exercices':
+      return regle.exercices.every((id) => exerciceCoche(etat, idEpreuve, id))
+    case 'obligatoires': {
+      const epreuve = epreuveParId(idEpreuve)
+      const obligatoires = epreuve ? exercicesObligatoires(epreuve) : []
+      return (
+        obligatoires.length > 0 &&
+        obligatoires.every((ex) => exerciceCoche(etat, idEpreuve, ex.id))
+      )
+    }
+    case 'validee':
+      return epreuveValidee(etat, idEpreuve)
+    case 'xpExercices':
+      return xpExercices(etat, idEpreuve) >= regle.minimum
+    default:
+      return false
+  }
 }
 
-/** Les identifiants des badges obtenus. */
+/**
+ * Vrai quand le badge est obtenu, quelle qu'en soit la source : le travail
+ * rendu (attribution automatique) ou la parole de l'apprenti (declaration).
+ */
+export function badgeObtenu(etat, idBadge) {
+  return idBadge in etat.badges || badgeMerite(etat, idBadge)
+}
+
+/**
+ * Les identifiants des badges obtenus, dans l'ordre du livret. Les badges
+ * declares qui ne sont plus au catalogue (progression importee d'une version
+ * plus ancienne) ferment la marche plutot que de disparaitre.
+ */
 export function badgesObtenus(etat) {
-  return Object.keys(etat.badges)
+  const duCatalogue = idsBadges.filter((id) => badgeObtenu(etat, id))
+  const etrangers = Object.keys(etat.badges).filter((id) => badgeParId(id) === null)
+  return [...duCatalogue, ...etrangers]
 }
 
 /**

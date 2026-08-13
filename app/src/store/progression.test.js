@@ -5,6 +5,7 @@ import {
   REGLAGES_PAR_DEFAUT,
   VERSION_PROGRESSION,
   XP_QUIZ,
+  badgeMerite,
   badgeObtenu,
   badgesObtenus,
   basculerBadge,
@@ -295,12 +296,12 @@ describe('le store de progression', () => {
       expect(badgeObtenu(etat, 'colonne-7')).toBe(true)
       expect(etat.badges['colonne-7']).toBe('auto')
 
-      etat = basculerBadge(etat, 'les-quatre-saisons')
-      expect(etat.badges['les-quatre-saisons']).toBe('honneur')
+      etat = basculerBadge(etat, 'la-voie-du-88')
+      expect(etat.badges['la-voie-du-88']).toBe('honneur')
 
       etat = definirBadge(etat, 'colonne-7', false)
       expect(badgeObtenu(etat, 'colonne-7')).toBe(false)
-      expect(badgesObtenus(etat)).toEqual(['les-quatre-saisons'])
+      expect(badgesObtenus(etat)).toEqual(['la-voie-du-88'])
     })
 
     it('ignore les demandes sans effet', () => {
@@ -308,6 +309,69 @@ describe('le store de progression', () => {
       expect(definirBadge(etat, 'colonne-7', true)).toBe(etat)
       expect(definirBadge(etat, '', true)).toBe(etat)
       expect(definirBadge(etatInitial(), 'colonne-7', false)).toEqual(etatInitial())
+    })
+
+    it('accorde tout seul les badges qui se mesurent', () => {
+      // Une liste d'exercices : SURVIVANT Y2K tient au seul ex06 de J02.
+      let etat = definirExercice(etatInitial(), 'J02', 'ex06', true)
+      expect(badgeMerite(etat, 'survivant-y2k')).toBe(true)
+      expect(badgeObtenu(etat, 'survivant-y2k')).toBe(true)
+      expect(etat.badges).toEqual({})
+
+      // MAITRE DES REGISTRES exige les trois exercices de J05, pas deux.
+      etat = definirExercice(etat, 'J05', 'ex04', true)
+      etat = definirExercice(etat, 'J05', 'ex05', true)
+      expect(badgeObtenu(etat, 'maitre-des-registres')).toBe(false)
+      etat = definirExercice(etat, 'J05', 'ex06', true)
+      expect(badgeObtenu(etat, 'maitre-des-registres')).toBe(true)
+
+      // Tous les non-bonus : LES QUATRE SAISONS ne doit rien au bonus de J01.
+      const saisons = toutCocher(etatInitial(), 'J01', { bonus: false })
+      expect(badgeObtenu(saisons, 'les-quatre-saisons')).toBe(true)
+
+      // L'epreuve validee : les six badges de missions.
+      const mission = valider(etatInitial(), 'M01')
+      expect(badgeObtenu(mission, 'guichetier-d-or')).toBe(true)
+
+      // Un plancher d'XP : le diplome exige les 120 XP de l'examen.
+      const partiel = definirExercice(etatInitial(), 'J10', 'c', true)
+      expect(xpExercices(partiel, 'J10')).toBe(100)
+      expect(badgeObtenu(partiel, 'diplome-de-la-piscine')).toBe(false)
+      const recu = definirExercice(partiel, 'J10', 'b2', true)
+      expect(xpExercices(recu, 'J10')).toBe(130)
+      expect(badgeObtenu(recu, 'diplome-de-la-piscine')).toBe(true)
+    })
+
+    it('reprend un badge automatique des que la case retombe', () => {
+      const etat = definirExercice(etatInitial(), 'J06', 'ex06', true)
+      expect(badgeObtenu(etat, 'le-chiffreur')).toBe(true)
+      const rendu = definirExercice(etat, 'J06', 'ex06', false)
+      expect(badgeObtenu(rendu, 'le-chiffreur')).toBe(false)
+      expect(rendu).toEqual(etatInitial())
+    })
+
+    it('ne laisse pas cocher a la main un badge qui se mesure', () => {
+      const etat = etatInitial()
+      expect(basculerBadge(etat, 'le-chiffreur')).toBe(etat)
+      expect(basculerBadge(etat, 'guichetier-d-or')).toBe(etat)
+      // Les cinq badges que BERTHA ne peut pas juger restent, eux, a la main.
+      const declare = basculerBadge(etat, 'tueur-de-go-to')
+      expect(declare.badges).toEqual({ 'tueur-de-go-to': 'honneur' })
+      expect(basculerBadge(declare, 'tueur-de-go-to').badges).toEqual({})
+    })
+
+    it('ne merite rien sur un badge inconnu ou sur l honneur', () => {
+      const etat = valider(etatInitial(), 'J00', 'J01')
+      expect(badgeMerite(etat, 'colonne-7')).toBe(false)
+      expect(badgeMerite(etat, 'dompteur-de-bertha')).toBe(false)
+      expect(badgeMerite(etat, 'badge-fantome')).toBe(false)
+    })
+
+    it('range les decorations dans l ordre du livret, les etrangeres en fin', () => {
+      let etat = valider(etatInitial(), 'J00')
+      etat = basculerBadge(etat, 'colonne-7')
+      etat = definirBadge(etat, 'badge-fantome', true)
+      expect(badgesObtenus(etat)).toEqual(['premiere-compile', 'colonne-7', 'badge-fantome'])
     })
   })
 
