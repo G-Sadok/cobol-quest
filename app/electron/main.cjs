@@ -95,18 +95,49 @@ function creerFenetre () {
   else fenetre.loadFile(FICHIER_INDEX)
 
   // Verification automatisee du demarrage : `CQ_AUTOTEST=1 electron .` charge
-  // l'interface, controle le pont et l'aller-retour IPC, puis rend la main (le
-  // protocole interdit tout processus qui reste ouvert). Sortie 0 si tout va.
+  // l'interface, controle le pont, l'aller-retour IPC et le rendu de React,
+  // puis rend la main (le protocole interdit tout processus qui reste ouvert).
+  // Sortie 0 si tout va.
   if (process.env.CQ_AUTOTEST === '1') {
     fenetre.webContents.once('did-finish-load', async () => {
       fermetureAutorisee = true
       let verdict = 1
       try {
-        const rapport = await fenetre.webContents.executeJavaScript(
-          'window.cgba && window.cgba.present ? window.cgba.charger() : null'
+        // Le temoin de la coque provisoire (T07) : on lit le fichier, on clique,
+        // et on le relit pour verifier que la progression a bien fait
+        // l'aller-retour jusqu'au disque (l'ecriture est amortie a 500 ms).
+        const rapport = await fenetre.webContents.executeJavaScript(`(async () => {
+          const coche = (r) => Boolean(r && r.progression && r.progression.epreuves
+            && r.progression.epreuves.J00 && r.progression.epreuves.J00.exercices.ex00)
+          const pont = Boolean(window.cgba && window.cgba.present)
+          const avant = pont ? await window.cgba.charger() : null
+          const bascule = document.querySelector('.amorce-bascule')
+          if (bascule) {
+            bascule.click()
+            await new Promise((suite) => setTimeout(suite, 800))
+          }
+          const apres = pont ? await window.cgba.charger() : null
+          return {
+            pont,
+            ipc: apres,
+            bascule: Boolean(bascule) && coche(avant) !== coche(apres),
+            aBascule: Boolean(bascule),
+            rendu: (document.querySelector('main.amorce') || {}).innerText || ''
+          }
+        })()`)
+        const rendu = typeof rapport.rendu === 'string' ? rapport.rendu : ''
+        verdict =
+          rapport.pont &&
+          rapport.ipc?.ok === true &&
+          rendu.includes('Échelon') &&
+          (!rapport.aBascule || rapport.bascule)
+            ? 0
+            : 1
+        console.log(
+          `autotest : pont ${rapport.pont ? 'actif' : 'absent'}, rendu ${rendu.length} car., ` +
+            `progression ${rapport.bascule ? 'ecrite et relue' : 'inchangee'}`
         )
-        verdict = rapport && rapport.ok === true ? 0 : 1
-        console.log(`autotest : pont ${verdict === 0 ? 'actif' : 'absent'}`, rapport)
+        if (verdict !== 0) console.error('autotest : rapport', rapport)
       } catch (erreur) {
         console.error('autotest : echec', erreur)
       }
