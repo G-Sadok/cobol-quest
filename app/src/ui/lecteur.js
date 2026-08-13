@@ -77,13 +77,28 @@ export function reperesEpreuve(epreuve) {
 }
 
 /**
+ * L'epreuve posee sur le pupitre : celle qu'on a ouverte, tant qu'elle est
+ * debloquee, sinon l'epreuve du moment.
+ *
+ * Elle ne se confond pas avec `epreuveCourante`, qui saute les epreuves
+ * validees pour le bouton « reprendre » du Terminal : cocher la derniere case
+ * d'un sujet ferait alors changer le texte sous les yeux du lecteur. Un sujet
+ * valide reste lisible, comme sa salle reste cliquable sur La Carte.
+ */
+export function epreuveLue(etat) {
+  const ouverte = epreuveParId(etat.epreuveOuverte)
+  if (ouverte && epreuveDebloquee(etat, ouverte.id)) return ouverte
+  return epreuveCourante(etat)
+}
+
+/**
  * Le sujet a lire : l'epreuve retenue, son en-tete et son texte.
  *
  * `absent` vaut true quand le corpus n'a pas ete synchronise avant la
  * compilation : l'ecran le dit alors au lieu d'afficher une page blanche.
  */
 export function ficheLecture(etat) {
-  const epreuve = epreuveCourante(etat)
+  const epreuve = epreuveLue(etat)
   const source = lireSujet(epreuve.chemin)
   const decoupe = decouperSujet(source)
   const etatSalle = etatEpreuve(etat, epreuve.id)

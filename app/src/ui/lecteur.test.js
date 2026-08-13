@@ -1,10 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import { lireSujet } from '../data/corpus.js'
 import { epreuveParId, epreuves } from '../data/programme.js'
-import { definirExercice, etatInitial, ouvrirEpreuve } from '../store/progression.js'
+import {
+  definirExercice,
+  epreuveCourante,
+  epreuveValidee,
+  etatInitial,
+  ouvrirEpreuve
+} from '../store/progression.js'
 import {
   adresseEpreuve,
   decouperSujet,
+  epreuveLue,
   ficheLecture,
   reperesEpreuve,
   voisines
@@ -115,6 +122,26 @@ describe('la fiche de lecture', () => {
     const fiche = ficheLecture(etatInitial())
     expect(fiche.epreuve.id).toBe('J00')
     expect(fiche.corps.length).toBeGreaterThan(0)
+  })
+
+  it('reste sur le sujet ouvert quand la derniere case le valide', () => {
+    let etat = ouvrirEpreuve(etatInitial(), 'J00')
+    etat = definirExercice(etat, 'J00', 'ex00', true)
+
+    expect(epreuveValidee(etat, 'J00')).toBe(true)
+    // L'epreuve du moment est passee a J01, mais le pupitre garde J00.
+    expect(epreuveCourante(etat).id).toBe('J01')
+    expect(epreuveLue(etat).id).toBe('J00')
+    expect(ficheLecture(etat).etat).toBe('validee')
+  })
+
+  it('retombe sur l’epreuve du moment quand rien n’est ouvert', () => {
+    expect(epreuveLue(etatInitial()).id).toBe('J00')
+  })
+
+  it('ne pose jamais un sujet verrouille sur le pupitre', () => {
+    const etat = { ...etatInitial(), epreuveOuverte: 'J05' }
+    expect(epreuveLue(etat).id).toBe('J00')
   })
 
   it('porte le texte des vingt sujets du programme', () => {
