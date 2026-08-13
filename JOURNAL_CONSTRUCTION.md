@@ -950,3 +950,80 @@ Commits créés :
 - `quiz: les six QCM du soir de J06 a RUSH02`
 - `tests: etendre le controle des quiz aux onze epreuves`
 - `doc: consigner l iteration T15`
+
+## T16 - L'écran du quiz du soir
+
+Tâche : la seizième d'`ETAT_APP.md`, l'écran LE QUIZ DU SOIR (cahier des
+charges, §5.4) : le déroulé des 8 QCM, la correction commentée après chaque
+réponse, les +10 XP au seuil de 6/8, crédités une seule fois par épreuve alors
+que les re-tentatives restent libres. Le contenu des onze quiz était écrit en
+T14 et T15 ; il ne manquait que la salle où on les passe.
+
+Le partage est celui des cinq écrans précédents. Un module pur de plus,
+`src/ui/quiz.js`, décide tout : la copie et son remplissage, le sommaire des
+onze séances avec leur état, la question à l'écran (quatre choix, quatre états
+de choix, la correction), le relevé final et les deux toasts.
+`src/ecrans/Quiz.jsx` ne fait que poser le résultat, tenir la copie en cours et
+rendre la note au store.
+
+Cinq décisions.
+
+La première : la copie ne se sauvegarde pas. Elle vit en état local, le temps
+de la visite. Une séance abandonnée à la quatrième question ne laisse donc rien
+au dossier ; seule une copie menée au bout compte. C'est ce que dit le cahier
+des charges en ne stockant qu'un `meilleurScore` et un `xpCredite`, pas une
+copie en cours, et c'est cohérent avec l'objet : le quiz du soir est une
+révision, pas un examen à surveiller.
+
+La deuxième : la note part au dossier dès la huitième réponse posée, et non au
+clic sur « Voir le résultat ». Une séance menée au bout compte même si l'écran
+se ferme avant le relevé. Le store, lui, ne crédite les 10 XP qu'une fois
+(`enregistrerQuiz`), donc rien à protéger de ce côté.
+
+La troisième : une réponse posée ne se corrige plus. Le clic révèle la bonne
+réponse et le commentaire ; revenir en arrière viderait la correction de son
+sens. Les quatre boutons passent en `disabled`, la bonne réponse se marque en
+vert, celle qu'on a prise en rouge si elle est fausse, les deux autres
+s'éteignent.
+
+La quatrième : le sommaire des onze séances est ajouté à la maquette. Elle
+montre un quiz déjà choisi, mais l'écran s'atteint par la barre latérale et par
+Cmd+4, sans passer par un sujet : il faut donc pouvoir dire de quelle journée
+on révise le mémo. Le sommaire est une ligne de pastilles mono aux codes
+d'épreuve, avec les couleurs de statut du design (verte pour une séance
+réussie, ambre pour une séance à repasser, grisée et pointillée pour une séance
+verrouillée). La séance proposée en arrivant est celle du sujet posé sur le
+pupitre quand il a un quiz, sinon la première séance ouverte non réussie.
+
+La cinquième : cette séance se fige dès que la progression est lue. Sans cela,
+réussir le quiz de J03 ferait basculer l'écran sur J04 au moment même où le
+relevé s'affiche, le quiz changeant sous les doigts de l'apprenti.
+
+Un ajout au passage : le bouton secondaire du design 6.1, qui manquait au
+catalogue (`composants.css`). Le relevé s'en sert pour « Retenter », à côté de
+la primaire « Retour au terminal » ; Réglages le reprendra en T17.
+
+L'autotest Electron a été réordonné. La case de la feuille de route se coche
+maintenant AVANT la visite du quiz et ne se rend qu'après : sur un dossier
+vierge, c'est elle qui valide la journée du pupitre et ouvre la séance du soir.
+L'autotest répond donc à une vraie question, lit la correction, passe à la
+suivante, puis rend la case ; il s'arrête à la deuxième question, la huitième
+réponse portant une tentative au dossier qui, elle, ne se reprend pas. Si
+aucune séance n'est ouverte, il contrôle l'écran verrouillé à la place.
+
+Fichiers touchés : `app/src/ui/quiz.js`, `app/src/ui/quiz.test.js`,
+`app/src/styles/quiz.css` (nouveaux), `app/src/ecrans/Quiz.jsx`,
+`app/src/styles/composants.css`, `app/src/styles/base.css`,
+`app/electron/main.cjs`, `ETAT_APP.md`, `JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert (JS 578,82 ko, CSS 38,12 ko),
+`npx vitest run` vert (16 fichiers, 315 tests), autotest Electron vert
+(11 séances, question corrigée puis suivante, progression rendue à l'identique).
+
+Commits créés :
+- `app: deriver le quiz du soir dans un module pur`
+- `tests: couvrir le deroule et le releve du quiz du soir`
+- `design: habiller l ecran du quiz du soir`
+- `app: l ecran LE QUIZ DU SOIR, correction commentee et XP unique`
+- `electron: passer une question du quiz dans l autotest`
+- `doc: consigner l iteration T16`

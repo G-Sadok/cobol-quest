@@ -45,7 +45,7 @@ l'itération suivante avant de continuer.
 - [x] T14 — Contenu des quiz J01→J05 (8 QCM/épreuve en JSON, fidèles aux mémos,
       ≥2 questions « sortie exacte / colonnes » chacun).
 - [x] T15 — Contenu des quiz J06→J09 + RUSH01 + RUSH02 (mêmes règles).
-- [ ] T16 — Écran QUIZ DU SOIR : déroulé, correction commentée, +10 XP si ≥6/8,
+- [x] T16 — Écran QUIZ DU SOIR : déroulé, correction commentée, +10 XP si ≥6/8,
       XP unique par épreuve.
 - [ ] T17 — Écran RÉGLAGES : export/import via IPC (boîtes de dialogue natives),
       remise à zéro double confirmation, rythme, scanlines.
@@ -231,3 +231,18 @@ l'itération suivante avant de continuer.
   contente plus d'une liste de fichiers presents : il exige l'egalite avec
   `idsAvecQuiz`, donc un futur quiz ajoute au programme fera echouer la suite
   tant qu'il n'est pas redige. Build vert, 287 tests verts.
+- 2026-08-14 T16 : la seance du soir se passe. Un module pur de plus,
+  `src/ui/quiz.js` (copie, sommaire des onze seances, question corrigee,
+  releve final, verdicts) ; `src/ecrans/Quiz.jsx` tient la copie en cours en
+  etat local et ne rend au store que la note. Quatre arbitrages : la copie
+  n'est PAS sauvegardee (une seance abandonnee ne laisse rien, seule la note
+  d'une copie finie part au dossier) ; la note part des la huitieme reponse et
+  non au clic sur « Voir le resultat », pour qu'une seance menee au bout compte
+  meme si l'ecran se ferme ; une reponse posee ne se corrige plus, c'est la
+  correction commentee qui suit ; le sommaire des onze seances est ajoute a la
+  maquette, l'ecran etant accessible par Cmd+4 sans passer par un sujet. Le
+  quiz propose suit le sujet pose sur le pupitre, et se fige une fois la
+  progression lue pour qu'une reussite ne change pas le quiz sous les doigts.
+  Build vert, 315 tests verts, autotest Electron vert (question repondue,
+  correction lue, question suivante ; la huitieme n'est jamais atteinte, une
+  tentative ne se reprenant pas).
