@@ -1,4 +1,6 @@
-/* Reset minimal. Les tokens du design system arrivent en T02. */
+/* Socle global. Les valeurs viennent toutes de tokens.css, jamais du dur. */
+@import './tokens.css';
+
 *,
 *::before,
 *::after {
@@ -13,25 +15,65 @@ body,
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--canevas);
+  color: var(--encre);
+  font-family: var(--sans);
+  font-size: var(--t-corps);
+  line-height: var(--li-corps);
   -webkit-font-smoothing: antialiased;
 }
 
+a {
+  color: var(--vert);
+  text-decoration: none;
+  border-bottom: 1px solid var(--lien-bd);
+}
+
+a:hover {
+  color: var(--lien-survol);
+  border-bottom-color: var(--lien-survol);
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--inter-off);
+  border-radius: var(--r-puce);
+  border: 3px solid var(--canevas);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-survol);
+}
+
+/* Coque provisoire, remplacee par le gabarit des 6 ecrans en T08. */
 .amorce {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
-  gap: 8px;
+  gap: var(--e4);
 }
 
 .amorce h1 {
   margin: 0;
-  letter-spacing: 0.08em;
+  font-size: var(--t-titre-ecran);
+  font-weight: 680;
+  line-height: var(--li-titre);
+  letter-spacing: var(--ls-titre);
 }
 
 .amorce p {
   margin: 0;
-  font-family: "SF Mono", Menlo, monospace;
+  color: var(--encre-3);
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--ls-label);
 }

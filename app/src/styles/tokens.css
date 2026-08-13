@@ -1,0 +1,262 @@
+/*
+ * Tokens du design system COBOL QUEST (v2 "Dossier CGBA").
+ * Source normative : design/DESIGN_SYSTEM.md + design/COBOL QUEST.dc.html.
+ * Regle sacree : aucune couleur en dur dans un composant, tout passe par ces
+ * variables. Le theme sombre est une simple surcharge de [data-sombre="1"].
+ */
+
+:root,
+[data-sombre='0'] {
+  /* Surfaces */
+  --canevas: #efe9dc;
+  --carte: #fdfbf6;
+  --tete: #f7f3ea;
+  --panneau: #e9e3d5;
+  --barre: #e6e0d2;
+  --console: #16160f;
+
+  /* Surfaces derivees */
+  --sur-vert: #f6f2e8;
+  --sur-vert2: #f3efe5;
+  --sur-plein: #fdfbf6;
+  --pastille: #fdfbf6;
+  --survol-doux: #f2ede1;
+  --tete-2: #f0ebdf;
+  --ligne-active: #f5f2e9;
+  --ligne-cochee: #f7f5ee;
+  --badge-off: #ede9df;
+  --verrou-bg: #ebe6da;
+  --validee-bg: #f1f5ef;
+  --succes-bg: #f0f5ee;
+  --zebra: #f4f7f2;
+  --warn-bg: #fdf6e8;
+  --medaille-bg: #f6ebd6;
+  --danger-bg: #fbf0ee;
+  --chip-bg: #f2e6cc;
+  --pilule-bg: #e7e1d3;
+  --piste: #e3ddce;
+  --puce-nav: #dcd5c5;
+  --inter-off: #cfc6b2;
+  --scroll-survol: #b9ae95;
+
+  /* Traits */
+  --trait: #d8d0be;
+  --trait-doux: #e5decd;
+  --trait-doux2: #eae4d6;
+  --trait-doux3: #ede7da;
+  --trait-doux4: #dfd8c8;
+  --trait-fort: #c3b9a2;
+  --trait-verrou: #bcb09a;
+  --trait-barre: #d3cab6;
+  --trait-toolbar: #ddd5c3;
+  --trait-console: #2e3a2e;
+  --bd-medaille: #e0c99b;
+  --bd-validee: #c3d4c1;
+  --bd-succes: #c9dcc6;
+  --bd-warn: #e8d5ae;
+  --bd-danger: #e7c6c1;
+  --bd-danger-btn: #dda9a2;
+
+  /* Encres */
+  --encre: #1b1915;
+  --lecture: #2a2721;
+  --encre-2: #5c554a;
+  --encre-3: #615b4f;
+  --verrou-txt: #5f594d;
+  --badge-off-txt: #6b6458;
+  --warn-txt: #3a3327;
+  --danger-txt: #7a4a44;
+
+  /* Couleurs de statut */
+  --vert: #1c5d38;
+  --vert-survol: #164a2c;
+  --lien-survol: #134527;
+  --validee-code: #4a6350;
+  --validee-titre: #3f5343;
+  --ambre: #8f5a08;
+  --rouge: #a82c22;
+  --rouge-survol: #8e211a;
+
+  /* Phosphore (identique dans les deux themes) */
+  --phosphore: #79e08d;
+  --phosphore-2: #7e9484;
+  --phosphore-3: #ddebdf;
+  --phosphore-4: #8fa893;
+  --phosphore-bd: #4a6650;
+  --toast-txt: #e3ede4;
+  --toast-non: #f28b82;
+
+  /* Opacites et voiles */
+  --o1: rgba(27, 25, 21, 0.05);
+  --o2: rgba(27, 25, 21, 0.06);
+  --o-btn: rgba(27, 25, 21, 0.16);
+  --o-modale: rgba(27, 25, 21, 0.3);
+  --o-toast: rgba(27, 25, 21, 0.28);
+  --o-past: rgba(27, 25, 21, 0.22);
+  --o-sub: rgba(27, 25, 21, 0.04);
+  --lien-bd: rgba(28, 93, 56, 0.3);
+  --lueur: rgba(28, 93, 56, 0.28);
+  --halo: rgba(28, 93, 56, 0.09);
+  --toolbar: rgba(239, 233, 220, 0.86);
+  --voile: rgba(30, 26, 20, 0.34);
+  --sur-vert-dim: rgba(246, 242, 232, 0.75);
+}
+
+[data-sombre='1'] {
+  --canevas: #14150f;
+  --carte: #1d1e17;
+  --tete: #23241c;
+  --panneau: #191a13;
+  --barre: #101109;
+  --console: #0a0b06;
+
+  --sur-vert: #0c1710;
+  --sur-vert2: #0c1710;
+  --sur-plein: #0c1710;
+  --pastille: #e9e4d6;
+  --survol-doux: #2a2c22;
+  --tete-2: #23241c;
+  --ligne-active: #232418;
+  --ligne-cochee: #202118;
+  --badge-off: #191a13;
+  --verrou-bg: #1a1b14;
+  --validee-bg: #16241a;
+  --succes-bg: #16241a;
+  --zebra: #1b2418;
+  --warn-bg: #26200f;
+  --medaille-bg: #2c2312;
+  --danger-bg: #2a1512;
+  --chip-bg: #3a2f13;
+  --pilule-bg: #23241c;
+  --piste: #2a2c22;
+  --puce-nav: #2e3025;
+  --inter-off: #3e4034;
+  --scroll-survol: #55584a;
+
+  --trait: #33352a;
+  --trait-doux: #2b2d22;
+  --trait-doux2: #292b20;
+  --trait-doux3: #2a2c21;
+  --trait-doux4: #33352a;
+  --trait-fort: #4a4d3e;
+  --trait-verrou: #3e4034;
+  --trait-barre: #26281e;
+  --trait-toolbar: #26281e;
+  --bd-medaille: #5a4720;
+  --bd-validee: #2e4634;
+  --bd-succes: #2e4634;
+  --bd-warn: #574618;
+  --bd-danger: #55302a;
+  --bd-danger-btn: #6b392f;
+
+  --encre: #f1ede1;
+  --lecture: #dfdacb;
+  --encre-2: #b5af9e;
+  --encre-3: #9c9585;
+  --verrou-txt: #9a9384;
+  --badge-off-txt: #8e8778;
+  --warn-txt: #e4d9be;
+  --danger-txt: #e5b9b2;
+
+  --vert: #4fbf7b;
+  --vert-survol: #6bd494;
+  --lien-survol: #8fe2ae;
+  --validee-code: #8fc29e;
+  --validee-titre: #c8dccd;
+  --ambre: #e3a94e;
+  --rouge: #e8837a;
+  --rouge-survol: #f09a92;
+
+  /* Le phosphore ne change pas : point fixe de l'identite. */
+
+  --o1: rgba(0, 0, 0, 0.35);
+  --o2: rgba(0, 0, 0, 0.45);
+  --o-btn: rgba(0, 0, 0, 0.45);
+  --o-modale: rgba(0, 0, 0, 0.62);
+  --o-toast: rgba(0, 0, 0, 0.55);
+  --o-past: rgba(0, 0, 0, 0.5);
+  --o-sub: rgba(0, 0, 0, 0.3);
+  --lien-bd: rgba(79, 191, 123, 0.4);
+  --lueur: rgba(79, 191, 123, 0.34);
+  --halo: rgba(79, 191, 123, 0.16);
+  --toolbar: rgba(20, 21, 15, 0.86);
+  --voile: rgba(0, 0, 0, 0.58);
+  --sur-vert-dim: rgba(12, 23, 16, 0.72);
+}
+
+/* Tokens invariants : typographie, mesures, profondeur, mouvement. */
+:root {
+  /* Deux familles, deux roles : sans pour lire, mono pour la machine. */
+  --sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', sans-serif;
+  --mono: ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Mono', 'Courier New', monospace;
+
+  --t-titre-ecran: 30px;
+  --t-titre-section: 20px;
+  --t-sous-titre: 16px;
+  --t-lecture: 17px;
+  --t-corps: 15px;
+  --t-corps-2: 14px;
+  --t-meta: 13px;
+  --t-meta-2: 12px;
+  --t-label: 10px;
+  --t-code: 13.5px;
+  --t-tableau: 12px;
+
+  --ls-titre: -0.02em;
+  --ls-section: -0.01em;
+  --ls-label: 0.18em;
+  --ls-tableau: 0.08em;
+
+  --li-lecture: 1.75;
+  --li-corps: 1.6;
+  --li-titre: 1.2;
+
+  /* Echelle d'espacement (px) */
+  --e1: 2px;
+  --e2: 5px;
+  --e3: 7px;
+  --e4: 9px;
+  --e5: 11px;
+  --e6: 14px;
+  --e7: 18px;
+  --e8: 22px;
+  --e9: 26px;
+  --e10: 30px;
+  --e11: 40px;
+  --e12: 52px;
+  --e13: 72px;
+
+  /* Coque et largeurs de contenu */
+  --l-barre: 248px;
+  --h-toolbar: 52px;
+  --h-feux: 52px;
+  --l-terminal: 1020px;
+  --l-carte-ecran: 1080px;
+  --l-quiz: 720px;
+  --l-reglages: 680px;
+  --l-lecture: 68ch;
+
+  /* Rayons */
+  --r-modale: 13px;
+  --r-grande-carte: 12px;
+  --r-carte: 10px;
+  --r-bouton: 7px;
+  --r-puce: 6px;
+  --r-etiquette: 5px;
+
+  /* Profondeur : trois ombres, pas une de plus. */
+  --ombre-1: 0 1px 2px var(--o1);
+  --ombre-2: 0 1px 2px var(--o1), 0 14px 36px var(--o2);
+  --ombre-3: 0 24px 60px var(--o-modale);
+  --ombre-bouton: 0 1px 2px var(--o-btn);
+  --ombre-bouton-survol: 0 3px 10px var(--lueur);
+
+  /* Mouvement */
+  --d-etat: 130ms;
+  --d-interrupteur: 150ms;
+  --d-jauge: 240ms;
+  --d-tampon: 440ms;
+  --d-toast: 190ms;
+  --courbe-etat: ease-out;
+  --courbe-tampon: cubic-bezier(0.2, 0.8, 0.3, 1);
+}
