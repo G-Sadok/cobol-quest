@@ -34,7 +34,7 @@ l'itération suivante avant de continuer.
 - [x] T08 — Gabarit d'app conforme au design : layout, navigation 6 écrans,
       thème appliqué (tokens), effets (scanlines désactivables).
 - [x] T09 — Écran LE TERMINAL branché sur le store.
-- [ ] T10 — Écran LA CARTE (couloir piscine, bureaux missions, salle machine ;
+- [x] T10 — Écran LA CARTE (couloir piscine, bureaux missions, salle machine ;
       4 états de salle conformes aux maquettes ; navigation vers le lecteur).
 - [ ] T11 — Écran LECTEUR DE SUJET : rendu markdown (code, tableaux), navigation
       précédent/suivant, largeur de lecture conforme au design.
@@ -159,3 +159,14 @@ l'itération suivante avant de continuer.
   citation vient de `citations.js`, piochee dans les sujets. Build vert,
   135 tests verts, autotest Electron vert (tableau de bord lu sans rien
   cliquer, donc sans rien ecrire dans la progression).
+- 2026-08-13 T10 : le plan des sous-sols est pose. Un module pur de plus,
+  `src/ui/carte.js`, decide l'etat de chaque salle, son etiquette, son tampon
+  et son annonce ; l'ecran ne fait que poser 19 tuiles. Trois arbitrages : le
+  tampon porte les XP REELLEMENT gagnes (quiz compris) et non le bareme, ce qui
+  le rend nul pour la phase 3 (« VALIDE » sans chiffre) ; une salle verrouillee
+  est un bouton `disabled` qui dit dans son infobulle quelle epreuve l'ouvre,
+  faute de toast (design 6.6) qui n'arrivera qu'avec la feuille de route ; une
+  salle validee reste cliquable, pour revoir le sujet. `EnteteEcran` gagne un
+  emplacement `aside` (la legende des 4 etats). Build vert, 150 tests verts,
+  autotest Electron vert (plan lu sans rien cliquer : ouvrir une salle
+  ecrirait l'epreuve retenue dans la progression).

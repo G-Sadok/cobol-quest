@@ -560,3 +560,73 @@ Commits créés :
 - `app: brancher l ecran LE TERMINAL sur le store`
 - `electron: lire le tableau de bord dans l autotest`
 - `doc: consigner l'iteration T09`
+
+## T10 - L'écran LA CARTE, le plan des sous-sols
+
+**La tâche.** Dessiner le §5.2 : le couloir de la piscine (J00 à J10, les deux
+rushs en salles latérales), les bureaux des missions (M01 à M06), la salle
+machine IBM de la phase 3, les quatre états de salle des maquettes, et le clic
+qui ouvre le lecteur.
+
+**Le principe tenu.** Comme pour le Terminal, l'écran ne décide rien. Un module
+pur de plus, `src/ui/carte.js`, dérive de l'état ce qu'est une salle (état,
+étiquette, tampon, XP, annonce, ouvrable) et range les 19 épreuves en quatre
+groupes : `couloirPiscine`, `sallesRush`, `bureauxMissions`, `salleMachine`.
+`Carte.jsx` ne fait que poser des tuiles. Les quatre états, sacrés selon la note
+d'intégration 6, tiennent dans un seul attribut `data-etat` porté aussi bien par
+une tuile que par la puce de la légende : fond, bordure et étiquette se lisent
+au même endroit, une seule source de vérité visuelle. Le store fournissait déjà
+`etatEpreuve` depuis T07, rien n'a été réinventé.
+
+**Trois arbitrages.**
+1. *Ce que porte le tampon.* La maquette écrit « VALIDE +180 », c'est-à-dire le
+   barème de la salle. Le tampon porte ici les XP RÉELLEMENT gagnés, quiz du
+   soir compris : c'est ce qui rend la progression tangible, et deux apprentis
+   n'ont pas le même chiffre sur la même salle. Conséquence traitée : la phase 3
+   ne rapporte aucun XP, son tampon se contente de « VALIDE » sans chiffre.
+2. *Ce que fait un clic sur une salle fermée.* La maquette répond par un toast
+   « BERTHA DIT NON ». Le toast (design 6.6) n'existe pas encore et n'est le
+   sujet d'aucune tâche avant la feuille de route : une salle verrouillée est
+   donc un bouton `disabled` dont l'infobulle, qui est aussi son `aria-label`,
+   dit quelle épreuve l'ouvre (« validez d'abord J01 »). L'information est là,
+   sans inventer un composant hors design.
+3. *Une salle validée reste cliquable.* La maquette y répond « DEJA VALIDEE » ;
+   le cahier des charges dit « Clic → lecteur ». Le cahier des charges tranche :
+   on peut toujours revenir relire un sujet.
+
+**Deux ajouts partagés.** `EnteteEcran` gagne un emplacement `aside` (aligné sur
+le bas du titre) pour la légende des quatre états ; `tokens.css` gagne le rayon
+de tuile `--r-tuile: 9px` et `--console-glyphe: #5f7a63`, le gris-vert du glyphe
+de la salle machine, qui manquait à la famille phosphore. Aucune couleur en dur
+n'entre dans un composant.
+
+**Le découpage du plan.** Les 13 épreuves de la piscine se lisent en 11 journées
+dans le couloir et 2 rushs dans la colonne latérale de 148px bordée de
+pointillés, exactement comme la maquette. Un test vérifie que les quatre groupes
+couvrent les 19 épreuves du programme sans doublon : aucune salle ne peut être
+oubliée en chemin.
+
+**Vérification.** L'autotest Electron lit le plan après avoir navigué dessus :
+19 tuiles, 4 puces de légende, des états tous connus, au moins une salle
+ouvrable, et le bandeau « PHASE 3 · ». Il ne clique sur aucune salle, pour la
+même raison qu'en T09 : ouvrir une salle retiendrait l'épreuve ouverte dans la
+progression de l'utilisateur.
+
+Fichiers touchés : `app/src/ui/carte.js` et `carte.test.js` (nouveaux),
+`app/src/ecrans/Carte.jsx` (réécrit), `app/src/styles/carte.css` (nouveau),
+`app/src/styles/base.css` (import), `app/src/ui/Ecran.jsx` et
+`app/src/styles/coque.css` (l'emplacement `aside`), `app/src/styles/tokens.css`
+(deux tokens), `app/electron/main.cjs` (autotest), `ETAT_APP.md`,
+`JOURNAL_CONSTRUCTION.md`. Aucune dépendance ajoutée.
+
+Verdict : `npm run build` vert (76 modules, JS 341,66 ko, CSS 20,59 ko),
+`npx vitest run` vert (10 fichiers, 150 tests), autotest Electron vert
+(sortie 0, « plan 19 salles »).
+
+Commits créés :
+- `app: derouler le plan des sous-sols`
+- `app: poser un complement a droite de l entete d ecran`
+- `design: ajouter le rayon de tuile et le glyphe de console`
+- `app: brancher l ecran LA CARTE sur le store`
+- `electron: lire le plan des sous-sols dans l autotest`
+- `doc: consigner l'iteration T10`
