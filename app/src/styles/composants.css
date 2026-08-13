@@ -378,12 +378,6 @@
   }
 }
 
-.chantier-texte {
-  max-width: 62ch;
-  margin: 0 0 var(--e8);
-  color: var(--encre-2);
-}
-
 /* ------------------------------------------------------------ les effets */
 
 /*
