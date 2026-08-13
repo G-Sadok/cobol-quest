@@ -40,7 +40,7 @@ l'itération suivante avant de continuer.
       précédent/suivant, largeur de lecture conforme au design.
 - [x] T12 — Feuille de route latérale : cases exercices + bonus, XP
       crédités/retirés, jauge et passage « VALIDÉ », encart commande BERTHA.
-- [ ] T13 — Badges automatiques + « sur l'honneur » ; écran LE LIVRET (badges +
+- [x] T13 — Badges automatiques + « sur l'honneur » ; écran LE LIVRET (badges +
       échelons).
 - [ ] T14 — Contenu des quiz J01→J05 (8 QCM/épreuve en JSON, fidèles aux mémos,
       ≥2 questions « sortie exacte / colonnes » chacun).
@@ -199,3 +199,16 @@ l'itération suivante avant de continuer.
   retient l'epreuve des l'arrivee pour que ce verrou tienne aussi par Cmd+3.
   Build vert, 200 tests verts, autotest Electron vert (case cochee, toast et
   jauge releves, case rendue : la progression revient a l'identique).
+- 2026-08-14 T13 : les decorations tombent toutes seules. `data/badges.js`
+  devient le catalogue des 26 badges du livret (nom, glyphe, epreuve,
+  condition, regle) ; le store evalue la regle (`badgeMerite`) et n'ecrit plus
+  rien : un badge mesurable se DEDUIT de l'etat, seuls les 5 badges que BERTHA
+  ne peut pas juger restent stockes. Regle de partage tranchee : automatique
+  quand la condition tient entierement dans des exercices coches ou des XP,
+  sur l'honneur des qu'un critere qualitatif s'y ajoute (predictions justes,
+  aucun GO TO, aucun litteral, premier coup). `ui/livret.js` (module pur de
+  plus) compose le mur des medailles et la grille des echelons ;
+  `ecrans/Livret.jsx` ne fait que poser le resultat. Le terminal prend au
+  passage les vrais glyphes et compte 26 decorations au lieu de 25. Build vert,
+  222 tests verts, autotest Electron vert (26 medailles, 9 echelons dont un
+  seul tenu, decoration accordee sur l'honneur puis rendue).

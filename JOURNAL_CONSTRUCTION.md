@@ -793,3 +793,72 @@ Commits créés :
 - `app: retenir le sujet ouvert depuis la barre laterale`
 - `electron: cocher la feuille de route dans l autotest`
 - `doc: consigner l iteration T12`
+
+## T13 - Les décorations et le livret de carrière
+
+**La tâche.** Les badges automatiques et ceux « sur l'honneur » (§5.5), puis
+l'écran LE LIVRET : la grille des décorations et le tableau des neuf échelons
+avec l'état courant.
+
+**Le catalogue.** `app/src/data/badges.js` ne portait qu'une règle de nommage ;
+il devient le catalogue des 26 décorations du livret, dans son ordre : nom,
+glyphe de médaille, épreuve qui la met en jeu, condition affichée, et la règle
+que l'application sait mesurer. Le contrôle croisé est fait avec la fin de
+barème de chaque sujet, qui est plus précise que le livret : `MAÎTRE DES
+REGISTRES` vaut pour J05 ex04+ex05+ex06, `GARDIEN DES CLÉS` pour J08 ex00 à
+ex05, `L'ARCHITECTE` pour J09 ex04+ex05, et ainsi de suite. Un seul badge,
+`DOMPTEUR DE BERTHA`, n'appartient à aucune épreuve : il couronne la piscine
+entière, et aucune ligne du manifeste ne le portait.
+
+**L'arbitrage central : qui accorde le badge.** Un badge est automatique quand
+sa condition s'exprime ENTIÈREMENT dans ce que l'application observe, c'est-à-
+dire des exercices cochés (donc passés par BERTHA) et des XP. Dès que le sujet
+ajoute un critère que seul l'apprenti peut constater, la case reste à cocher à
+la main. Cinq badges tombent de ce côté : `COLONNE 7` (une erreur de colonne
+comprise), `CHASSEUR DE TRONCATURES` (les prédictions justes à l'intérieur de
+l'ex01), `LA VOIE DU 88` (aucun littéral dans la PROCEDURE), `TUEUR DE GO TO`
+(une journée sans un seul GO TO) et `DOMPTEUR DE BERTHA` (dix exercices verts
+du premier coup). Les vingt et un autres se mesurent.
+
+**L'arbitrage technique : un badge mesurable ne s'écrit pas.** Le store ne
+stocke plus que les badges DÉCLARÉS. `badgeMerite(etat, id)` évalue la règle du
+catalogue, `badgeObtenu` répond « déclaré OU mérité ». La progression reste
+donc canonique (rien à réconcilier, aucun état périmé) et la décoration se
+reprend d'elle-même si la case de l'exercice retombe. Conséquence assumée : il
+n'y a plus de chronologie d'attribution, donc « les 3 dernières décorations »
+du Terminal se lisent maintenant dans l'ordre du livret, qui dit à peu près la
+même chose puisque le programme est séquentiel. `basculerBadge` refuse un badge
+mesurable : la souris ne s'accorde pas ce que BERTHA doit donner.
+
+**L'écran.** Un module pur de plus, `app/src/ui/livret.js` (tuiles, compte,
+lignes d'échelon, verdict du toast) ; `app/src/ecrans/Livret.jsx` pose deux
+colonnes comme la maquette, le mur des médailles à gauche en trois par rangée
+et la grille des échelons à droite dans sa carte de 360 px. Trois décisions de
+mise en page : la tuile inerte est un `div` et la tuile « sur l'honneur » un
+`button` (même boîte, mais seul ce qui se clique est un bouton et porte son
+`aria-pressed`) ; chaque tuile porte une mention en bas qui dit QUI accorde la
+décoration, sans quoi rien ne distingue une case cochable d'une case qui
+attend BERTHA ; la colonne des seuils passe au vert quand les XP sont tenus,
+pour qu'un barreau qui n'attend plus que sa condition de passage se voie. Sous
+1200 px, la grille des échelons passe sous le mur.
+
+Fichiers touchés : `app/src/data/badges.js`, `app/src/data/badges.test.js`,
+`app/src/store/progression.js`, `app/src/store/progression.test.js`,
+`app/src/ui/livret.js`, `app/src/ui/livret.test.js` (nouveaux),
+`app/src/ecrans/Livret.jsx`, `app/src/styles/livret.css` (nouveau),
+`app/src/styles/base.css`, `app/src/ui/tableauDeBord.js`,
+`app/src/ui/tableauDeBord.test.js`, `app/src/ecrans/Terminal.jsx`,
+`app/electron/main.cjs`, `ETAT_APP.md`, `JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert (JS 518,22 ko, CSS 32,85 ko),
+`npx vitest run` vert (14 fichiers, 222 tests), autotest Electron vert
+(sortie 0, « livret 26 medailles dont 0 obtenues, 9 echelons, decoration
+accordee puis rendue »).
+
+Commits créés :
+- `app: le catalogue des 26 decorations du livret`
+- `app: attribuer les badges mesurables sans les stocker`
+- `app: l ecran LE LIVRET, decorations et echelons`
+- `electron: verifier le livret dans l autotest`
+- `app: donner au terminal les medailles du catalogue`
+- `doc: consigner l iteration T13`
