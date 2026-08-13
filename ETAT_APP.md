@@ -31,7 +31,7 @@ l'itération suivante avant de continuer.
       persistance IPC avec debounce + repli mémoire en dev navigateur) + tests
       vitest complets (XP, seuils, déblocage, échelons, unicité quiz,
       export→import identique).
-- [ ] T08 — Gabarit d'app conforme au design : layout, navigation 6 écrans,
+- [x] T08 — Gabarit d'app conforme au design : layout, navigation 6 écrans,
       thème appliqué (tokens), effets (scanlines désactivables).
 - [ ] T09 — Écran LE TERMINAL branché sur le store.
 - [ ] T10 — Écran LA CARTE (couloir piscine, bureaux missions, salle machine ;
@@ -134,3 +134,16 @@ l'itération suivante avant de continuer.
   demande 4 500 XP alors que tous les baremes de base ne pesent que 4 210 XP, il
   exige donc des bonus ou des quiz. Build vert, 93 tests verts, autotest Electron
   vert (clic dans la coque, ecriture amortie, relecture apres relance).
+- 2026-08-13 T08 : la coque est posee (barre laterale 248px, barre d'outils
+  translucide 52px, contenu defilant aux largeurs 1020/1080/720/680). La
+  navigation vit dans `src/ui/ecrans.js`, module pur teste : c'est lui qui fixe
+  l'ordre de la barre laterale ET des raccourcis Cmd+1 a Cmd+6. Les 6 ecrans
+  existent avec leur entete definitive et un bloc de chantier qui nomme la tache
+  qui les remplira. Arbitrage tranche : le reglage « scanlines » du cahier des
+  charges devient l'interrupteur des effets de phosphore et ne touche QUE les
+  objets sombres (curseur de console, pastille BERTHA, fin balayage des
+  consoles), le design interdisant tout fond anime a l'echelle de la page ;
+  l'ecran qui l'expose arrive en T17, le cablage est deja fait. La bande des
+  feux de la barre laterale est vide a dessein : macOS y dessine les vrais
+  boutons de fenetre. Build vert, 101 tests verts, autotest Electron vert
+  (6 ecrans, passage terminal vers carte, bascule de theme ecrite puis reprise).

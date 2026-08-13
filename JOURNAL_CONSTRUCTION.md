@@ -413,3 +413,82 @@ Commits créés :
 - `app: montrer echelon, XP et epreuve du moment dans la coque provisoire`
 - `electron: verifier le rendu et l'aller-retour de progression dans l'autotest`
 - `doc: consigner l'iteration T07`
+
+## T08 - Le gabarit de la coque et les 6 écrans
+
+La coque provisoire disparaît au profit du gabarit défini par `design/` : barre
+latérale de 248 px à gauche, barre d'outils unifiée de 52 px en haut, contenu
+défilant entre les deux. C'est le point 7 des notes d'intégration (« sacré : la
+coque macOS »), et c'est ce qui fait « app » plutôt que « page web ».
+
+**La barre latérale.** De haut en bas : une bande de 52 px laissée vide, puis le
+bloc d'identité (CGBA · 1962 / Cobol Quest / Opération Marcel), les 6 items de
+navigation et la carte de profil ancrée en bas. La bande du haut est vide à
+dessein : `titleBarStyle: 'hiddenInset'` (posé en T04) fait dessiner les vrais
+feux par macOS à cet endroit, on leur réserve la place et on rend la zone
+déplaçable. Les compteurs mono des items sont tous dérivés du store : nombre de
+salles débloquées pour La carte, identifiant de l'épreuve du moment pour Le
+sujet, nombre de décorations pour Le livret. La carte de profil affiche le titre
+de l'échelon courant, la jauge vers l'échelon suivant et les XP en ambre ;
+l'avatar porte le numéro d'échelon plutôt que des initiales, le corpus ne
+nommant pas l'apprenti. Le matricule (4417) est repris de la maquette.
+
+**La navigation.** Elle vit dans `src/ui/ecrans.js`, un module pur : le même
+tableau fixe l'ordre de la barre latérale, les titres de la barre d'outils, les
+largeurs de contenu et les raccourcis Cmd+1 à Cmd+6. Un seul endroit à corriger
+si l'ordre bouge, et il se teste sans DOM (8 tests). L'état de navigation reste
+en mémoire, il n'est pas persisté : c'est `epreuveOuverte` qui porte la mémoire
+utile, et elle est déjà dans le fichier.
+
+**Le thème et les effets.** La racine pose deux attributs sur `<html>` :
+`data-sombre` et `data-effets`, tous deux lus dans les réglages du store. Tout le
+reste est du CSS, conformément à la règle sacrée du design (aucune couleur en
+dur dans un composant). Le bouton lune/soleil de la barre d'outils écrit dans le
+réglage, donc dans le fichier de l'utilisateur.
+
+**Arbitrage : les « scanlines ».** Le §5.6 du cahier des charges exige un
+interrupteur scanlines, hérité de la direction artistique de repli (§7) ; le
+design déposé, qui fait loi pour tout le visuel, interdit au contraire « aucun
+dégradé, aucun néon, aucun fond animé » et cantonne le phosphore aux objets
+sombres. Les deux se concilient ainsi : l'interrupteur existe et gouverne les
+effets de phosphore, mais il ne touche **que** les objets sombres, jamais la
+page - clignotement du curseur de console (1060 ms), pulsation de la pastille
+BERTHA (2400 ms) et fin balayage horizontal à l'intérieur des blocs `.console`.
+`prefers-reduced-motion` coupe les deux animations d'office. Le câblage est
+complet ; l'écran qui expose l'interrupteur arrive en T17.
+
+**Les 6 écrans.** Chacun a son fichier dans `src/ecrans/` avec son en-tête
+définitive (label mono, titre en casse de phrase, chapô) et un bloc de chantier
+qui nomme la tâche qui le remplira. Le bloc n'est pas un carré vide : il montre
+la commande BERTHA de l'épreuve du moment dans une vraie console, ce qui met à
+l'épreuve dès maintenant l'objet sombre et son curseur.
+
+**Vérification.** Les serveurs étant interdits par le protocole, le rendu réel
+passe par l'autotest Electron, réécrit pour la nouvelle coque : il compte les 6
+items de navigation, clique sur le deuxième et vérifie que le titre de la barre
+d'outils passe de « Le terminal » à « La carte », lit la carte de profil, puis
+bascule le thème et contrôle que ce réglage descend jusqu'au fichier. Un second
+clic remet le thème comme il était : contrairement à la version T07, l'autotest
+ne laisse plus de trace dans la progression de l'utilisateur.
+
+Fichiers touchés : `app/src/ui/ecrans.js`, `app/src/ui/ecrans.test.js`,
+`app/src/ui/contexte.js`, `app/src/ui/Coque.jsx`, `app/src/ui/BarreLaterale.jsx`,
+`app/src/ui/BarreOutils.jsx`, `app/src/ui/Ecran.jsx`, `app/src/ui/Console.jsx`
+(tous nouveaux), `app/src/ecrans/Chantier.jsx`, `Terminal.jsx`, `Carte.jsx`,
+`Lecteur.jsx`, `Quiz.jsx`, `Livret.jsx`, `Reglages.jsx` (tous nouveaux),
+`app/src/styles/coque.css` et `app/src/styles/composants.css` (nouveaux),
+`app/src/App.jsx` (réécrit), `app/src/styles/base.css` (styles provisoires
+retirés, halo de focus ajouté), `app/src/styles/tokens.css` (un token ajouté :
+`--puce-active`, la puce de l'item de nav actif), `app/electron/main.cjs`
+(autotest), `ETAT_APP.md`, `JOURNAL_CONSTRUCTION.md`. Aucune dépendance ajoutée.
+
+Verdict : `npm run build` vert (46 modules, JS 176,19 ko, CSS 11,80 ko - le JS
+maigrit parce que le corpus n'est plus importé par la coque, il reviendra avec
+le lecteur en T11), `npx vitest run` vert (5 fichiers, 101 tests), autotest
+Electron vert (sortie 0).
+
+Commits créés :
+- `app: poser le gabarit de la coque et les 6 ecrans`
+- `tests: verrouiller le registre des ecrans et les raccourcis clavier`
+- `electron: controler la coque et la bascule de theme dans l autotest`
+- `doc: consigner l'iteration T08`
