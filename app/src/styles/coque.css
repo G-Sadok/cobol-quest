@@ -295,7 +295,15 @@
 }
 
 .ecran-entete {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--e8);
   margin-bottom: var(--e8);
+}
+
+.ecran-entete-texte {
+  min-width: 0;
 }
 
 .ecran-entete .etiquette-mono {

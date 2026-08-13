@@ -11,13 +11,20 @@ export default function Ecran({ largeur, children }) {
   )
 }
 
-/** Le bandeau de tete d'un ecran : label mono, titre en casse de phrase, chapo. */
-export function EnteteEcran({ label, titre, chapo }) {
+/**
+ * Le bandeau de tete d'un ecran : label mono, titre en casse de phrase, chapo.
+ * `aside` pose un complement a droite, aligne sur le bas du titre : c'est la
+ * legende de La Carte dans le design, et rien d'autre pour l'instant.
+ */
+export function EnteteEcran({ label, titre, chapo, aside }) {
   return (
     <div className="ecran-entete">
-      {label ? <div className="etiquette-mono">{label}</div> : null}
-      <h1 className="ecran-titre">{titre}</h1>
-      {chapo ? <p className="ecran-chapo">{chapo}</p> : null}
+      <div className="ecran-entete-texte">
+        {label ? <div className="etiquette-mono">{label}</div> : null}
+        <h1 className="ecran-titre">{titre}</h1>
+        {chapo ? <p className="ecran-chapo">{chapo}</p> : null}
+      </div>
+      {aside ?? null}
     </div>
   )
 }
