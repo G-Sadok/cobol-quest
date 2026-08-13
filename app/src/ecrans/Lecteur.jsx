@@ -4,10 +4,10 @@
 // L'ecran a sa propre mise en page a deux volets : il n'emprunte pas
 // l'enveloppe commune ui/Ecran.jsx. Tout ce qu'il affiche en tete comme en pied
 // sort du module pur ui/lecteur.js ; le corps du sujet passe par ui/Markdown.jsx.
-// Le volet de droite (cases a cocher, jauge, encart BERTHA) arrive en T12.
+// Le volet de droite vit dans ecrans/FeuilleDeRoute.jsx.
 
 import { useEffect, useRef } from 'react'
-import Chantier from './Chantier.jsx'
+import FeuilleDeRoute from './FeuilleDeRoute.jsx'
 import Markdown from '../ui/Markdown.jsx'
 import { useApp } from '../ui/contexte.js'
 import { ficheLecture, voisines } from '../ui/lecteur.js'
@@ -100,10 +100,7 @@ export default function Lecteur() {
           <div className="lecteur-panneau-titre">Feuille de route</div>
           <div className="lecteur-panneau-chapo">Cochez au fil de l’eau. BERTHA vérifie.</div>
         </div>
-        <Chantier
-          tache="T12"
-          texte="Les cases des exercices et des bonus, les XP crédités, la jauge du seuil et l’encart de la commande BERTHA arrivent en T12."
-        />
+        <FeuilleDeRoute idEpreuve={fiche.epreuve.id} />
       </aside>
     </div>
   )
