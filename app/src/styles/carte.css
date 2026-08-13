@@ -1,0 +1,318 @@
+/*
+ * L'ecran LA CARTE : le plan des sous-sols de la CGBA.
+ *
+ * Les quatre etats de salle sont sacres (note d'integration 6) : ils doivent
+ * se distinguer sans lire le texte, par le fond, la bordure et l'etiquette.
+ * Tout passe par l'attribut data-etat, pose aussi bien sur une tuile que sur
+ * la puce de la legende : une seule source de verite visuelle.
+ */
+
+/* --------------------------------------------------------- la legende */
+
+.carte-legende {
+  display: flex;
+  gap: 16px;
+  font-size: var(--t-meta-2);
+  color: var(--encre-2);
+  white-space: nowrap;
+}
+
+.carte-legende > span {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+}
+
+.puce-etat {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+/* ------------------------------------------------------------- le plan */
+
+.plan {
+  overflow: hidden;
+  background: var(--carte);
+  border: 1px solid var(--trait);
+  border-radius: var(--r-grande-carte);
+  box-shadow: var(--ombre-2);
+}
+
+.plan-niveau {
+  padding: var(--e10) var(--e10) var(--e4);
+}
+
+.plan-niveau-bas {
+  padding: var(--e8) var(--e10) var(--e10);
+}
+
+/* L'escalier qui descend d'un niveau : un filet coupe par son nom. */
+.plan-escalier {
+  display: flex;
+  align-items: center;
+  gap: var(--e6);
+  padding: var(--e9) var(--e10) 0;
+}
+
+.niveau-tete {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e6);
+  margin-bottom: var(--e7);
+}
+
+.niveau-nom {
+  font-size: 18px;
+  font-weight: 640;
+  letter-spacing: var(--ls-section);
+}
+
+.niveau-filet {
+  flex: 1;
+  height: 1px;
+  background: var(--trait-doux);
+}
+
+.niveau-compte {
+  font-size: var(--t-meta-2);
+  font-weight: 600;
+  color: var(--vert);
+  white-space: nowrap;
+}
+
+.niveau-corps {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.salles {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--e5);
+  min-width: 0;
+}
+
+/* Les rushs ne sont pas des journees : ils se tiennent en retrait du couloir. */
+.salles-rush {
+  flex: 0 0 148px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e5);
+  padding-left: 20px;
+  border-left: 1px dashed var(--trait);
+}
+
+/* ------------------------------------------------------------ une salle */
+
+.salle {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--e2);
+  min-height: 96px;
+  padding: var(--e9) var(--e5) var(--e6);
+  background: var(--carte);
+  color: var(--encre);
+  border: 1px solid var(--trait);
+  border-radius: var(--r-tuile);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--d-etat) var(--courbe-etat);
+}
+
+.salle:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.salle-code {
+  font-family: var(--mono);
+  font-size: var(--t-tableau);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.salle-titre {
+  font-size: 12.5px;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+}
+
+.salle-etiquette {
+  position: absolute;
+  top: var(--e4);
+  right: 8px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Le tampon a l'encre rouge du service, pose de travers (design 6.5). */
+.salle-tampon {
+  position: absolute;
+  top: var(--e4);
+  right: 8px;
+  padding: 1px 4px;
+  color: var(--rouge);
+  border: 1.5px double var(--rouge);
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+  transform: rotate(-7deg);
+}
+
+/* Verrouillee : gris desature et pointilles, jamais un vert attenue (regle 6). */
+.salle[data-etat='verrouillee'],
+.puce-etat[data-etat='verrouillee'] {
+  background: var(--verrou-bg);
+  border: 1px dashed var(--trait-verrou);
+}
+
+.salle[data-etat='verrouillee'] {
+  color: var(--verrou-txt);
+  cursor: default;
+}
+
+.salle[data-etat='verrouillee'] .salle-etiquette {
+  color: var(--verrou-txt);
+  background: transparent;
+  border: 1px solid var(--trait-verrou);
+}
+
+.salle[data-etat='disponible'],
+.puce-etat[data-etat='disponible'] {
+  background: var(--carte);
+  border: 1.5px solid var(--vert);
+}
+
+.salle[data-etat='disponible'] {
+  box-shadow: var(--ombre-1), 0 0 0 3px var(--halo);
+}
+
+.salle[data-etat='disponible'] .salle-code {
+  color: var(--vert);
+}
+
+.salle[data-etat='disponible'] .salle-etiquette {
+  color: var(--sur-vert);
+  background: var(--vert);
+  border: 1px solid var(--vert);
+}
+
+.salle[data-etat='en-cours'],
+.puce-etat[data-etat='en-cours'] {
+  background: var(--warn-bg);
+  border: 1.5px solid var(--ambre);
+}
+
+.salle[data-etat='en-cours'] {
+  box-shadow: var(--ombre-1);
+}
+
+.salle[data-etat='en-cours'] .salle-code {
+  color: var(--ambre);
+}
+
+.salle[data-etat='en-cours'] .salle-etiquette {
+  color: var(--sur-plein);
+  background: var(--ambre);
+  border: 1px solid var(--ambre);
+}
+
+.salle[data-etat='validee'],
+.puce-etat[data-etat='validee'] {
+  background: var(--validee-bg);
+  border: 1px solid var(--bd-validee);
+}
+
+.salle[data-etat='validee'] {
+  color: var(--validee-titre);
+  box-shadow: var(--ombre-1);
+}
+
+.salle[data-etat='validee'] .salle-code {
+  color: var(--validee-code);
+}
+
+/* ----------------------------------------------------- la salle machine */
+
+/*
+ * Le seul bandeau sombre de l'ecran : le partage des matieres veut que
+ * #16160F reste l'exception (note d'integration 3). Il ferme le plan, donc il
+ * n'a ni rayon propre ni marge : c'est le pied de la grande carte.
+ */
+.salle-machine {
+  display: flex;
+  align-items: center;
+  gap: var(--e7);
+  width: 100%;
+  padding: var(--e8) var(--e10);
+  background: var(--console);
+  border: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.salle-machine:disabled {
+  cursor: default;
+}
+
+.salle-machine-glyphe {
+  flex: 0 0 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: var(--console-glyphe);
+  border: 1px solid var(--trait-console);
+  border-radius: var(--r-tuile);
+  font-size: 19px;
+}
+
+.salle-machine-corps {
+  flex: 1;
+  min-width: 0;
+}
+
+.salle-machine-titre {
+  display: block;
+  font-size: 17px;
+  font-weight: 640;
+  letter-spacing: var(--ls-section);
+  color: var(--phosphore-3);
+}
+
+.salle-machine-detail {
+  display: block;
+  margin-top: var(--e1);
+  font-size: var(--t-meta);
+  color: var(--phosphore-2);
+}
+
+.salle-machine-etat {
+  padding: var(--e3) var(--e5);
+  color: var(--phosphore-2);
+  border: 1px solid var(--trait-console);
+  border-radius: var(--r-etiquette);
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+
+/* Une fois ouverte, la salle machine s'allume : le phosphore dit l'acces. */
+.salle-machine:not(:disabled) .salle-machine-etat {
+  color: var(--phosphore);
+  border-color: var(--phosphore-bd);
+}
