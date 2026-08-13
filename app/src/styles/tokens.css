@@ -84,6 +84,7 @@
   --phosphore-3: #ddebdf;
   --phosphore-4: #8fa893;
   --phosphore-bd: #4a6650;
+  --console-glyphe: #5f7a63;
   --toast-txt: #e3ede4;
   --toast-non: #f28b82;
 
@@ -243,6 +244,7 @@
   --r-modale: 13px;
   --r-grande-carte: 12px;
   --r-carte: 10px;
+  --r-tuile: 9px;
   --r-bouton: 7px;
   --r-puce: 6px;
   --r-etiquette: 5px;
