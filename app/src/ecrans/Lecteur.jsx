@@ -9,6 +9,7 @@
 import { useEffect, useRef } from 'react'
 import FeuilleDeRoute from './FeuilleDeRoute.jsx'
 import Markdown from '../ui/Markdown.jsx'
+import { ouvrirEpreuve } from '../store/progression.js'
 import { useApp } from '../ui/contexte.js'
 import { ficheLecture, voisines } from '../ui/lecteur.js'
 
@@ -49,11 +50,20 @@ function Voisine({ sens, epreuve, ouvrir }) {
 }
 
 export default function Lecteur() {
-  const { etat, ouvrirSujet } = useApp()
+  const { etat, appliquer, ouvrirSujet } = useApp()
   const haut = useRef(null)
 
   const fiche = ficheLecture(etat)
   const bords = voisines(etat, fiche.epreuve.id)
+
+  // Arriver ici par la barre laterale, c'est ouvrir un sujet comme un autre :
+  // on le retient, sinon cocher la derniere case le remplacerait par le
+  // suivant sous les yeux du lecteur (ui/lecteur.js, epreuveLue).
+  useEffect(() => {
+    if (etat.epreuveOuverte !== fiche.epreuve.id) {
+      appliquer(ouvrirEpreuve, fiche.epreuve.id)
+    }
+  }, [appliquer, etat.epreuveOuverte, fiche.epreuve.id])
 
   // Changer de salle, c'est ouvrir un autre sujet : on revient en haut du
   // texte, comme quand on repose un dossier et qu'on en prend un autre.
