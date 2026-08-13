@@ -905,3 +905,48 @@ Commits créés :
 - `app: embarquer les quiz du soir et noter les copies`
 - `tests: controler la forme des quiz du soir`
 - `doc: consigner l iteration T14`
+
+## T15 - Les six derniers quiz du soir
+
+Tâche : rédiger les quiz de J06, J07, J08, J09, RUSH01 et RUSH02, aux mêmes
+règles qu'en T14 (8 QCM, quatre choix, correction commentée, au moins deux
+questions par quiz sur les sorties exactes ou les colonnes). Avec eux, les onze
+épreuves que `programme.js` déclare à quiz sont couvertes ; l'écran qui les fera
+passer reste à T16.
+
+Rien de nouveau côté code : les six fichiers rejoignent `app/src/data/quiz/` et
+le glob de `data/quiz.js` les prend sans une ligne de plus. La matière vient des
+mémos et des sorties attendues, comme en T14. Les cinq journées se révisent sur
+ce qu'elles ont d'irréductible : la tranche `WS-IBAN(5:19)` et le `07` du
+compteur de voyelles pour J06 ; les 400 octets de `clients.dat` (8 x 49 plus 8
+fins de ligne), la décimale implicite de `001234550` et le statut 35 pour J07 ;
+le `0 COMPTES A LAGOS` TRIMé et le chargeur rejouable par OPEN OUTPUT pour J08 ;
+l'ordre du tri multi-clés et la moyenne 167792.33 pour J09.
+
+Trois décisions. La première : les deux rushs n'ont pas de mémo, donc leur quiz
+se construit sur leur barème et sur leurs cas pièges officiels. RUSH01 fait
+recalculer les deux pièges du sujet (secret 1123 contre essai 1211, secret 2416
+contre essai 4444), qui sont exactement ce que la table de marquage vient
+régler ; RUSH02 fait retrouver les trois chiffres que Josiane demande de
+vérifier avant BERTHA (la semaine 04 de Marcel à 1856.25, sa prime plafonnée à
+675.00, la cotisation de Josiane arrondie à 895.36). La deuxième : les questions
+de sortie ne se contentent pas de demander la bonne ligne, leurs distracteurs
+sont les erreurs réelles du sujet (la semaine entièrement majorée à 2250.00, la
+prime non plafonnée à 1080.00, la troncature à 895.35, le sous-total du dernier
+groupe oublié). Une réponse fausse apprend donc quelque chose. La troisième :
+le test de couverture ne compare plus les fichiers présents à une liste de
+commodité, il exige l'égalité avec `idsAvecQuiz` ; si une épreuve gagne un quiz
+au programme sans que le JSON suive, la suite tombe.
+
+Fichiers touchés : `app/src/data/quiz/J06.json`, `J07.json`, `J08.json`,
+`J09.json`, `RUSH01.json`, `RUSH02.json` (nouveaux), `app/src/data/programme.js`
+(le commentaire d'`idsAvecQuiz`, qui annonçait un contenu à venir),
+`app/src/data/quiz.test.js`, `ETAT_APP.md`, `JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert (JS 518,22 ko, CSS 32,85 ko),
+`npx vitest run` vert (15 fichiers, 287 tests).
+
+Commits créés :
+- `quiz: les six QCM du soir de J06 a RUSH02`
+- `tests: etendre le controle des quiz aux onze epreuves`
+- `doc: consigner l iteration T15`

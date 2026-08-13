@@ -44,7 +44,7 @@ l'itération suivante avant de continuer.
       échelons).
 - [x] T14 — Contenu des quiz J01→J05 (8 QCM/épreuve en JSON, fidèles aux mémos,
       ≥2 questions « sortie exacte / colonnes » chacun).
-- [ ] T15 — Contenu des quiz J06→J09 + RUSH01 + RUSH02 (mêmes règles).
+- [x] T15 — Contenu des quiz J06→J09 + RUSH01 + RUSH02 (mêmes règles).
 - [ ] T16 — Écran QUIZ DU SOIR : déroulé, correction commentée, +10 XP si ≥6/8,
       XP unique par épreuve.
 - [ ] T17 — Écran RÉGLAGES : export/import via IPC (boîtes de dialogue natives),
@@ -221,3 +221,13 @@ l'itération suivante avant de continuer.
   sinon ; le test refuse un quiz qui descendrait sous le quota. Rien n'est
   invente : chaque reponse se retrouve dans le memo ou dans une sortie
   attendue du sujet. Build vert, 257 tests verts.
+- 2026-08-14 T15 : les six derniers quiz sont ecrits (J06 a J09, RUSH01,
+  RUSH02) : les onze epreuves a quiz du programme sont couvertes. Meme forme
+  qu'en T14, avec 3 ou 4 questions de categorie 'sortie' par quiz (quota de 2
+  exige, jamais atteint par le bas). Les rushs se revisent sur leurs cas
+  pieges officiels (secret 1123 contre essai 1211, secret 2416 contre essai
+  4444) et sur les trois chiffres que Josiane fait verifier avant BERTHA
+  (1856.25, 675.00 plafonnee, 895.36 arrondie). Le test de couverture ne se
+  contente plus d'une liste de fichiers presents : il exige l'egalite avec
+  `idsAvecQuiz`, donc un futur quiz ajoute au programme fera echouer la suite
+  tant qu'il n'est pas redige. Build vert, 287 tests verts.
