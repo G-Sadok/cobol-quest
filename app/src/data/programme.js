@@ -467,6 +467,20 @@ export const epreuvePhase3 = {
 /** Toutes les épreuves du programme, dans l'ordre de progression. */
 export const epreuves = Object.freeze([...epreuvesPiscine, ...epreuvesMissions, epreuvePhase3])
 
+/**
+ * Les épreuves qui portent un quiz du soir (cahier des charges, §5.4) : les
+ * journées J01 à J09 et les deux rushs. J00 n'a pas de mémo à réviser, J10 est
+ * l'examen, et les missions se jugent au rendu. Le contenu arrive en T14/T15.
+ */
+export const idsAvecQuiz = Object.freeze([
+  'J01', 'J02', 'J03', 'J04', 'J05', 'RUSH01', 'J06', 'J07', 'J08', 'J09', 'RUSH02'
+])
+
+/** Vrai quand l'épreuve donnée se termine par un quiz du soir. */
+export function aUnQuiz(id) {
+  return idsAvecQuiz.includes(id)
+}
+
 /** Les identifiants dans l'ordre. */
 export const idsEpreuves = Object.freeze(epreuves.map((e) => e.id))
 

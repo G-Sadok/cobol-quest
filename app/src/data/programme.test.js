@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { sujets } from './corpus.js'
 import {
+  aUnQuiz,
   commandeBertha,
   epreuveParId,
   epreuvePhase3,
@@ -11,6 +12,7 @@ import {
   exerciceParId,
   exercicesBonus,
   exercicesObligatoires,
+  idsAvecQuiz,
   idsEpreuves,
   xpMaximum
 } from './programme.js'
@@ -207,5 +209,14 @@ describe('manifeste complet', () => {
   it('ne connaît pas les épreuves absentes', () => {
     expect(epreuveParId('M07')).toBeNull()
     expect(exerciceParId('J01', 'ex42')).toBeNull()
+  })
+
+  it('réserve le quiz du soir à J01-J09 et aux deux rushs', () => {
+    expect(idsAvecQuiz).toHaveLength(11)
+    for (const id of idsAvecQuiz) expect(idsEpreuves).toContain(id)
+    for (const id of ['J01', 'J05', 'J09', 'RUSH01', 'RUSH02']) expect(aUnQuiz(id)).toBe(true)
+    for (const id of ['J00', 'J10', 'M01', 'M06', 'PHASE3', 'inconnue']) {
+      expect(aUnQuiz(id), `quiz de trop sur ${id}`).toBe(false)
+    }
   })
 })
