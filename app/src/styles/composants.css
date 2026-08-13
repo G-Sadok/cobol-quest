@@ -37,6 +37,67 @@
   padding: var(--e9) var(--e8) var(--e8);
 }
 
+/* ----------------------------------------------------------- les boutons */
+
+/* Primaire : l'action principale d'un bloc, une seule par bloc (design 6.1). */
+.bouton-primaire {
+  padding: var(--e6) var(--e8);
+  background: var(--vert);
+  color: var(--sur-vert);
+  border: none;
+  border-radius: var(--r-bouton);
+  box-shadow: var(--ombre-bouton);
+  font: inherit;
+  font-size: var(--t-corps-2);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--d-etat) var(--courbe-etat),
+    box-shadow var(--d-etat) var(--courbe-etat);
+}
+
+.bouton-primaire:hover {
+  background: var(--vert-survol);
+  box-shadow: var(--ombre-bouton-survol);
+}
+
+/* Lien : une navigation discrete, sans fond ni bordure. */
+.bouton-lien {
+  padding: 0;
+  background: none;
+  color: var(--vert);
+  border: none;
+  font: inherit;
+  font-size: var(--t-meta);
+  cursor: pointer;
+  transition: color var(--d-etat) var(--courbe-etat);
+}
+
+.bouton-lien:hover {
+  color: var(--lien-survol);
+}
+
+/* Console : le seul bouton pose sur une surface sombre. */
+.bouton-console {
+  padding: var(--e2) var(--e5);
+  background: transparent;
+  color: var(--phosphore-4);
+  border: 1px solid var(--trait-console);
+  border-radius: var(--r-etiquette);
+  font: inherit;
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: color var(--d-etat) var(--courbe-etat),
+    border-color var(--d-etat) var(--courbe-etat);
+}
+
+.bouton-console:hover {
+  color: var(--phosphore);
+  border-color: var(--phosphore-bd);
+}
+
 /* Jauge d'XP : piste + remplissage, la largeur s'anime en 240ms. */
 .jauge {
   overflow: hidden;

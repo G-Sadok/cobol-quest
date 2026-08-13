@@ -2,6 +2,7 @@
 @import './tokens.css';
 @import './coque.css';
 @import './composants.css';
+@import './terminal.css';
 
 *,
 *::before,

@@ -1,0 +1,231 @@
+/*
+ * L'ecran LE TERMINAL (tableau de bord). Grille du design : une colonne de
+ * travail elastique et une colonne de service de 300px, gouttiere de 22px.
+ */
+
+.terminal-grille {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: var(--e8);
+  align-items: start;
+}
+
+.terminal-colonne {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e8);
+  min-width: 0;
+}
+
+/* -------------------------------------------------- l'epreuve en cours */
+
+.moment-point {
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ambre);
+}
+
+.moment {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--e9);
+}
+
+.moment-fiche {
+  flex: 1;
+  min-width: 0;
+}
+
+.moment-intitule {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.moment-code {
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  color: var(--encre-3);
+}
+
+.moment-titre {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 640;
+  line-height: 1.3;
+  letter-spacing: var(--ls-section);
+}
+
+.moment-lieu {
+  margin: var(--e2) 0 var(--e7);
+  font-size: var(--t-meta);
+  color: var(--encre-3);
+}
+
+.moment-avancement {
+  display: flex;
+  align-items: center;
+  gap: var(--e5);
+  max-width: 400px;
+}
+
+.moment-avancement .jauge {
+  flex: 1;
+}
+
+.moment-mesure {
+  font-family: var(--mono);
+  font-size: var(--t-meta-2);
+  font-weight: 600;
+  color: var(--ambre);
+  white-space: nowrap;
+}
+
+.moment-console {
+  margin-top: var(--e8);
+}
+
+/* ------------------------------------------------ les dernieres decorations */
+
+.section-tete {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--e5);
+}
+
+.decorations-grille {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--e5);
+}
+
+.decoration {
+  padding: var(--e7) var(--e7);
+  background: var(--carte);
+  border: 1px solid var(--trait);
+  border-radius: var(--r-carte);
+  box-shadow: var(--ombre-1);
+}
+
+.decoration-medaille {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--e5);
+  background: var(--medaille-bg);
+  color: var(--ambre);
+  border: 1px solid var(--bd-medaille);
+  border-radius: 50%;
+  font-size: 17px;
+}
+
+.decoration-nom {
+  margin-bottom: 3px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+}
+
+.decoration-source {
+  font-size: var(--t-meta-2);
+  color: var(--encre-3);
+}
+
+/* Etat vide : le design veut une phrase, pas un carre gris. */
+.decorations-vide {
+  margin: 0;
+  padding: var(--e7) var(--e8);
+  background: var(--tete);
+  border: 1px dashed var(--trait-fort);
+  border-radius: var(--r-carte);
+  font-size: var(--t-corps-2);
+  color: var(--encre-2);
+}
+
+/* ----------------------------------------------------- la colonne de service */
+
+/* Encart de citation : surface d'en-tete, corps 16px genereux (design 6.11). */
+.citation {
+  padding: var(--e7) 20px;
+  background: var(--tete);
+  border: 1px solid var(--trait);
+  border-radius: var(--r-carte);
+}
+
+.citation-texte {
+  margin: var(--e5) 0 0;
+  font-size: var(--t-sous-titre);
+  line-height: 1.65;
+  letter-spacing: var(--ls-section);
+}
+
+.citation-source {
+  margin-top: var(--e6);
+  font-size: var(--t-meta-2);
+  color: var(--encre-3);
+}
+
+.releve {
+  padding: var(--e7) 20px var(--e6);
+}
+
+.releve-echelon {
+  margin: var(--e4) 0 var(--e5);
+  font-size: var(--t-sous-titre);
+  font-weight: 640;
+  letter-spacing: var(--ls-section);
+}
+
+.releve-jauge {
+  height: 5px;
+  background: var(--piste);
+  border-radius: 3px;
+}
+
+.releve-pied {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--e3);
+  font-size: 11px;
+  color: var(--encre-3);
+}
+
+.releve-xp {
+  color: var(--ambre);
+  font-weight: 600;
+}
+
+.releve-vise {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--encre-3);
+}
+
+.releve-label {
+  display: block;
+  margin: var(--e7) 0 var(--e3);
+}
+
+.releve-ligne {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: var(--e4) 0;
+  border-top: 1px solid var(--trait-doux2);
+  font-size: var(--t-meta);
+  color: var(--encre-2);
+}
+
+.releve-valeur {
+  font-family: var(--mono);
+  font-size: var(--t-tableau);
+  font-weight: 600;
+  letter-spacing: var(--ls-tableau);
+  color: var(--encre);
+}
