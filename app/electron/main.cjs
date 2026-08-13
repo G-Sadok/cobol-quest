@@ -194,6 +194,32 @@ function creerFenetre () {
           await attendre(60)
           const routeApres = { cochees: cochees(), jauge: jauge(), ton: ton() }
 
+          // Le livret : le mur des decorations et la grille des echelons. Une
+          // decoration sur l'honneur se coche, leve son toast, puis se rend :
+          // la progression de l'utilisateur revient a l'identique.
+          if (items[4]) items[4].click()
+          await attendre(60)
+          const medailles = () => [...document.querySelectorAll('.decoration-tuile')]
+          const obtenues = () => medailles().filter((m) => m.dataset.obtenue === '1').length
+          const surLHonneur = () => document.querySelector('.decoration-tuile[data-honneur="1"]')
+          const livretAvant = {
+            titreEcran: titre(),
+            tuiles: medailles().length,
+            honneur: document.querySelectorAll('.decoration-tuile[data-honneur="1"]').length,
+            obtenues: obtenues(),
+            compte: lire('.livret-titre-bloc'),
+            echelons: document.querySelectorAll('.echelon-ligne').length,
+            actuel: document.querySelectorAll('.echelon-ligne[data-position="actuel"]').length
+          }
+
+          if (surLHonneur()) surLHonneur().click()
+          await attendre(60)
+          const livretPendant = { obtenues: obtenues(), toast: lire('.toast'), ton: ton() }
+
+          if (surLHonneur()) surLHonneur().click()
+          await attendre(60)
+          const livretApres = { obtenues: obtenues(), ton: ton() }
+
           const theme = document.querySelector('.bouton-theme')
           const sombreDepart = racine.dataset.sombre
           if (theme) theme.click()
@@ -217,7 +243,8 @@ function creerFenetre () {
             tableau,
             plan,
             sujet,
-            route: { avant: routeAvant, pendant: routePendant, apres: routeApres }
+            route: { avant: routeAvant, pendant: routePendant, apres: routeApres },
+            livret: { avant: livretAvant, pendant: livretPendant, apres: livretApres }
           }
         })()`)
         const profil = typeof rapport.profil === 'string' ? rapport.profil : ''
@@ -274,6 +301,24 @@ function creerFenetre () {
           apresRoute.ton !== pendant.ton &&
           apresRoute.cochees === avant.cochees &&
           apresRoute.jauge === avant.jauge
+        // Le livret porte les 26 decorations du catalogue, dont les 5 qui se
+        // cochent sur l'honneur, et les 9 echelons dont un seul est tenu.
+        const l = rapport.livret ?? {}
+        const livretAvant = l.avant ?? {}
+        const livretPendant = l.pendant ?? {}
+        const livretApres = l.apres ?? {}
+        const dossier =
+          livretAvant.titreEcran === 'Le livret' &&
+          livretAvant.tuiles === 26 &&
+          livretAvant.honneur === 5 &&
+          (livretAvant.compte ?? '').includes('DECORATIONS · ') &&
+          livretAvant.echelons === 9 &&
+          livretAvant.actuel === 1 &&
+          livretPendant.obtenues === livretAvant.obtenues + 1 &&
+          livretPendant.ton === 'oui' &&
+          (livretPendant.toast ?? '').includes("SUR L'HONNEUR") &&
+          livretApres.obtenues === livretAvant.obtenues &&
+          livretApres.ton === 'non'
         verdict =
           rapport.pont &&
           rapport.ipc?.ok === true &&
@@ -286,7 +331,8 @@ function creerFenetre () {
           bord &&
           carte &&
           lecteur &&
-          feuille
+          feuille &&
+          dossier
             ? 0
             : 1
         console.log(
@@ -296,6 +342,7 @@ function creerFenetre () {
             `plan ${carte ? plan.salles + ' salles' : 'incomplet'}, ` +
             `sujet ${lecteur ? s.paragraphes + ' paragraphes, ' + s.codes + ' blocs de code, ' + s.tableaux + ' tableaux' : 'incomplet'}, ` +
             `feuille de route ${feuille ? avant.lignes + ' case' + (avant.lignes > 1 ? 's' : '') + ' dont ' + avant.bonus + ' bonus, cochee puis rendue' : 'incomplete'}, ` +
+            `livret ${dossier ? livretAvant.tuiles + ' medailles dont ' + livretAvant.obtenues + ' obtenues, ' + livretAvant.echelons + ' echelons, decoration accordee puis rendue' : 'incomplet'}, ` +
             `theme ${rapport.theme ? 'bascule' : 'fige'}, ` +
             `reglage ${rapport.ecrit ? 'ecrit et repris' : 'inchange'}`
         )
