@@ -1,0 +1,7 @@
+node_modules/
+dist/
+release/
+app/src/corpus/
+.MISSION_TERMINEE
+boucle.log
+.DS_Store
