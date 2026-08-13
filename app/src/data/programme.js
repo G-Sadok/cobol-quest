@@ -1,23 +1,28 @@
-// Le manifeste du programme : la PISCINE (J00 -> J10, RUSH01, RUSH02).
+// Le manifeste du programme : la PISCINE (J00 -> J10, RUSH01, RUSH02), les
+// MISSIONS (M01 -> M06) et la PHASE 3.
 //
-// Source unique de vérité : les tableaux « BARÈME DU JOUR » des sujets et le
-// livret « progression/XP_ET_BADGES.md ». En cas d'écart entre les deux, le
-// livret fait foi (cahier des charges, §6) : le contrôle croisé est consigné au
+// Source unique de vérité : les tableaux « BARÈME DU JOUR » des sujets de
+// piscine, les tableaux « BARÈME (/N) » des missions, et le livret
+// « progression/XP_ET_BADGES.md ». En cas d'écart entre les deux, le livret
+// fait foi (cahier des charges, §6) : le contrôle croisé est consigné au
 // JOURNAL et vérifié par les tests (src/data/programme.test.js).
 //
 // Forme d'une épreuve :
 //   id                 identifiant stable, utilisé par la progression
-//   phase              'piscine' (les missions et la phase 3 arrivent en T06)
+//   phase              'piscine', 'missions' ou 'phase3'
 //   titre              intitulé du sujet, sans le préfixe « PISCINE : »
 //   chemin             clef du sujet dans data/corpus.js
 //   xpBase             somme des exercices non-bonus (= livret)
 //   xpBonusMax         somme des bonus (= livret)
-//   seuilValidation    ligne « Validation : ≥ N XP » du sujet
+//   seuilValidation    ligne « Validation : ≥ N XP » du sujet ; à défaut, 70 %
+//                      du barème (les rushs et les missions n'en portent pas)
 //   prerequis          épreuve immédiatement précédente (déblocage séquentiel)
 //   badges             identifiants des badges en jeu (détails en T13)
+//   surLHonneur        true quand aucune moulinette ne tranche (phase 3)
 //   exercices[]        { id, titre, xp, estBonus, bertha }
 //
 // « bertha » est l'argument de la moulinette : ./bertha/bertha.sh <bertha>.
+// Il vaut null quand BERTHA ne juge pas l'épreuve (phase 3).
 
 /** Les épreuves de la piscine, dans l'ordre obligatoire de progression. */
 export const epreuvesPiscine = [
@@ -293,10 +298,174 @@ export const epreuvesPiscine = [
 ]
 
 /**
- * Toutes les épreuves du programme, dans l'ordre de progression.
- * Les missions M01 à M06 et la phase 3 s'ajoutent ici en T06.
+ * Les missions de la phase 2, dans l'ordre obligatoire de progression.
+ *
+ * Aucune mission ne porte de ligne « Validation : >= N XP » : on applique la
+ * règle du cahier des charges (§6), 70 % du barème. Les critères du tableau
+ * « BARÈME (/N) » tiennent lieu d'exercices : une mission se rend d'un bloc,
+ * elle ne se découpe pas en exercices numérotés.
  */
-export const epreuves = Object.freeze([...epreuvesPiscine])
+export const epreuvesMissions = [
+  {
+    id: 'M01',
+    phase: 'missions',
+    titre: 'GUICHET-3000',
+    chemin: 'missions/M01_GUICHET3000.md',
+    xpBase: 300,
+    xpBonusMax: 55,
+    seuilValidation: 210,
+    prerequis: 'J10',
+    badges: ['guichetier-d-or'],
+    exercices: [
+      { id: 'c1', titre: 'Chargeur, consultation, dépôt et retrait conformes', xp: 60, estBonus: false, bertha: 'M01' },
+      { id: 'c2', titre: 'Virement atomique (y compris les cas de refus)', xp: 50, estBonus: false, bertha: 'M01' },
+      { id: 'c3', titre: 'Création, blocage et clôture conformes', xp: 45, estBonus: false, bertha: 'M01' },
+      { id: 'c4', titre: 'Liste par ville (clé alternative)', xp: 25, estBonus: false, bertha: 'M01' },
+      { id: 'c5', titre: "Journal d'audit exact (formats, refus journalisés)", xp: 45, estBonus: false, bertha: 'M01' },
+      { id: 'c6', titre: 'Robustesse aux saisies folles (lettres, vide, 0, négatif)', xp: 40, estBonus: false, bertha: 'M01' },
+      { id: 'c7', titre: 'Norme, copybook et découpage', xp: 35, estBonus: false, bertha: 'M01' },
+      { id: 'bonus1', titre: 'SCREEN SECTION (vrai écran de guichet)', xp: 30, estBonus: true, bertha: 'M01' },
+      { id: 'bonus2', titre: 'Relevé des N dernières opérations depuis le journal', xp: 25, estBonus: true, bertha: 'M01' }
+    ]
+  },
+  {
+    id: 'M02',
+    phase: 'missions',
+    titre: 'PAYE-MASTER',
+    chemin: 'missions/M02_PAYEMASTER.md',
+    xpBase: 400,
+    xpBonusMax: 40,
+    seuilValidation: 280,
+    prerequis: 'M01',
+    badges: ['architecte-de-la-paie'],
+    exercices: [
+      { id: 'c1', titre: 'Contrôles et rejets motivés (rien ne passe en silence)', xp: 70, estBonus: false, bertha: 'M02' },
+      { id: 'c2', titre: 'Moteur : retenues, primes, tranches exactes', xp: 100, estBonus: false, bertha: 'M02' },
+      { id: 'c3', titre: 'Sous-programmes CALCOTIS et CALCPRIM (aucun taux dans PAYCALC)', xp: 50, estBonus: false, bertha: 'M02' },
+      { id: 'c4', titre: 'États par service (SORT et rupture) exacts', xp: 60, estBonus: false, bertha: 'M02' },
+      { id: 'c5', titre: 'VIREMENTS.DAT conforme', xp: 30, estBonus: false, bertha: 'M02' },
+      { id: 'c6', titre: 'Chaîne shell, codes retour et reprise étape par étape', xp: 40, estBonus: false, bertha: 'M02' },
+      { id: 'c7', titre: 'Norme, copybooks et rapport de mission', xp: 50, estBonus: false, bertha: 'M02' },
+      { id: 'bonus1', titre: 'Bulletin PDF-texte soigné (cadres, alignements parfaits)', xp: 20, estBonus: true, bertha: 'M02' },
+      { id: 'bonus2', titre: 'Barème chargé trié et contrôlé (tranches croissantes sinon rejet)', xp: 20, estBonus: true, bertha: 'M02' }
+    ]
+  },
+  {
+    id: 'M03',
+    phase: 'missions',
+    titre: 'STOCKS & Cie',
+    chemin: 'missions/M03_STOCKS.md',
+    xpBase: 350,
+    xpBonusMax: 40,
+    seuilValidation: 245,
+    prerequis: 'M02',
+    badges: ['seigneur-du-fifo'],
+    exercices: [
+      { id: 'c1', titre: 'FIFO exact (exemple canonique et multi-lots)', xp: 120, estBonus: false, bertha: 'M03' },
+      { id: 'c2', titre: 'Inventaire valorisé conforme', xp: 60, estBonus: false, bertha: 'M03' },
+      { id: 'c3', titre: 'Rejets (rupture, inconnu) sans corruption du stock', xp: 60, estBonus: false, bertha: 'M03' },
+      { id: 'c4', titre: 'Alertes et quantités de réapprovisionnement', xp: 40, estBonus: false, bertha: 'M03' },
+      { id: 'c5', titre: 'Architecture (3 programmes, copybooks, table de lots propre)', xp: 40, estBonus: false, bertha: 'M03' },
+      { id: 'c6', titre: 'Rapport de mission (dont le schéma de la table de lots)', xp: 30, estBonus: false, bertha: 'M03' },
+      { id: 'bonus', titre: 'Méthode CUMP en option de lancement, avec comparaison des deux valorisations', xp: 40, estBonus: true, bertha: 'M03' }
+    ]
+  },
+  {
+    id: 'M04',
+    phase: 'missions',
+    titre: 'LA PASSERELLE',
+    chemin: 'missions/M04_PASSERELLE.md',
+    xpBase: 350,
+    xpBonusMax: 40,
+    seuilValidation: 245,
+    prerequis: 'M03',
+    badges: ['pontifex'],
+    exercices: [
+      { id: 'c1', titre: 'Export CSV exact (au caractère près)', xp: 70, estBonus: false, bertha: 'M04' },
+      { id: 'c2', titre: 'Import CSV : découpage, contrôles, rejets, format fixe', xp: 90, estBonus: false, bertha: 'M04' },
+      { id: 'c3', titre: 'Export JSON valide (validation prouvée) et dernier sans virgule', xp: 70, estBonus: false, bertha: 'M04' },
+      { id: 'c4', titre: 'Filtre de pipeline (composable, testé en chaîne)', xp: 60, estBonus: false, bertha: 'M04' },
+      { id: 'c5', titre: 'Codes retour conformes partout', xp: 30, estBonus: false, bertha: 'M04' },
+      { id: 'c6', titre: "Rapport (ce que le CSV ne sait pas dire d'un fichier COBOL)", xp: 30, estBonus: false, bertha: 'M04' },
+      { id: 'bonus1', titre: 'Export CSV paramétrable (séparateur en argument)', xp: 20, estBonus: true, bertha: 'M04' },
+      { id: 'bonus2', titre: 'Échappement JSON des guillemets dans les noms', xp: 20, estBonus: true, bertha: 'M04' }
+    ]
+  },
+  {
+    id: 'M05',
+    phase: 'missions',
+    titre: 'S.O.S. LEGACY',
+    chemin: 'missions/M05_SOS_LEGACY.md',
+    xpBase: 400,
+    xpBonusMax: 40,
+    seuilValidation: 280,
+    prerequis: 'M04',
+    badges: ['necromancien'],
+    exercices: [
+      { id: 'c1', titre: 'Golden master fait avant toute modification', xp: 40, estBonus: false, bertha: 'M05' },
+      { id: 'c2', titre: 'TCK-101 : cause exacte identifiée et correctif', xp: 80, estBonus: false, bertha: 'M05' },
+      { id: 'c3', titre: 'TCK-102 : fenêtre de siècle correcte (cas 60 compris)', xp: 80, estBonus: false, bertha: 'M05' },
+      { id: 'c4', titre: 'TCK-103 : ROUNDED, chiffres au centime', xp: 50, estBonus: false, bertha: 'M05' },
+      { id: 'c5', titre: 'TCK-104 : code mort supprimé et hypothèse argumentée', xp: 20, estBonus: false, bertha: 'M05' },
+      { id: 'c6', titre: 'Réécriture à la Norme, diff de preuve vide', xp: 90, estBonus: false, bertha: 'M05' },
+      { id: 'c7', titre: "Rapport d'autopsie (clarté, honnêteté sur les tâtonnements)", xp: 40, estBonus: false, bertha: 'M05' },
+      { id: 'bonus', titre: 'Jeu de tests de non-régression rejouable', xp: 40, estBonus: true, bertha: 'M05' }
+    ]
+  },
+  {
+    id: 'M06',
+    phase: 'missions',
+    titre: 'LE CŒUR BANCAIRE',
+    chemin: 'missions/M06_COEUR_BANCAIRE.md',
+    xpBase: 800,
+    xpBonusMax: 80,
+    seuilValidation: 560,
+    prerequis: 'M05',
+    badges: ['gardien-du-mainframe'],
+    exercices: [
+      { id: 'c1', titre: 'Étapes 01 et 02 (contrôles, tri stable, conservation des totaux)', xp: 120, estBonus: false, bertha: 'M06' },
+      { id: 'c2', titre: 'Étape 03 (mise à jour, rejets, intérêts, agios)', xp: 180, estBonus: false, bertha: 'M06' },
+      { id: 'c3', titre: 'Étape 04 (relevés conformes, alertes)', xp: 80, estBonus: false, bertha: 'M06' },
+      { id: 'c4', titre: 'Étape 05 (balance exacte, double chemin, RC 8 si KO)', xp: 140, estBonus: false, bertha: 'M06' },
+      { id: 'c5', titre: 'Orchestration (run_chaine.sh, log, --depuis, RC respectés)', xp: 100, estBonus: false, bertha: 'M06' },
+      { id: 'c6', titre: 'Invariants tenus sur le jeu secret', xp: 80, estBonus: false, bertha: 'M06' },
+      { id: 'c7', titre: "Documentation d'exploitation et rapport de mission", xp: 60, estBonus: false, bertha: 'M06' },
+      { id: 'c8', titre: 'Soutenance écrite : les 5 questions de Marcel', xp: 40, estBonus: false, bertha: 'M06' },
+      { id: 'bonus1', titre: 'Reprise sur incident réelle (idempotence de la chaîne)', xp: 60, estBonus: true, bertha: 'M06' },
+      { id: 'bonus2', titre: 'État des anomalies consolidé multi-étapes', xp: 20, estBonus: true, bertha: 'M06' }
+    ]
+  }
+]
+
+/**
+ * La phase 3 : le passage au vrai z/OS.
+ *
+ * Le livret ne lui accorde aucun XP et BERTHA ne la juge pas (elle se joue chez
+ * IBM, pas sur la machine de l'apprenti). Elle vaut par ses deux badges, qui
+ * ouvrent le neuvième échelon : la validation est « sur l'honneur ». Ses
+ * exercices reprennent le plan de campagne en quatre semaines du sujet.
+ */
+export const epreuvePhase3 = {
+  id: 'PHASE3',
+  phase: 'phase3',
+  titre: 'LE VRAI MAINFRAME',
+  chemin: 'phase3/LE_VRAI_MAINFRAME.md',
+  xpBase: 0,
+  xpBonusMax: 0,
+  seuilValidation: 0,
+  prerequis: 'M06',
+  badges: ['premier-jcl', 'dompteur-de-vsam'],
+  surLHonneur: true,
+  exercices: [
+    { id: 's1', titre: 'Z Xplore Fundamentals : Zowe, TSO, datasets, premier JCL', xp: 0, estBonus: false, bertha: null },
+    { id: 's2', titre: 'Porter J07 ex01, J09 ex06 et RUSH02 en datasets FB', xp: 0, estBonus: false, bertha: null },
+    { id: 's3', titre: 'VSAM : J08 recréé en KSDS via IDCAMS, DFSORT sur M06', xp: 0, estBonus: false, bertha: null },
+    { id: 's4', titre: 'Z Xplore Advanced, survol de Db2 et de CICS', xp: 0, estBonus: false, bertha: null }
+  ]
+}
+
+/** Toutes les épreuves du programme, dans l'ordre de progression. */
+export const epreuves = Object.freeze([...epreuvesPiscine, ...epreuvesMissions, epreuvePhase3])
 
 /** Les identifiants dans l'ordre. */
 export const idsEpreuves = Object.freeze(epreuves.map((e) => e.id))
@@ -328,7 +497,16 @@ export function exerciceParId(idEpreuve, idExercice) {
   return epreuve.exercices.find((ex) => ex.id === idExercice) ?? null
 }
 
-/** La commande BERTHA à afficher dans la feuille de route. */
+/** Les épreuves d'une phase ('piscine', 'missions', 'phase3'). */
+export function epreuvesDeLaPhase(phase) {
+  return epreuves.filter((e) => e.phase === phase)
+}
+
+/**
+ * La commande BERTHA à afficher dans la feuille de route, ou null quand la
+ * moulinette ne juge pas l'exercice (phase 3).
+ */
 export function commandeBertha(exercice) {
+  if (!exercice || !exercice.bertha) return null
   return `./bertha/bertha.sh ${exercice.bertha}`
 }

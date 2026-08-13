@@ -3,7 +3,10 @@ import { sujets } from './corpus.js'
 import {
   commandeBertha,
   epreuveParId,
+  epreuvePhase3,
   epreuves,
+  epreuvesDeLaPhase,
+  epreuvesMissions,
   epreuvesPiscine,
   exerciceParId,
   exercicesBonus,
@@ -28,19 +31,28 @@ const LIVRET = {
   J08: { xpBase: 130, xpBonusMax: 20 },
   J09: { xpBase: 130, xpBonusMax: 20 },
   RUSH02: { xpBase: 150, xpBonusMax: 30 },
-  J10: { xpBase: 200, xpBonusMax: 0 }
+  J10: { xpBase: 200, xpBonusMax: 0 },
+  M01: { xpBase: 300, xpBonusMax: 55 },
+  M02: { xpBase: 400, xpBonusMax: 40 },
+  M03: { xpBase: 350, xpBonusMax: 40 },
+  M04: { xpBase: 350, xpBonusMax: 40 },
+  M05: { xpBase: 400, xpBonusMax: 40 },
+  M06: { xpBase: 800, xpBonusMax: 80 }
 }
 
 // L'ordre obligatoire de la piscine (les rushs tombent après J05 et après J09).
-const ORDRE = ['J00', 'J01', 'J02', 'J03', 'J04', 'J05', 'RUSH01', 'J06', 'J07', 'J08', 'J09', 'RUSH02', 'J10']
+const ORDRE_PISCINE = ['J00', 'J01', 'J02', 'J03', 'J04', 'J05', 'RUSH01', 'J06', 'J07', 'J08', 'J09', 'RUSH02', 'J10']
+
+// Puis les six missions de la phase 2, puis la phase 3.
+const ORDRE_MISSIONS = ['M01', 'M02', 'M03', 'M04', 'M05', 'M06']
+const ORDRE = [...ORDRE_PISCINE, ...ORDRE_MISSIONS, 'PHASE3']
 
 const somme = (liste) => liste.reduce((total, ex) => total + ex.xp, 0)
 
 describe('manifeste de la piscine', () => {
   it('couvre les 13 épreuves, dans l’ordre du livret', () => {
-    expect(idsEpreuves).toEqual(ORDRE)
-    expect(epreuvesPiscine).toHaveLength(13)
-    expect(epreuves).toHaveLength(epreuvesPiscine.length)
+    expect(epreuvesPiscine.map((e) => e.id)).toEqual(ORDRE_PISCINE)
+    expect(epreuvesDeLaPhase('piscine')).toEqual(epreuvesPiscine)
   })
 
   it('déclare les XP du livret pour chaque épreuve', () => {
@@ -75,40 +87,116 @@ describe('manifeste de la piscine', () => {
     expect(epreuveParId('J10').seuilValidation).toBe(120)
   })
 
-  it('chaîne le déblocage séquentiel sans trou', () => {
-    expect(epreuveParId('J00').prerequis).toBeNull()
-    for (let i = 1; i < epreuvesPiscine.length; i += 1) {
-      expect(epreuvesPiscine[i].prerequis).toBe(epreuvesPiscine[i - 1].id)
+  it('donne à chaque exercice de piscine des XP positifs', () => {
+    for (const epreuve of epreuvesPiscine) {
+      for (const exercice of epreuve.exercices) {
+        expect(exercice.xp, `xp ${epreuve.id}/${exercice.id}`).toBeGreaterThan(0)
+        expect(exercice.bertha).toMatch(/^(J\d\d|RUSH\d\d)(\/[a-z0-9]+)?$/)
+      }
+    }
+  })
+})
+
+describe('manifeste des missions', () => {
+  it('couvre les 6 missions, dans l’ordre du livret', () => {
+    expect(epreuvesMissions.map((e) => e.id)).toEqual(ORDRE_MISSIONS)
+    expect(epreuvesDeLaPhase('missions')).toEqual(epreuvesMissions)
+  })
+
+  it('déclare les XP du livret pour chaque mission', () => {
+    for (const epreuve of epreuvesMissions) {
+      expect(LIVRET[epreuve.id], `mission inconnue du livret : ${epreuve.id}`).toBeDefined()
+      expect({ xpBase: epreuve.xpBase, xpBonusMax: epreuve.xpBonusMax }).toEqual(LIVRET[epreuve.id])
     }
   })
 
-  it('pointe vers un sujet réellement embarqué', () => {
-    for (const epreuve of epreuvesPiscine) {
-      expect(Object.keys(sujets), `sujet ${epreuve.id}`).toContain(epreuve.chemin)
+  it('fait tomber la somme des critères de barème sur les XP annoncés', () => {
+    for (const epreuve of epreuvesMissions) {
+      expect(somme(exercicesObligatoires(epreuve)), `base ${epreuve.id}`).toBe(epreuve.xpBase)
+      expect(somme(exercicesBonus(epreuve)), `bonus ${epreuve.id}`).toBe(epreuve.xpBonusMax)
+    }
+  })
+
+  it('totalise les 2 900 XP de missions annoncés par le livret', () => {
+    const total = epreuvesMissions.reduce((cumul, e) => cumul + xpMaximum(e), 0)
+    // 2 600 XP de base + 295 XP de bonus : le « ≈ 2 900 » du livret.
+    expect(total).toBe(2895)
+  })
+
+  it('applique la règle des 70 % du barème, faute de ligne de validation', () => {
+    for (const epreuve of epreuvesMissions) {
+      // En entiers : 0,7 sur des flottants tombe à côté pour 350 XP.
+      expect(epreuve.seuilValidation, `seuil ${epreuve.id}`).toBe((epreuve.xpBase * 7) / 10)
+    }
+    expect(epreuveParId('M06').seuilValidation).toBe(560)
+  })
+
+  it('confie chaque mission à sa propre cible BERTHA', () => {
+    for (const epreuve of epreuvesMissions) {
+      for (const exercice of epreuve.exercices) {
+        expect(exercice.xp, `xp ${epreuve.id}/${exercice.id}`).toBeGreaterThan(0)
+        expect(exercice.bertha).toBe(epreuve.id)
+      }
+    }
+    expect(commandeBertha(exerciceParId('M03', 'c1'))).toBe('./bertha/bertha.sh M03')
+  })
+})
+
+describe('manifeste de la phase 3', () => {
+  it('ferme la marche, sans XP et sans moulinette', () => {
+    expect(epreuvesDeLaPhase('phase3')).toEqual([epreuvePhase3])
+    expect(epreuves[epreuves.length - 1]).toBe(epreuvePhase3)
+    expect(epreuvePhase3.xpBase).toBe(0)
+    expect(epreuvePhase3.xpBonusMax).toBe(0)
+    expect(epreuvePhase3.seuilValidation).toBe(0)
+    expect(epreuvePhase3.surLHonneur).toBe(true)
+    for (const exercice of epreuvePhase3.exercices) {
+      expect(exercice.xp).toBe(0)
+      expect(commandeBertha(exercice)).toBeNull()
+    }
+  })
+
+  it('porte les deux badges qui ouvrent le neuvième échelon', () => {
+    expect(epreuvePhase3.badges).toEqual(['premier-jcl', 'dompteur-de-vsam'])
+  })
+})
+
+describe('manifeste complet', () => {
+  it('enchaîne les 20 épreuves dans l’ordre, sans trou de déblocage', () => {
+    expect(idsEpreuves).toEqual(ORDRE)
+    expect(epreuves).toHaveLength(20)
+    expect(epreuves[0].prerequis).toBeNull()
+    for (let i = 1; i < epreuves.length; i += 1) {
+      expect(epreuves[i].prerequis, `prérequis ${epreuves[i].id}`).toBe(epreuves[i - 1].id)
     }
   })
 
   it('garde des identifiants uniques', () => {
     expect(new Set(idsEpreuves).size).toBe(idsEpreuves.length)
-    for (const epreuve of epreuvesPiscine) {
+    for (const epreuve of epreuves) {
       const ids = epreuve.exercices.map((ex) => ex.id)
       expect(new Set(ids).size, `doublon dans ${epreuve.id}`).toBe(ids.length)
     }
   })
 
-  it('donne à chaque exercice un titre, des XP positifs et une cible BERTHA', () => {
-    for (const epreuve of epreuvesPiscine) {
+  it('donne à chaque exercice un titre et un accès par identifiant', () => {
+    for (const epreuve of epreuves) {
+      expect(epreuve.titre.length, `titre ${epreuve.id}`).toBeGreaterThan(2)
       for (const exercice of epreuve.exercices) {
         expect(exercice.titre.length, `titre ${epreuve.id}/${exercice.id}`).toBeGreaterThan(2)
-        expect(exercice.xp).toBeGreaterThan(0)
-        expect(exercice.bertha).toMatch(/^(J\d\d|RUSH\d\d)(\/[a-z0-9]+)?$/)
         expect(exerciceParId(epreuve.id, exercice.id)).toBe(exercice)
       }
     }
   })
 
+  it('pointe vers un sujet réellement embarqué', () => {
+    for (const epreuve of epreuves) {
+      expect(Object.keys(sujets), `sujet ${epreuve.id}`).toContain(epreuve.chemin)
+    }
+  })
+
   it('respecte la règle typographique : aucun tiret cadratin', () => {
-    expect(JSON.stringify(epreuvesPiscine)).not.toContain('—')
+    expect(JSON.stringify(epreuves)).not.toContain('—')
   })
 
   it('formate la commande BERTHA de la feuille de route', () => {
@@ -117,7 +205,7 @@ describe('manifeste de la piscine', () => {
   })
 
   it('ne connaît pas les épreuves absentes', () => {
-    expect(epreuveParId('M01')).toBeNull()
+    expect(epreuveParId('M07')).toBeNull()
     expect(exerciceParId('J01', 'ex42')).toBeNull()
   })
 })
