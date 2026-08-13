@@ -49,7 +49,7 @@ l'itération suivante avant de continuer.
       XP unique par épreuve.
 - [x] T17 — Écran RÉGLAGES : export/import via IPC (boîtes de dialogue natives),
       remise à zéro double confirmation, rythme, scanlines.
-- [ ] T18 — Icône : `design/icone.png` si fourni, sinon dessin de repli ;
+- [x] T18 — Icône : `design/icone.png` si fourni, sinon dessin de repli ;
       `app/scripts/make-icon.sh` (sips + iconutil) → `app/build/icon.icns`.
 - [ ] T19 — Empaquetage : `npm run dist:mac` produit `.dmg` + `.app` dans
       `app/release/` ; test de lancement de l'app empaquetée ; consigner au
@@ -264,3 +264,12 @@ l'itération suivante avant de continuer.
   retire : les six ecrans sont poses. Build vert, 344 tests verts, autotest
   Electron vert (rythme change puis rendu, effacement ouvert, premiere
   confirmation passee, seconde annulee : rien n'est efface).
+- 2026-08-14 T18 : `design/icone.png` est fournie (1024 RGBA) : c'est elle qui
+  passe dans `app/scripts/make-icon.sh` (sips vers les 10 tailles de l'iconset,
+  puis iconutil) et donne `app/build/icon.icns`, committee car
+  `electron-builder` la reclame a l'empaquetage. Le dessin de repli du cahier
+  des charges devient `app/scripts/icone-repli.mjs` : sips ne sait pas
+  rasteriser un SVG et aucun convertisseur n'est autorise, la toile est donc
+  peinte pixel par pixel et encodee en PNG avec le zlib de Node (zero
+  dependance). `npm run icon` fabrique l'icone, `predist:mac` l'appelle avant
+  l'empaquetage. Build vert, 350 tests verts.

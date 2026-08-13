@@ -1103,3 +1103,49 @@ Commits créés :
 - `app: retirer le bloc de chantier, les six ecrans sont poses`
 - `electron: passer les reglages et la double confirmation dans l autotest`
 - `doc: consigner l iteration T17`
+
+## T18 - L'icône de l'application
+
+`design/icone.png` est bien fournie (1024x1024 RGBA, coins déjà arrondis et
+marges déjà ménagées) : c'est elle qui sert, sans retouche. Le cahier des
+charges (§2) exige la fabrication par les outils macOS natifs :
+`app/scripts/make-icon.sh` recopie la source dans un dossier de travail
+temporaire, la normalise à 1024 par `sips`, en tire les dix tailles de
+l'`iconset` (16 à 1024, avec les variantes `@2x`), puis appelle `iconutil -c
+icns`. Résultat : `app/build/icon.icns`, 264 ko, les dix représentations
+vérifiées par le chemin inverse (`iconutil -c iconset`).
+
+Le dessin de repli, prévu par le cahier des charges si `design/` ne fournit
+rien, existe quand même : `app/scripts/icone-repli.mjs`. Écart assumé sur la
+lettre du texte, qui dit « SVG converti en PNG » : `sips` ne sait pas
+rastériser un SVG et la liste des dépendances autorisées ne contient aucun
+convertisseur. Le module peint donc la toile lui-même (carte de papier crème
+arrondie, écran de console `#16160F`, « CQ » en phosphore `#4FBF7B`, formes
+décrites par des prédicats et adoucies à quatre sous-échantillons par pixel)
+et encode le PNG à la main (IHDR, IDAT compressé par le `zlib` de Node, IEND,
+CRC32 maison). Zéro dépendance ajoutée. Il s'appelle aussi en ligne de
+commande : `node scripts/icone-repli.mjs <sortie.png> [taille]`.
+
+L'icône est committée bien qu'elle soit un produit dérivé : `electron-builder`
+la réclame au moment de l'empaquetage (T19), et la règle du dépôt propre
+interdit de la laisser non suivie. Sa fabrication est reproductible à
+l'identique (regénérée après commit, `git status` reste propre). Deux fils
+tirés côté `package.json` : le script `icon`, et `predist:mac` qui l'appelle
+pour que `npm run dist:mac` ne parte jamais sans icône fraîche. `mac.icon`
+pointe explicitement `build/icon.icns` plutôt que de compter sur la
+convention `buildResources`.
+
+Fichiers touchés : `app/scripts/make-icon.sh`, `app/scripts/icone-repli.mjs`,
+`app/scripts/icone-repli.test.mjs`, `app/build/icon.icns` (nouveaux),
+`app/package.json`, `ETAT_APP.md`, `JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert (JS 585,53 ko, CSS 42,40 ko),
+`npx vitest run` vert (18 fichiers, 350 tests), `npm run icon` vert et
+reproductible. Pas d'autotest Electron cette fois : la tâche ne touche pas
+l'interface, l'icône se vérifie à l'empaquetage (T19).
+
+Commits créés :
+- `app: le script make-icon.sh et le dessin de repli de l icone`
+- `tests: le dessin de repli de l icone`
+- `app: l icone icon.icns fabriquee depuis design/icone.png`
+- `doc: consigner l iteration T18`
