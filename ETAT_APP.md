@@ -5,7 +5,7 @@ Règles : traiter les tâches DANS L'ORDRE. Une itération = une tâche menée a
 ligne. Tâche bloquée → la marquer `[!] cause` et tenter le plus petit correctif à
 l'itération suivante avant de continuer.
 
-- [ ] T01 — Dépôt git à la racine si absent (`.gitignore` : node_modules, dist,
+- [x] T01 — Dépôt git à la racine si absent (`.gitignore` : node_modules, dist,
       release, app/src/corpus/, .MISSION_TERMINEE, boucle.log) ; projet Vite +
       React (JS) dans `app/` ; gabarit nettoyé ; commit.
 - [ ] T02 — Lecture du design : inventorier `design/` (DESIGN_SYSTEM.md,
@@ -63,3 +63,9 @@ l'itération suivante avant de continuer.
 
 ## Notes d'itération
 (la boucle ajoute ici une ligne datée par tâche : décisions, écarts, dettes)
+
+- 2026-08-13 T01 : dépôt déjà initialisé, `.gitignore` posé, `app/` créé à la
+  main (Vite 6 + React 18, JS pur) sans `npm create` ; scripts `dev`/`build`/
+  `preview` seulement (les scripts `dev:app`, `test`, `dist:mac` viendront avec
+  leurs tâches T03/T04/T07). `base: './'` dans `vite.config.js` pour le futur
+  chargement `file://` sous Electron. Build vert, pas encore de tests.
