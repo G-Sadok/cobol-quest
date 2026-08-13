@@ -15,6 +15,7 @@
     "dev:app": "concurrently -k -n vite,electron -c green,cyan \"npm run dev\" \"npm run electron:dev\"",
     "prebuild": "npm run sync:corpus",
     "build": "vite build",
+    "test": "vitest run",
     "preview": "vite preview",
     "dist:mac": "npm run build && electron-builder --mac"
   },
@@ -57,6 +58,7 @@
     "electron": "^43.4.0",
     "electron-builder": "^26.15.3",
     "vite": "^6.0.7",
+    "vitest": "^4.1.10",
     "wait-on": "^9.1.0"
   }
 }
