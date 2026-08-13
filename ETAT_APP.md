@@ -38,7 +38,7 @@ l'itération suivante avant de continuer.
       4 états de salle conformes aux maquettes ; navigation vers le lecteur).
 - [x] T11 — Écran LECTEUR DE SUJET : rendu markdown (code, tableaux), navigation
       précédent/suivant, largeur de lecture conforme au design.
-- [ ] T12 — Feuille de route latérale : cases exercices + bonus, XP
+- [x] T12 — Feuille de route latérale : cases exercices + bonus, XP
       crédités/retirés, jauge et passage « VALIDÉ », encart commande BERTHA.
 - [ ] T13 — Badges automatiques + « sur l'honneur » ; écran LE LIVRET (badges +
       échelons).
@@ -182,3 +182,20 @@ l'itération suivante avant de continuer.
   La Carte. Le volet de droite garde son bloc de chantier jusqu'a T12. Build
   vert, 172 tests verts, autotest Electron vert (sujet lu sans rien cliquer
   d'autre que l'item de navigation).
+- 2026-08-13 T12 : le volet de droite se coche. Un module pur de plus,
+  `src/ui/feuilleDeRoute.js` (lignes, jauge, encart BERTHA, verdict du toast) ;
+  `src/ecrans/FeuilleDeRoute.jsx` ne fait que poser le resultat et rendre les
+  clics au store. Quatre arbitrages : la piste de la jauge vaut le bareme des
+  exercices OBLIGATOIRES, pour que le repere ambre du seuil ne soit pas ecrase
+  par des bonus facultatifs (la phase 3, sans XP, se jauge en jalons) ; le
+  remplissage est ambre avant le seuil et vert apres, comme les deux etats du
+  design 6.3 ; l'encart BERTHA garde la forme sombre de la maquette mais porte
+  la commande exigee par le cahier des charges, l'application ne pouvant pas
+  inventer un compte rendu de compilation ; le toast (design 6.2 et 6.6),
+  annonce en T10, arrive ici car sans lui un exercice a 10 XP ne se voit pas
+  bouger. Defaut corrige en chemin : le lecteur suivait `epreuveCourante`, qui
+  saute les epreuves validees, donc cocher la derniere case changeait le texte
+  sous les yeux ; `epreuveLue` garde le sujet ouvert sur le pupitre, et l'ecran
+  retient l'epreuve des l'arrivee pour que ce verrou tienne aussi par Cmd+3.
+  Build vert, 200 tests verts, autotest Electron vert (case cochee, toast et
+  jauge releves, case rendue : la progression revient a l'identique).

@@ -715,3 +715,81 @@ Commits créés :
 - `app: brancher l ecran LE SUJET sur le lecteur`
 - `electron: lire le sujet du moment dans l autotest`
 - `doc: consigner l iteration T11`
+
+---
+
+## T12 - La feuille de route, le volet qui se coche
+
+**La tâche.** Remplir le volet de droite du lecteur : les cases des exercices
+et des bonus, les XP crédités ou retirés, la jauge du seuil avec son passage
+« VALIDÉ », et l'encart de la commande BERTHA (cahier des charges, §5.3).
+
+**Un module pur de plus.** `src/ui/feuilleDeRoute.js` suit la règle posée
+depuis T08 : tout ce que le volet affiche se dérive de l'état et du manifeste,
+l'écran ne fait que poser des lignes. Il expose une ligne d'exercice, la jauge
+du seuil, l'encart BERTHA, le verdict du toast, et l'objet complet.
+
+**Quatre arbitrages.**
+
+1. *La piste de la jauge vaut le barème des exercices obligatoires*, pas le
+   barème total. Cocher tous les bonus de J01 rapporte bien 125 XP, mais la
+   barre s'arrête à 100 % : le repère ambre du seuil reste ainsi à sa place
+   (70 XP sur 95, soit 74 %, très près des 71 % de la maquette) au lieu d'être
+   écrasé vers la gauche par des bonus facultatifs. La phase 3, qui n'a ni XP
+   ni moulinette, se jauge en jalons cochés.
+2. *Le remplissage est ambre tant que le seuil n'est pas franchi*, vert après :
+   c'est la lecture du design 6.3 (« vert = progression validée, ambre =
+   épreuve en cours ») appliquée à une seule et même barre.
+3. *L'encart BERTHA porte la commande du prochain exercice à rendre*, et celle
+   du dernier quand tout est coché. La maquette y montrait un compte rendu de
+   compilation (« RC=0000, temps CPU 0,42 s ») que l'application ne peut pas
+   inventer : elle ne parle pas à la vraie moulinette. La forme sombre est
+   gardée, le contenu devient celui qu'exige le cahier des charges.
+4. *Le toast arrive avec la feuille de route*, comme annoncé en T10. Le design
+   l'impose à chaque bascule (6.2) : sans lui, cocher un exercice à 10 XP ne
+   se voit pas, la jauge bougeant de trois pixels. Il vit dans la coque,
+   `App.jsx` tient son état, et un numéro d'ordre force le remontage pour que
+   l'animation reparte même sur deux verdicts identiques.
+
+**Un défaut corrigé en chemin.** Le lecteur affichait `epreuveCourante`, qui
+saute les épreuves validées pour le bouton « reprendre » du Terminal. Dès que
+la feuille de route a su valider, cocher la dernière case remplaçait le texte
+par le sujet suivant sous les yeux du lecteur. `ui/lecteur.js` gagne donc
+`epreuveLue` : le sujet ouvert reste sur le pupitre tant qu'il est débloqué,
+validé ou non, exactement comme sa salle reste cliquable sur La Carte. Et
+comme ce verrou n'a de sens que si l'épreuve ouverte est retenue, l'écran
+l'enregistre à l'arrivée : entrer par la barre latérale (Cmd+3) est une
+ouverture de sujet comme une autre.
+
+**Accessibilité.** La case dessinée est décorative ; la vraie case reste dans
+le DOM, invisible mais focusable, et c'est la ligne qui porte le halo de
+focus. La jauge est une `progressbar` avec son `aria-valuetext` en clair
+(« 70 XP, seuil à 70 XP »), le toast un `role="status"` qui ne vole pas le
+focus.
+
+**L'autotest Electron** ne se contente plus de lire : il coche la première
+case, relève le toast, la jauge et le total, puis décoche pour rendre la
+progression exactement comme il l'a trouvée. Seule trace laissée : l'épreuve
+ouverte, que l'écran enregistre désormais à l'arrivée.
+
+Fichiers touchés : `app/src/ui/feuilleDeRoute.js`,
+`app/src/ui/feuilleDeRoute.test.js`, `app/src/ui/Toast.jsx`,
+`app/src/ecrans/FeuilleDeRoute.jsx` (nouveaux), `app/src/ecrans/Lecteur.jsx`,
+`app/src/ui/lecteur.js`, `app/src/ui/lecteur.test.js`, `app/src/App.jsx`,
+`app/src/ui/Coque.jsx`, `app/src/ui/contexte.js`,
+`app/src/styles/lecteur.css`, `app/src/styles/composants.css`,
+`app/electron/main.cjs`, `ETAT_APP.md`, `JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert (JS 509,85 ko, CSS 29,66 ko),
+`npx vitest run` vert (13 fichiers, 200 tests), autotest Electron vert
+(sortie 0, « feuille de route 1 case dont 0 bonus, cochee puis rendue »).
+
+Commits créés :
+- `app: deriver la feuille de route dans un module pur`
+- `app: annoncer les verdicts de BERTHA par un toast`
+- `design: habiller la feuille de route du lecteur`
+- `app: garder le lecteur sur le sujet ouvert une fois valide`
+- `app: brancher la feuille de route sur le store`
+- `app: retenir le sujet ouvert depuis la barre laterale`
+- `electron: cocher la feuille de route dans l autotest`
+- `doc: consigner l iteration T12`
