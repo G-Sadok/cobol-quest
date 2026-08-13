@@ -1,0 +1,327 @@
+/*
+ * La coque : barre laterale, barre d'outils, zone de contenu.
+ * C'est ce qui fait « app macOS » plutot que « page web » (note
+ * d'integration 7). Toutes les valeurs viennent de tokens.css.
+ */
+
+.coque {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  background: var(--canevas);
+  color: var(--encre);
+}
+
+/* -------------------------------------------------------- barre laterale */
+
+.barre {
+  flex: 0 0 var(--l-barre);
+  display: flex;
+  flex-direction: column;
+  background: var(--barre);
+  border-right: 1px solid var(--trait-barre);
+}
+
+/*
+ * La bande des feux est vide a dessein : macOS dessine les vrais boutons de
+ * fenetre par-dessus (titleBarStyle 'hiddenInset'), on leur reserve la place
+ * et on rend la zone deplacable.
+ */
+.barre-feux {
+  flex: 0 0 var(--h-feux);
+  height: var(--h-feux);
+  -webkit-app-region: drag;
+}
+
+.barre-identite {
+  padding: 6px var(--e6) var(--e8);
+  -webkit-app-region: drag;
+}
+
+.barre-nom {
+  margin-top: 3px;
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: var(--ls-section);
+}
+
+.barre-sous-nom {
+  font-size: var(--t-meta-2);
+  color: var(--encre-3);
+}
+
+.barre-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e1);
+  padding: 0 10px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 38px;
+  padding: var(--e3) 8px;
+  background: transparent;
+  color: var(--encre);
+  border: none;
+  border-radius: var(--r-bouton);
+  font: inherit;
+  font-size: var(--t-corps-2);
+  cursor: pointer;
+  transition: background var(--d-etat) var(--courbe-etat);
+}
+
+.nav-item:hover {
+  background: var(--survol-doux);
+}
+
+.nav-item-actif,
+.nav-item-actif:hover {
+  background: var(--vert);
+  color: var(--sur-vert);
+  font-weight: 600;
+}
+
+.nav-puce {
+  flex: 0 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--puce-nav);
+  color: var(--encre-2);
+  border-radius: var(--r-puce);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.nav-item-actif .nav-puce {
+  background: var(--puce-active);
+  color: var(--sur-vert);
+}
+
+.nav-libelle {
+  flex: 1;
+  text-align: left;
+}
+
+.nav-compteur {
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.06em;
+  color: var(--encre-3);
+}
+
+.nav-item-actif .nav-compteur {
+  color: var(--sur-vert-dim);
+}
+
+.barre-vide {
+  flex: 1;
+}
+
+/* ------------------------------------------------------- carte de profil */
+
+.profil {
+  margin: var(--e6);
+  padding: var(--e6);
+  background: var(--carte);
+  border: 1px solid var(--trait);
+  border-radius: 8px;
+  box-shadow: var(--ombre-1);
+}
+
+.profil-tete {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: var(--e5);
+}
+
+.profil-avatar {
+  flex: 0 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: var(--vert);
+  color: var(--sur-vert2);
+  border-radius: 50%;
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  font-weight: 600;
+}
+
+.profil-identite {
+  flex: 1;
+  min-width: 0;
+}
+
+.profil-role {
+  font-size: var(--t-meta);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.profil-matricule {
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.1em;
+  color: var(--encre-3);
+}
+
+.profil-pied {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--e3);
+  font-size: 11px;
+  color: var(--encre-3);
+}
+
+.profil-xp {
+  color: var(--ambre);
+  font-weight: 600;
+}
+
+.profil-vise {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--encre-3);
+}
+
+/* ---------------------------------------------------------- barre d'outils */
+
+.coque-corps {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.toolbar {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 var(--h-toolbar);
+  display: flex;
+  align-items: center;
+  gap: var(--e6);
+  height: var(--h-toolbar);
+  padding: 0 28px;
+  background: var(--toolbar);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--trait-toolbar);
+  -webkit-app-region: drag;
+}
+
+.toolbar button {
+  -webkit-app-region: no-drag;
+}
+
+.toolbar-titre {
+  font-size: var(--t-meta);
+  font-weight: 600;
+}
+
+.toolbar-precision {
+  font-size: var(--t-meta);
+  color: var(--encre-3);
+}
+
+.toolbar-vide {
+  flex: 1;
+}
+
+.bouton-theme {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 26px;
+  background: var(--pilule-bg);
+  color: var(--encre-2);
+  border: 1px solid var(--trait);
+  border-radius: var(--r-puce);
+  font: inherit;
+  font-size: var(--t-meta);
+  cursor: pointer;
+  transition: color var(--d-etat) var(--courbe-etat),
+    border-color var(--d-etat) var(--courbe-etat);
+}
+
+.bouton-theme:hover {
+  color: var(--encre);
+  border-color: var(--trait-fort);
+}
+
+.pastille-bertha {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  padding: var(--e2) 10px;
+  background: var(--pilule-bg);
+  color: var(--encre-2);
+  border: 1px solid var(--trait);
+  border-radius: var(--r-puce);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.pastille-point {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--vert);
+}
+
+/* ------------------------------------------------------------- le contenu */
+
+.coque-defile {
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.ecran {
+  margin: 0 auto;
+  padding: var(--e11) 28px var(--e13);
+}
+
+.ecran-entete {
+  margin-bottom: var(--e8);
+}
+
+.ecran-entete .etiquette-mono {
+  margin-bottom: 10px;
+}
+
+.ecran-titre {
+  margin: 0 0 6px;
+  font-size: var(--t-titre-ecran);
+  font-weight: 680;
+  line-height: var(--li-titre);
+  letter-spacing: var(--ls-titre);
+}
+
+.ecran-chapo {
+  max-width: 62ch;
+  margin: 0;
+  font-size: var(--t-sous-titre);
+  color: var(--encre-2);
+}
+
+/* Une lecture de progression qui s'est mal passee se dit, elle ne se cache pas. */
+.bandeau-alerte {
+  padding: var(--e4) 28px;
+  background: var(--danger-bg);
+  color: var(--danger-txt);
+  border-bottom: 1px solid var(--bd-danger);
+  font-size: var(--t-meta);
+}

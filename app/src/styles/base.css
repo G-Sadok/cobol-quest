@@ -1,5 +1,7 @@
 /* Socle global. Les valeurs viennent toutes de tokens.css, jamais du dur. */
 @import './tokens.css';
+@import './coque.css';
+@import './composants.css';
 
 *,
 *::before,
@@ -52,45 +54,8 @@ a:hover {
   background: var(--scroll-survol);
 }
 
-/* Coque provisoire, remplacee par le gabarit des 6 ecrans en T08. */
-.amorce {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  gap: var(--e4);
-}
-
-.amorce h1 {
-  margin: 0;
-  font-size: var(--t-titre-ecran);
-  font-weight: 680;
-  line-height: var(--li-titre);
-  letter-spacing: var(--ls-titre);
-}
-
-.amorce p {
-  margin: 0;
-  color: var(--encre-3);
-  font-family: var(--mono);
-  font-size: var(--t-label);
-  letter-spacing: var(--ls-label);
-}
-
-/* Temoins provisoires de la progression, retires avec la coque en T08. */
-.amorce-alerte {
-  color: var(--rouge);
-}
-
-.amorce-bascule {
-  padding: var(--e3) var(--e6);
-  background: var(--carte);
-  color: var(--encre);
-  border: 1px solid var(--trait);
-  border-radius: var(--r-puce);
-  font-family: var(--mono);
-  font-size: var(--t-label);
-  letter-spacing: var(--ls-label);
-  cursor: pointer;
+/* Focus clavier : un halo vert, jamais le contour du navigateur (design 6.1). */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--lueur);
 }

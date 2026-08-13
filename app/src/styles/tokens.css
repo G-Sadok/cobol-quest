@@ -36,6 +36,7 @@
   --pilule-bg: #e7e1d3;
   --piste: #e3ddce;
   --puce-nav: #dcd5c5;
+  --puce-active: rgba(255, 255, 255, 0.16);
   --inter-off: #cfc6b2;
   --scroll-survol: #b9ae95;
 
@@ -130,6 +131,8 @@
   --pilule-bg: #23241c;
   --piste: #2a2c22;
   --puce-nav: #2e3025;
+  /* Le vert d'action s'eclaircit en sombre : la puce active se creuse a l'encre. */
+  --puce-active: rgba(0, 0, 0, 0.16);
   --inter-off: #3e4034;
   --scroll-survol: #55584a;
 

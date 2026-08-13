@@ -1,0 +1,151 @@
+/*
+ * Les composants communs aux ecrans : etiquettes mono, cartes, jauges,
+ * console BERTHA. Chaque tache de la feuille de route en ajoute ici plutot
+ * que de refaire les siens dans son coin.
+ */
+
+/* Label de section : mono, MAJUSCULES sans accents, tres interlettre. */
+.etiquette-mono {
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--ls-label);
+  color: var(--encre-3);
+}
+
+.etiquette-ambre {
+  color: var(--ambre);
+}
+
+.carte {
+  overflow: hidden;
+  background: var(--carte);
+  border: 1px solid var(--trait);
+  border-radius: var(--r-carte);
+  box-shadow: var(--ombre-1);
+}
+
+.carte-tete {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: var(--e6) var(--e8);
+  background: var(--tete);
+  border-bottom: 1px solid var(--trait-doux);
+}
+
+.carte-corps {
+  padding: var(--e9) var(--e8) var(--e8);
+}
+
+/* Jauge d'XP : piste + remplissage, la largeur s'anime en 240ms. */
+.jauge {
+  overflow: hidden;
+  height: 7px;
+  background: var(--panneau);
+  border-radius: 4px;
+}
+
+.jauge-profil {
+  height: 5px;
+  background: var(--piste);
+  border-radius: 3px;
+}
+
+.jauge-remplissage {
+  height: 100%;
+  background: var(--vert);
+  border-radius: inherit;
+  transition: width var(--d-jauge) var(--courbe-etat);
+}
+
+.jauge-ambre .jauge-remplissage {
+  background: var(--ambre);
+}
+
+/*
+ * La console BERTHA : le seul objet sombre de l'interface claire, identique
+ * dans les deux themes (note d'integration 3).
+ */
+.console {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--e6);
+  padding: var(--e6) var(--e7);
+  background: var(--console);
+  border-radius: var(--r-carte);
+  font-family: var(--mono);
+  font-size: var(--t-code);
+  line-height: var(--li-lecture);
+  color: var(--phosphore);
+}
+
+.console-texte {
+  white-space: pre-wrap;
+}
+
+.console-vide {
+  flex: 1;
+}
+
+.console-curseur {
+  flex: 0 0 8px;
+  width: 8px;
+  height: 15px;
+  background: var(--phosphore);
+}
+
+.chantier-texte {
+  max-width: 62ch;
+  margin: 0 0 var(--e8);
+  color: var(--encre-2);
+}
+
+/* ------------------------------------------------------------ les effets */
+
+/*
+ * Le reglage « effets » du cahier des charges (§5.6, l'interrupteur
+ * scanlines) ne s'applique QU'AUX objets sombres : le design interdit tout
+ * fond anime a l'echelle de la page (regle 5 du §7). Il gouverne donc le
+ * clignotement du phosphore et le fin balayage des consoles.
+ */
+@keyframes phosphore {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.15;
+  }
+}
+
+[data-effets='1'] .console-curseur {
+  animation: phosphore 1060ms step-end infinite;
+}
+
+[data-effets='1'] .pastille-point {
+  animation: phosphore 2400ms ease-in-out infinite;
+}
+
+[data-effets='1'] .console::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.18) 0,
+    rgba(0, 0, 0, 0.18) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-effets='1'] .console-curseur,
+  [data-effets='1'] .pastille-point {
+    animation: none;
+  }
+}

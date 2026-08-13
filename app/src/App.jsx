@@ -1,49 +1,79 @@
-// Coque provisoire : le gabarit conforme au design est posé plus tard (T08).
-// Elle sert ici de témoin que le corpus est bien embarqué à la compilation et
-// que la progression fait l'aller-retour avec le fichier de l'utilisateur.
-import { cheminsSujets } from './data/corpus.js'
-import { epreuvesPiscine, xpMaximum } from './data/programme.js'
+// La racine : elle charge la progression une fois pour toutes, tient l'ecran
+// ouvert, applique le theme et les effets sur la racine du document, puis
+// distribue le tout aux 6 ecrans par le contexte.
+
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import Carte from './ecrans/Carte.jsx'
+import Lecteur from './ecrans/Lecteur.jsx'
+import Livret from './ecrans/Livret.jsx'
+import Quiz from './ecrans/Quiz.jsx'
+import Reglages from './ecrans/Reglages.jsx'
+import Terminal from './ecrans/Terminal.jsx'
+import { ouvrirEpreuve } from './store/progression.js'
 import { useProgression } from './store/useProgression.js'
-import {
-  basculerExercice,
-  echelonCourant,
-  epreuveCourante,
-  etatEpreuve,
-  xpTotal
-} from './store/progression.js'
+import Coque from './ui/Coque.jsx'
+import { ContexteApp } from './ui/contexte.js'
+import { ecranParDefaut, ecranParId, ecranParRaccourci } from './ui/ecrans.js'
+
+const RENDU = {
+  terminal: Terminal,
+  carte: Carte,
+  lecteur: Lecteur,
+  quiz: Quiz,
+  livret: Livret,
+  reglages: Reglages
+}
 
 export default function App() {
-  const { etat, charge, alerte, appliquer, persistance } = useProgression()
-  const xpPiscine = epreuvesPiscine.reduce((cumul, e) => cumul + xpMaximum(e), 0)
-  const echelon = echelonCourant(etat)
-  const courante = epreuveCourante(etat)
+  const { etat, charge, alerte, appliquer, remplacer, persistance } = useProgression()
+  const [ecran, setEcran] = useState(ecranParDefaut)
+
+  const aller = useCallback((id) => {
+    if (ecranParId(id)) setEcran(id)
+  }, [])
+
+  /** Retient l'epreuve puis ouvre le lecteur : le geste de La Carte (T10). */
+  const ouvrirSujet = useCallback(
+    (idEpreuve) => {
+      appliquer(ouvrirEpreuve, idEpreuve)
+      setEcran('lecteur')
+    },
+    [appliquer]
+  )
+
+  // Cmd+1 a Cmd+6, dans l'ordre de la barre laterale (design, section 5).
+  useEffect(() => {
+    function auClavier(evenement) {
+      if (!evenement.metaKey || evenement.ctrlKey || evenement.altKey) return
+      const vise = ecranParRaccourci(evenement.key)
+      if (!vise) return
+      evenement.preventDefault()
+      setEcran(vise)
+    }
+    window.addEventListener('keydown', auClavier)
+    return () => window.removeEventListener('keydown', auClavier)
+  }, [])
+
+  // Theme et effets : deux attributs sur <html>, tout le reste est du CSS.
+  // Regle sacree du design : aucune couleur en dur dans un composant.
+  useEffect(() => {
+    const racine = document.documentElement
+    racine.dataset.sombre = etat.reglages.sombre ? '1' : '0'
+    racine.dataset.effets = etat.reglages.scanlines ? '1' : '0'
+  }, [etat.reglages.sombre, etat.reglages.scanlines])
+
+  const contexte = useMemo(
+    () => ({ etat, charge, alerte, appliquer, remplacer, persistance, ecran, aller, ouvrirSujet }),
+    [etat, charge, alerte, appliquer, remplacer, persistance, ecran, aller, ouvrirSujet]
+  )
+
+  const Ecran = RENDU[ecran]
 
   return (
-    <main className="amorce">
-      <h1>COBOL QUEST</h1>
-      <p>Operation Marcel - CGBA</p>
-      <p>{cheminsSujets.length} sujets embarqués</p>
-      <p>
-        Progression : {persistance.presente() ? 'fichier utilisateur' : 'mémoire (dev navigateur)'}
-        {charge ? ', chargée' : ', en cours de lecture'}
-      </p>
-      {alerte ? <p className="amorce-alerte">{alerte}</p> : null}
-      <p>
-        Piscine : {epreuvesPiscine.length} épreuves, {xpPiscine} XP possibles
-      </p>
-      <p>
-        Échelon {echelon.niveau} : {echelon.titre} - {xpTotal(etat)} XP
-      </p>
-      <p>
-        Épreuve du moment : {courante.id} {courante.titre} ({etatEpreuve(etat, courante.id)})
-      </p>
-      <button
-        type="button"
-        className="amorce-bascule"
-        onClick={() => appliquer(basculerExercice, 'J00', 'ex00')}
-      >
-        Basculer J00 / ex00
-      </button>
-    </main>
+    <ContexteApp.Provider value={contexte}>
+      <Coque>
+        <Ecran />
+      </Coque>
+    </ContexteApp.Provider>
   )
 }
