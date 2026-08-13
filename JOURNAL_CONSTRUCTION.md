@@ -215,3 +215,63 @@ Commits créés :
 - `electron: poser la fenetre, le menu francais et l'IPC de progression`
 - `app: afficher l'etat du pont cgba dans la coque provisoire`
 - `doc: consigner l'iteration T04`
+
+## T05 - Le manifeste de la piscine
+
+Tâche : `app/src/data/programme.js`, manifeste complet de la PISCINE (J00 à J10,
+RUSH01 et RUSH02) : exercices, XP, bonus et seuils extraits des barèmes des
+sujets, contrôle croisé avec le livret `progression/XP_ET_BADGES.md`.
+
+**Le contrôle croisé (barèmes des sujets contre livret) : aucun écart de
+chiffre.** Les treize lignes du tableau 1 du livret tombent exactement sur la
+somme des tableaux « BARÈME DU JOUR » : 30 / 95+30 / 120+40 / 120+30 / 130+30 /
+135+30 / 120+30 (RUSH01) / 130+25 / 120+20 / 130+20 / 130+20 / 150+30 (RUSH02) /
+200. Total : 1 610 XP de base et 305 XP de bonus, soit les « environ 1 900 XP de
+piscine » annoncés par le livret.
+
+Décisions et écarts tranchés :
+- **Badge COLONNE 7** : le sujet J00 le donne à la fin de son exercice 00, le
+  livret le rattache à J01. Le livret fait foi (§6 du cahier des charges) : il
+  est déclaré sur J01, et J00 ne porte que PREMIÈRE COMPILE.
+- **Seuil des rushs** : ni RUSH01 ni RUSH02 ne portent de ligne
+  « Validation : ≥ N XP ». Les dix journées de piscine posent leur seuil entre
+  69 % et 74 % de leur barème ; les rushs reçoivent donc 70 % du leur, soit 84
+  (sur 120) et 105 (sur 150). C'est une convention de l'application, signalée en
+  commentaire dans le fichier ; elle sera révisée si un sujet la contredit.
+- **Découpage des rushs et de J10** : leurs barèmes sont des critères, pas des
+  exercices numérotés. Ils sont modélisés comme des `exercices` (`c1`, `c2`...
+  pour les rushs, `a1`/`a2`/`a3`/`b1`/`b2`/`c` pour l'examen) afin que la feuille
+  de route de T12 ait des cases à cocher homogènes partout.
+- **Cible BERTHA** : chaque exercice porte son argument de moulinette
+  (`J03/ex05`, `RUSH01`, `J10/c`), tel que `bertha.sh` l'attend d'après son
+  message d'usage. `commandeBertha()` en fabrique la ligne pour l'encart du
+  lecteur.
+- **J00 hors `piscine/`** : son sujet est `02_J00_INSTALLATION.md`, à la racine
+  du corpus ; le chemin du manifeste le reflète.
+- Les missions M01 à M06, la phase 3 et `echelons.js` sont la tâche T06 :
+  `epreuves` est déjà l'agrégat qui les accueillera.
+
+Dépendance ajoutée : **vitest**, prévue au §2 du cahier des charges, avec le
+script `test` (`vitest run`) exigé par ce même §2. Elle arrive une tâche plus tôt
+que prévu parce qu'un manifeste de données se vérifie par un test, pas à l'œil :
+`src/data/programme.test.js` rejoue le tableau du livret, contrôle que la somme
+des barèmes tombe juste, que les seuils sont atteignables sans bonus, que la
+chaîne de prérequis est continue, que chaque `chemin` existe vraiment dans le
+corpus embarqué, que les identifiants sont uniques et qu'aucun tiret cadratin ne
+s'est glissé dans les libellés.
+
+Fichiers touchés : `app/src/data/programme.js` (nouveau),
+`app/src/data/programme.test.js` (nouveau), `app/package.json` (script `test`,
+devDependency vitest), `app/package-lock.json`, `app/src/App.jsx` (la coque
+provisoire affiche le sommaire de la piscine, ce qui met le manifeste dans le
+bundle et le fait donc contrôler par le build), `ETAT_APP.md`,
+`JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npx vitest run` vert (1 fichier, 12 tests), `npm run build` vert
+(53 modules, JS 309,32 ko, CSS 6,11 ko).
+
+Commits créés :
+- `app: poser le manifeste de la piscine dans programme.js`
+- `tests: controler le bareme de la piscine contre le livret`
+- `app: afficher le sommaire de la piscine dans la coque provisoire`
+- `doc: consigner l'iteration T05`

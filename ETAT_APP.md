@@ -22,7 +22,7 @@ l'itération suivante avant de continuer.
       progression charger/sauver vers `userData/progression.json` ; scripts
       `dev:app`, config `electron-builder` (appId, productName, mac) ; lancement
       dev vérifié.
-- [ ] T05 — `programme.js` : manifeste complet PISCINE (J00→J10, RUSH01/02) —
+- [x] T05 — `programme.js` : manifeste complet PISCINE (J00→J10, RUSH01/02) —
       exercices/XP/bonus/seuils extraits des barèmes des sujets ; contrôle
       croisé avec le livret consigné au JOURNAL.
 - [ ] T06 — `programme.js` : MISSIONS M01→M06 + PHASE3 ; `echelons.js`
@@ -101,3 +101,13 @@ l'itération suivante avant de continuer.
   `{ ok: true, progression: null }` (aucun fichier au premier lancement).
   4 dependances de developpement ajoutees, toutes prevues au §2 : electron,
   electron-builder, concurrently, wait-on. Build vert.
+- 2026-08-13 T05 : `src/data/programme.js` porte les 13 epreuves de la piscine
+  dans l'ordre obligatoire (J00..J05, RUSH01, J06..J09, RUSH02, J10), soit
+  1 610 XP de base + 305 de bonus (le livret annonce « environ 1 900 »). XP,
+  exercices et seuils repris des tableaux « BAREME DU JOUR » ; controle croise
+  avec le livret sans aucun ecart. Deux ecarts tranches : le badge COLONNE 7 est
+  rattache a J01 (le livret fait foi, le sujet J00 le cite en passant), et les
+  deux rushs, qui n'ont pas de ligne « Validation : >= N XP », recoivent 70 % de
+  leur bareme (84 et 105) comme les journees. Les rushs et J10 sont decoupes
+  selon leurs criteres de bareme, pas en exercices numerotes. vitest installe
+  (prevu au §2) avec le script `test` : 12 tests verts, build vert.
