@@ -77,7 +77,7 @@
     border-color var(--d-etat) var(--courbe-etat);
 }
 
-.bouton-secondaire:hover {
+.bouton-secondaire:hover:not(:disabled) {
   background: var(--survol-doux);
 }
 
@@ -95,6 +95,48 @@
 
 .bouton-lien:hover {
   color: var(--lien-survol);
+}
+
+/* Danger : l'action destructrice, qui se remplit de rouge au survol. */
+.bouton-danger {
+  padding: var(--e4) var(--e7);
+  background: var(--carte);
+  color: var(--rouge);
+  border: 1px solid var(--bd-danger-btn);
+  border-radius: var(--r-bouton);
+  font: inherit;
+  font-size: var(--t-corps-2);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--d-etat) var(--courbe-etat),
+    color var(--d-etat) var(--courbe-etat),
+    border-color var(--d-etat) var(--courbe-etat);
+}
+
+.bouton-danger:hover:not(:disabled) {
+  background: var(--rouge);
+  border-color: var(--rouge);
+  color: var(--sur-plein);
+}
+
+/* Un bouton desactive ne promet rien : ni ombre, ni survol, ni curseur. */
+.bouton-primaire:disabled {
+  background: var(--trait);
+  box-shadow: none;
+}
+
+.bouton-secondaire:disabled,
+.bouton-danger:disabled {
+  border-color: var(--trait-doux4);
+}
+
+.bouton-primaire:disabled,
+.bouton-secondaire:disabled,
+.bouton-danger:disabled {
+  color: var(--badge-off-txt);
+  cursor: not-allowed;
 }
 
 /* Console : le seul bouton pose sur une surface sombre. */
@@ -116,6 +158,113 @@
 .bouton-console:hover {
   color: var(--phosphore);
   border-color: var(--phosphore-bd);
+}
+
+/* Interrupteur (design 6.9) : piste 44x26, pastille 22 poussee par le flex. */
+.interrupteur {
+  display: flex;
+  flex: 0 0 44px;
+  justify-content: flex-start;
+  width: 44px;
+  height: 26px;
+  padding: 2px;
+  background: var(--inter-off);
+  border: none;
+  border-radius: 13px;
+  cursor: pointer;
+  transition: background var(--d-interrupteur) var(--courbe-etat);
+}
+
+.interrupteur[aria-checked='true'] {
+  justify-content: flex-end;
+  background: var(--vert);
+}
+
+.interrupteur-pastille {
+  width: 22px;
+  height: 22px;
+  background: var(--pastille);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px var(--o-past);
+}
+
+/*
+ * Boite de confirmation (design 6.7) : voile flou, boite de 420px centree en
+ * texte, deux boutons a parts egales. L'action destructrice n'est jamais le
+ * bouton par defaut : c'est le repli qui prend le focus a l'ouverture.
+ */
+.modale-voile {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--e8);
+  background: var(--voile);
+  backdrop-filter: blur(3px);
+}
+
+.modale {
+  width: 420px;
+  max-width: 100%;
+  padding: var(--e9) var(--e9) var(--e7);
+  background: var(--carte);
+  border: 1px solid var(--trait-fort);
+  border-radius: var(--r-modale);
+  box-shadow: var(--ombre-3);
+  text-align: center;
+}
+
+.modale-pastille {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto var(--e7);
+  background: var(--danger-bg);
+  border: 1px solid var(--bd-danger);
+  border-radius: 50%;
+  color: var(--rouge);
+  font-size: 20px;
+}
+
+.modale-titre {
+  margin: 0 0 var(--e3);
+  font-size: var(--t-sous-titre);
+  font-weight: 640;
+  letter-spacing: var(--ls-section);
+}
+
+.modale-corps {
+  margin: 0 0 var(--e8);
+  color: var(--encre-2);
+  font-size: var(--t-code);
+  line-height: 1.65;
+}
+
+.modale-boutons {
+  display: flex;
+  gap: var(--e5);
+}
+
+.modale-boutons > button {
+  flex: 1;
+  padding: var(--e5);
+  font-size: var(--t-corps-2);
+}
+
+/* Le second bouton de la boite est plein : c'est la derniere marche. */
+.bouton-danger-plein {
+  background: var(--rouge);
+  border-color: var(--rouge);
+  color: var(--sur-plein);
+}
+
+.bouton-danger-plein:hover:not(:disabled) {
+  background: var(--rouge-survol);
+  border-color: var(--rouge-survol);
 }
 
 /* Jauge d'XP : piste + remplissage, la largeur s'anime en 240ms. */

@@ -1,0 +1,152 @@
+/* REGLAGES : trois blocs empiles dans une colonne de 680px (le rythme,
+   l'affichage, la progression), puis l'encart rouge de la remise a zero.
+   Les composants partages (interrupteur, boite de confirmation, bouton
+   danger) vivent dans composants.css. */
+
+.reglages-bloc {
+  margin-bottom: var(--e9);
+}
+
+.reglages-bloc .etiquette-mono {
+  display: block;
+  margin-bottom: var(--e5);
+}
+
+/* Une ligne de reglage : le libelle et sa precision a gauche, la commande
+   a droite. Le separateur ne se pose qu'entre deux lignes. */
+.reglage-ligne {
+  display: flex;
+  gap: var(--e7);
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: var(--e6) var(--e7);
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.reglage-ligne + .reglage-ligne {
+  border-top: 1px solid var(--trait-doux3);
+}
+
+.reglage-corps {
+  flex: 1;
+}
+
+.reglage-nom {
+  display: block;
+  font-size: var(--t-corps-2);
+}
+
+.reglage-detail {
+  display: block;
+  margin-top: var(--e1);
+  color: var(--encre-3);
+  font-size: var(--t-meta-2);
+}
+
+/* Le rythme : une ligne entiere cliquable, la cadence alignee a droite. */
+.rythme-ligne {
+  cursor: pointer;
+}
+
+.rythme-ligne[aria-checked='true'] {
+  background: var(--ligne-active);
+}
+
+.rythme-ligne[aria-checked='true'] .reglage-nom {
+  font-weight: 600;
+}
+
+.rythme-cadence {
+  color: var(--encre-3);
+  font-size: var(--t-meta);
+}
+
+/* Le bouton radio (design 6.10) : cercle de 17px, point de 6px au centre. */
+.rythme-puce {
+  display: flex;
+  flex: 0 0 17px;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  background: var(--carte);
+  border: 1px solid var(--trait-fort);
+  border-radius: 50%;
+}
+
+.rythme-ligne[aria-checked='true'] .rythme-puce {
+  background: var(--vert);
+  border-color: var(--vert);
+}
+
+.rythme-point {
+  width: 6px;
+  height: 6px;
+  background: transparent;
+  border-radius: 50%;
+}
+
+.rythme-ligne[aria-checked='true'] .rythme-point {
+  background: var(--sur-vert);
+}
+
+/* La progression : les deux boites natives, puis le releve du dernier geste. */
+.reglages-progression {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e5);
+  align-items: center;
+  padding: var(--e7);
+}
+
+.reglages-releve {
+  flex: 1 1 200px;
+  margin: 0;
+  color: var(--encre-3);
+  font-size: var(--t-meta-2);
+  text-align: right;
+}
+
+.reglages-releve[data-ton='non'] {
+  color: var(--danger-txt);
+}
+
+/* La note sous un bloc : elle explique une regle, elle ne rend aucun compte. */
+.reglages-note {
+  margin: var(--e5) 0 0;
+  color: var(--encre-3);
+  font-size: var(--t-meta-2);
+}
+
+/* L'encart rouge : ce bloc-la ne se confond avec aucun autre. */
+.reglages-danger {
+  display: flex;
+  gap: var(--e7);
+  align-items: center;
+  padding: var(--e7);
+  background: var(--danger-bg);
+  border: 1px solid var(--bd-danger);
+  border-radius: var(--r-carte);
+}
+
+.reglages-danger-corps {
+  flex: 1;
+}
+
+.reglages-danger-titre {
+  color: var(--rouge);
+  font-size: var(--t-corps-2);
+  font-weight: 600;
+}
+
+.reglages-danger-texte {
+  margin-top: var(--e1);
+  color: var(--danger-txt);
+  font-size: var(--t-meta-2);
+  line-height: 1.55;
+}
