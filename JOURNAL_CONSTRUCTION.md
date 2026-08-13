@@ -1027,3 +1027,79 @@ Commits créés :
 - `app: l ecran LE QUIZ DU SOIR, correction commentee et XP unique`
 - `electron: passer une question du quiz dans l autotest`
 - `doc: consigner l iteration T16`
+
+## T17 - L'écran des réglages
+
+Tâche : la dix-septième d'`ETAT_APP.md`, l'écran RÉGLAGES (cahier des charges,
+§5.6) : l'export et l'import de la progression par les boîtes natives de macOS,
+la remise à zéro à double confirmation, le choix du rythme et l'interrupteur des
+effets. Les quatre handlers IPC existaient depuis T04, la persistance savait
+déjà les appeler depuis T07 : il ne manquait que le poste de travail d'où on
+s'en sert.
+
+Le partage reste celui des six écrans précédents. Un module pur de plus,
+`src/ui/reglages.js`, décide tout : les trois lignes de rythme, les deux
+interrupteurs, le poids de la carrière (XP, décorations, salles validées), le
+texte des deux boîtes de confirmation et les comptes rendus d'export, d'import
+et d'effacement. `src/ecrans/Reglages.jsx` ne tient que deux choses : le rang
+de la boîte ouverte et le relevé du dernier mouvement de fichier.
+
+Quatre arbitrages.
+
+Le premier : la double confirmation exigée par le §5.6 est faite de DEUX boîtes
+successives, dans la même coque du design 6.7. La première annonce ce qui part
+(« 1 240 XP, 3 décorations et 4 salles validées partent au broyeur ») et son
+bouton rouge porte trois points de suspension, puisqu'il ouvre encore quelque
+chose ; la seconde demande le dernier mot et porte seul le bouton
+« Effacer définitivement ». À chaque étape, « Échap » annule et c'est le bouton
+de repli qui prend le focus : l'action destructrice n'est jamais celle par
+défaut.
+
+Le deuxième : la maquette montre trois interrupteurs (thème sombre, console
+BERTHA en phosphore, curseur clignotant), l'application n'en pose que deux. Le
+cahier des charges ne prévoit qu'un « interrupteur scanlines », et T08 en avait
+déjà fait l'interrupteur des effets de phosphore ; les deux dernières lignes de
+la maquette sont donc réunies en une, « Effets de phosphore », qui gouverne le
+curseur, la pastille BERTHA et le balayage des consoles. Rien n'est ajouté au
+schéma de la progression, qui reste à trois réglages.
+
+Le troisième : les noms des rythmes viennent de la maquette (Tranquille,
+Soutenu, Marcel en 1987) et leur ordre aussi, du plus calme au plus dur ; leurs
+identifiants restent ceux du cahier des charges (`tranquille`, `soutenu`,
+`intensif`), et ce sont eux qui partent dans le fichier. Une note sous le bloc
+rappelle que le rythme est indicatif : il n'ouvre ni ne ferme aucune salle.
+
+Le quatrième : la maquette réserve un coin du bloc « progression » à un
+« Dernier export : 11 août 2026 ». Rien de tel n'est stocké (une date d'export
+n'est pas de la progression), donc cette ligne devient le relevé du dernier
+mouvement de la session : le nom du fichier écrit ou relu, un import annulé qui
+n'a rien changé, ou la raison complète d'un échec, que le toast en mono ne peut
+pas porter. Hors application (navigateur de développement), les deux boutons
+sont désactivés et la ligne dit pourquoi.
+
+Deux ajouts au catalogue partagé (`composants.css`), tous deux du design : le
+bouton danger (6.1) avec ses états désactivés, l'interrupteur (6.9) et la boîte
+de confirmation (6.7), montée en composant `src/ui/Modale.jsx`. Le bloc de
+chantier, lui, disparaît : les six écrans sont posés, plus personne ne
+l'importe.
+
+Fichiers touchés : `app/src/ui/reglages.js`, `app/src/ui/reglages.test.js`,
+`app/src/ui/Modale.jsx`, `app/src/styles/reglages.css` (nouveaux),
+`app/src/ecrans/Reglages.jsx`, `app/src/styles/composants.css`,
+`app/src/styles/base.css`, `app/src/ecrans/Chantier.jsx` (supprimé),
+`app/electron/main.cjs`, `ETAT_APP.md`, `JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert (JS 585,53 ko, CSS 42,40 ko),
+`npx vitest run` vert (17 fichiers, 344 tests), autotest Electron vert
+(3 rythmes, 2 interrupteurs, rythme changé puis rendu, boîte d'effacement
+ouverte, première confirmation passée, seconde annulée par « Échap » : rien
+n'est effacé).
+
+Commits créés :
+- `app: deriver les reglages dans un module pur`
+- `tests: couvrir les reglages, l export et la remise a zero`
+- `design: habiller l ecran des reglages, l interrupteur et la boite de confirmation`
+- `app: l ecran REGLAGES, export/import et remise a zero a double confirmation`
+- `app: retirer le bloc de chantier, les six ecrans sont poses`
+- `electron: passer les reglages et la double confirmation dans l autotest`
+- `doc: consigner l iteration T17`

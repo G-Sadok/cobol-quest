@@ -47,7 +47,7 @@ l'itération suivante avant de continuer.
 - [x] T15 — Contenu des quiz J06→J09 + RUSH01 + RUSH02 (mêmes règles).
 - [x] T16 — Écran QUIZ DU SOIR : déroulé, correction commentée, +10 XP si ≥6/8,
       XP unique par épreuve.
-- [ ] T17 — Écran RÉGLAGES : export/import via IPC (boîtes de dialogue natives),
+- [x] T17 — Écran RÉGLAGES : export/import via IPC (boîtes de dialogue natives),
       remise à zéro double confirmation, rythme, scanlines.
 - [ ] T18 — Icône : `design/icone.png` si fourni, sinon dessin de repli ;
       `app/scripts/make-icon.sh` (sips + iconutil) → `app/build/icon.icns`.
@@ -246,3 +246,21 @@ l'itération suivante avant de continuer.
   Build vert, 315 tests verts, autotest Electron vert (question repondue,
   correction lue, question suivante ; la huitieme n'est jamais atteinte, une
   tentative ne se reprenant pas).
+- 2026-08-14 T17 : le poste de travail est branche. Un module pur de plus,
+  `src/ui/reglages.js` (rythmes, interrupteurs, poids de la carriere, texte des
+  boites, comptes rendus de fichier) ; `src/ecrans/Reglages.jsx` ne tient que
+  le rang de la boite ouverte et le releve du dernier mouvement. Quatre
+  arbitrages : la double confirmation du §5.6 est faite de DEUX boites
+  successives dans la coque du design 6.7, « Echap » annulant a chaque etape et
+  le repli gardant le focus ; les trois interrupteurs de la maquette deviennent
+  deux, le cahier des charges ne prevoyant qu'un interrupteur d'effets (T08 en
+  avait deja fait celui du phosphore), et le schema de la progression ne bouge
+  pas ; les rythmes portent les noms et l'ordre de la maquette (Tranquille,
+  Soutenu, Marcel en 1987) mais gardent les identifiants du cahier des charges ;
+  le « dernier export » de la maquette devient le releve de la session (nom du
+  fichier ecrit ou relu, import annule, ou raison complete d'un echec), aucune
+  date d'export n'etant stockee. Ajouts au catalogue partage : bouton danger,
+  interrupteur, boite de confirmation (`ui/Modale.jsx`). Le bloc de chantier est
+  retire : les six ecrans sont poses. Build vert, 344 tests verts, autotest
+  Electron vert (rythme change puis rendu, effacement ouvert, premiere
+  confirmation passee, seconde annulee : rien n'est efface).
