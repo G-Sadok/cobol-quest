@@ -12,7 +12,6 @@ import { useApp } from '../ui/contexte.js'
 import { ecranParId } from '../ui/ecrans.js'
 import { espacerMilliers } from '../ui/format.js'
 import {
-  GLYPHE_DECORATION,
   carriere,
   dernieresDecorations,
   epreuveDuMoment,
@@ -139,11 +138,11 @@ export default function Terminal() {
                 {decorations.map((decoration) => (
                   <div className="decoration" key={decoration.id}>
                     <div className="decoration-medaille" aria-hidden="true">
-                      {GLYPHE_DECORATION}
+                      {decoration.glyphe}
                     </div>
                     <div className="decoration-nom">{decoration.libelle}</div>
                     <div className="decoration-source">
-                      {decoration.idEpreuve ? `Épreuve ${decoration.idEpreuve}` : 'Hors programme'}
+                      {decoration.idEpreuve ? `Épreuve ${decoration.idEpreuve}` : 'Toute la piscine'}
                       {decoration.surLHonneur ? ' · sur l’honneur' : ''}
                     </div>
                   </div>

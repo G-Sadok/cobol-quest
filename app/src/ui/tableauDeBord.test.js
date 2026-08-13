@@ -89,11 +89,11 @@ describe('dernieresDecorations', () => {
     expect(dernieresDecorations(etatInitial())).toEqual([])
   })
 
-  it('rend les trois dernieres, la plus recente en tete', () => {
+  it('rend les trois dernieres, la plus avancee en tete', () => {
     let etat = definirBadge(etatInitial(), 'premiere-compile', true)
-    etat = definirBadge(etat, 'colonne-7', true)
+    etat = definirBadge(etat, 'colonne-7', true, 'honneur')
     etat = definirBadge(etat, 'les-quatre-saisons', true)
-    etat = definirBadge(etat, 'survivant-y2k', true, 'honneur')
+    etat = definirBadge(etat, 'survivant-y2k', true)
 
     const dernieres = dernieresDecorations(etat)
     expect(dernieres.map((d) => d.id)).toEqual([
@@ -102,9 +102,12 @@ describe('dernieresDecorations', () => {
       'colonne-7'
     ])
     expect(dernieres[0].libelle).toBe('SURVIVANT Y2K')
-    expect(dernieres[0].surLHonneur).toBe(true)
+    expect(dernieres[0].glyphe).toBe('⌛')
     expect(dernieres[0].idEpreuve).toBe('J02')
-    expect(dernieres[1].surLHonneur).toBe(false)
+    // La source vient du catalogue, pas de la progression : SURVIVANT Y2K se
+    // mesure, COLONNE 7 se donne sur l'honneur.
+    expect(dernieres[0].surLHonneur).toBe(false)
+    expect(dernieres[2].surLHonneur).toBe(true)
   })
 
   it('en rend moins de trois quand il y en a moins', () => {
@@ -114,9 +117,13 @@ describe('dernieresDecorations', () => {
 })
 
 describe('epreuveDuBadge', () => {
-  it('rattache chaque badge du programme a une epreuve', () => {
-    expect(badgesDuProgramme.length).toBeGreaterThan(0)
+  it('rattache a une epreuve tous les badges sauf celui de la piscine entiere', () => {
+    expect(badgesDuProgramme).toHaveLength(26)
     for (const id of badgesDuProgramme) {
+      if (id === 'dompteur-de-bertha') {
+        expect(epreuveDuBadge(id)).toBeNull()
+        continue
+      }
       expect(epreuveParId(epreuveDuBadge(id))).not.toBeNull()
     }
   })

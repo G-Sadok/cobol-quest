@@ -7,7 +7,7 @@
 // React ni au DOM, pour que l'ecran ne soit plus que de la mise en page et que
 // la regle d'affichage se teste sans monter de composant.
 
-import { libelleBadge } from '../data/badges.js'
+import { badgeParId, idsBadges } from '../data/badges.js'
 import {
   echelons,
   echelonSuivant,
@@ -39,26 +39,15 @@ export const LIEUX = Object.freeze({
   phase3: 'Salle machine IBM'
 })
 
+/** Toutes les decorations du livret, dans son ordre (data/badges.js). */
+export const badgesDuProgramme = idsBadges
+
 /**
- * Le glyphe de medaille, en attendant le catalogue des badges (T13) qui
- * donnera le sien a chacun. Un seul signe vaut mieux qu'un signe faux.
+ * L'epreuve qui met un badge en jeu, ou null quand il vient d'ailleurs
+ * (DOMPTEUR DE BERTHA couronne la piscine entiere, pas une journee).
  */
-export const GLYPHE_DECORATION = '✦'
-
-// Le badge appartient a la premiere epreuve qui le met en jeu.
-const EPREUVE_DU_BADGE = new Map()
-for (const epreuve of epreuves) {
-  for (const idBadge of epreuve.badges) {
-    if (!EPREUVE_DU_BADGE.has(idBadge)) EPREUVE_DU_BADGE.set(idBadge, epreuve.id)
-  }
-}
-
-/** Tous les badges que le programme met en jeu, dans l'ordre des epreuves. */
-export const badgesDuProgramme = Object.freeze([...EPREUVE_DU_BADGE.keys()])
-
-/** L'epreuve qui met un badge en jeu, ou null quand il vient d'ailleurs. */
 export function epreuveDuBadge(idBadge) {
-  return EPREUVE_DU_BADGE.get(idBadge) ?? null
+  return badgeParId(idBadge)?.idEpreuve ?? null
 }
 
 /** Le lieu d'une epreuve, tel qu'il s'annonce sur La Carte. */
@@ -102,21 +91,26 @@ export function epreuveDuMoment(etat) {
 }
 
 /**
- * Les dernieres decorations obtenues, la plus recente en tete. L'ordre est
- * celui des attributions : le store range les badges dans l'ordre ou ils
- * tombent.
+ * Les dernieres decorations obtenues, la plus avancee en tete. Un badge
+ * mesurable ne s'ecrit plus dans la progression, il se deduit de l'etat : il
+ * n'y a donc plus de chronologie a suivre. L'ordre du livret la remplace, et
+ * il dit a peu pres la meme chose, le programme etant sequentiel.
  */
 export function dernieresDecorations(etat, combien = 3) {
   const obtenus = badgesObtenus(etat)
   return obtenus
     .slice(Math.max(0, obtenus.length - combien))
     .reverse()
-    .map((id) => ({
-      id,
-      libelle: libelleBadge(id),
-      surLHonneur: etat.badges[id] === 'honneur',
-      idEpreuve: epreuveDuBadge(id)
-    }))
+    .map((id) => {
+      const badge = badgeParId(id)
+      return {
+        id,
+        libelle: badge?.nom ?? '',
+        glyphe: badge?.glyphe ?? '',
+        surLHonneur: badge?.surLHonneur === true,
+        idEpreuve: badge?.idEpreuve ?? null
+      }
+    })
 }
 
 /** Les salles franchies et celles qui restent, pour le chapo du terminal. */
