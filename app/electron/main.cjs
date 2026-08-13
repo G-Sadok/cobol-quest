@@ -108,17 +108,27 @@ function creerFenetre () {
         // est un reglage donc doit descendre jusqu'au fichier (ecriture amortie
         // a 500 ms). Le second clic remet le theme comme il etait : l'autotest
         // ne laisse aucune trace dans la progression de l'utilisateur.
+        // On y lit aussi le tableau de bord (T09) au passage, avant de quitter
+        // l'ecran : rien n'y est clique, justement pour ne rien ecrire.
         const rapport = await fenetre.webContents.executeJavaScript(`(async () => {
           const attendre = (ms) => new Promise((suite) => setTimeout(suite, ms))
           const sombreDe = (r) => Boolean(r && r.progression && r.progression.reglages
             && r.progression.reglages.sombre)
           const titre = () => (document.querySelector('.toolbar-titre') || {}).textContent || ''
+          const lire = (selecteur) => (document.querySelector(selecteur) || {}).innerText || ''
           const racine = document.documentElement
           const pont = Boolean(window.cgba && window.cgba.present)
           const avant = pont ? await window.cgba.charger() : null
 
           const items = [...document.querySelectorAll('.nav-item')]
           const titreDepart = titre()
+          const tableau = {
+            epreuve: lire('.moment-code'),
+            reprendre: lire('.bouton-primaire'),
+            commande: lire('.moment-console'),
+            citation: lire('.citation'),
+            releve: lire('.releve')
+          }
           if (items[1]) items[1].click()
           await attendre(60)
           const titreCarte = titre()
@@ -142,10 +152,20 @@ function creerFenetre () {
             theme: sombreDepart !== sombreApres,
             ecrit: sombreDe(avant) !== sombreDe(pendant) && sombreDe(avant) === sombreDe(apres),
             effets: racine.dataset.effets,
-            profil: (document.querySelector('.profil') || {}).innerText || ''
+            profil: (document.querySelector('.profil') || {}).innerText || '',
+            tableau
           }
         })()`)
         const profil = typeof rapport.profil === 'string' ? rapport.profil : ''
+        const tableau = rapport.tableau ?? {}
+        // L'epreuve du moment depend de la progression de la machine : on
+        // controle la forme du tableau de bord, pas un identifiant precis.
+        const bord =
+          /^[A-Z0-9]+$/.test(tableau.epreuve ?? '') &&
+          ['Reprendre', 'Revoir'].includes(tableau.reprendre) &&
+          tableau.commande.includes('$ ') &&
+          tableau.citation.includes('MEMO DE MARCEL') &&
+          tableau.releve.includes('RELEVE DE SERVICE')
         verdict =
           rapport.pont &&
           rapport.ipc?.ok === true &&
@@ -154,12 +174,14 @@ function creerFenetre () {
           rapport.theme &&
           rapport.ecrit &&
           rapport.effets === '1' &&
-          profil.includes('Échelon')
+          profil.includes('Échelon') &&
+          bord
             ? 0
             : 1
         console.log(
           `autotest : pont ${rapport.pont ? 'actif' : 'absent'}, ${rapport.nav} ecrans, ` +
             `navigation ${rapport.navigation ? 'ok' : 'ko'}, ` +
+            `tableau de bord ${bord ? 'complet' : 'incomplet'}, ` +
             `theme ${rapport.theme ? 'bascule' : 'fige'}, ` +
             `reglage ${rapport.ecrit ? 'ecrit et repris' : 'inchange'}`
         )
