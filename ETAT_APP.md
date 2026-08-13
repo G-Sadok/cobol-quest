@@ -25,7 +25,7 @@ l'itération suivante avant de continuer.
 - [x] T05 — `programme.js` : manifeste complet PISCINE (J00→J10, RUSH01/02) —
       exercices/XP/bonus/seuils extraits des barèmes des sujets ; contrôle
       croisé avec le livret consigné au JOURNAL.
-- [ ] T06 — `programme.js` : MISSIONS M01→M06 + PHASE3 ; `echelons.js`
+- [x] T06 — `programme.js` : MISSIONS M01→M06 + PHASE3 ; `echelons.js`
       (9 échelons, seuils + conditions).
 - [ ] T07 — `store/progression.js` (état, sélecteurs, actions, brancher la
       persistance IPC avec debounce + repli mémoire en dev navigateur) + tests
@@ -111,3 +111,14 @@ l'itération suivante avant de continuer.
   leur bareme (84 et 105) comme les journees. Les rushs et J10 sont decoupes
   selon leurs criteres de bareme, pas en exercices numerotes. vitest installe
   (prevu au §2) avec le script `test` : 12 tests verts, build vert.
+- 2026-08-13 T06 : le manifeste passe de 13 a 20 epreuves (6 missions + la
+  phase 3), soit 2 600 XP de base + 295 de bonus pour les missions (le livret
+  annonce « environ 2 900 »). Les criteres des tableaux « BAREME (/N) » tiennent
+  lieu d'exercices : une mission se rend d'un bloc, pas en exercices numerotes.
+  Aucune mission ne porte de ligne « Validation : >= N XP » : seuils a 70 % du
+  bareme (§6 du cahier des charges), soit 210, 280, 245, 245, 280 et 560. La
+  phase 3 n'a ni XP ni moulinette : `xpBase: 0`, `surLHonneur: true`,
+  `bertha: null`, ses 4 exercices reprennent le plan de campagne en 4 semaines,
+  et ses 2 badges ouvrent le neuvieme echelon. `echelons.js` transcrit le
+  tableau 2 du livret ; le barreau 8 a une case XP vide (`xpRequis: null`). Le
+  calcul de l'echelon courant reste au store (T07). Build vert, 30 tests verts.

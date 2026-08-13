@@ -275,3 +275,56 @@ Commits créés :
 - `tests: controler le bareme de la piscine contre le livret`
 - `app: afficher le sommaire de la piscine dans la coque provisoire`
 - `doc: consigner l'iteration T05`
+
+## T06 - Les missions, la phase 3 et les échelons
+
+Tâche : compléter `src/data/programme.js` avec les missions M01 à M06 et la
+phase 3, puis écrire `src/data/echelons.js` (les 9 échelons, seuils et
+conditions). Le manifeste passe de 13 à 20 épreuves.
+
+Contrôle croisé du barème des missions contre le livret : aucun écart. Chaque
+tableau « BARÈME (/N) » tombe exactement sur le total annoncé (300, 400, 350,
+350, 400, 800) et chaque ligne de bonus sur le sien (+55, +40, +40, +40, +40,
++80). Total missions : 2 600 XP de base et 295 de bonus, soit 2 895, ce que le
+livret arrondit en « environ 2 900 ».
+
+Décisions prises :
+- **Découpage des missions.** Comme pour les rushs et J10, les critères du
+  tableau de barème tiennent lieu d'exercices : une mission se rend d'un bloc,
+  elle n'a pas d'exercices numérotés. Les bonus, en revanche, sont éclatés ligne
+  par ligne quand le sujet leur donne des XP séparés (M01, M02, M04, M06), parce
+  que l'apprenti peut en tenir un sans l'autre.
+- **Seuils de validation.** Aucune mission ne porte de ligne
+  « Validation : >= N XP ». On applique la règle écrite au §6 du cahier des
+  charges, 70 % du barème : 210, 280, 245, 245, 280 et 560. Le test fait le
+  calcul en entiers, `(xpBase * 7) / 10` : en flottants, 350 x 0,7 donne
+  244,999... et le contrôle tombe à côté.
+- **La phase 3 est une épreuve à part.** Le livret ne lui accorde aucun XP et
+  BERTHA ne la juge pas (elle se joue chez IBM). Elle entre donc au manifeste
+  avec `xpBase: 0`, `surLHonneur: true` et `bertha: null` sur ses exercices, qui
+  reprennent le plan de campagne en quatre semaines du sujet. `commandeBertha()`
+  renvoie désormais `null` au lieu de fabriquer une commande qui n'existe pas.
+- **Le neuvième échelon.** Le livret laisse sa case XP vide : `xpRequis: null`,
+  et la condition passe par les deux badges (`premier-jcl`, `dompteur-de-vsam`),
+  ce qui referme la boucle avec les badges portés par PHASE3.
+- **`echelons.js` décrit, il ne calcule pas.** Chaque barreau porte son plancher
+  d'XP, ses épreuves requises et ses badges requis ; la détermination de
+  l'échelon courant vit dans le store (T07). Le module fournit tout de même les
+  trois fonctions d'affichage dont le tableau de bord aura besoin
+  (`echelonSuivant`, `xpAvantEchelonSuivant`, `progressionVersEchelonSuivant`).
+
+Le test des échelons vérifie en plus que les épreuves citées existent bien au
+manifeste et que, PHASE3 exclue, elles le couvrent toutes sans doublon : aucun
+barreau ne peut donc oublier une épreuve ni la compter deux fois.
+
+Fichiers touchés : `app/src/data/programme.js`, `app/src/data/programme.test.js`,
+`app/src/data/echelons.js` (nouveau), `app/src/data/echelons.test.js` (nouveau),
+`ETAT_APP.md`, `JOURNAL_CONSTRUCTION.md`. Aucune dépendance ajoutée.
+
+Verdict : `npx vitest run` vert (2 fichiers, 30 tests), `npm run build` vert
+(53 modules, JS 316,15 ko, CSS 6,11 ko).
+
+Commits créés :
+- `app: etendre le manifeste aux missions M01 a M06 et a la phase 3`
+- `app: poser les neuf echelons de carriere dans echelons.js`
+- `doc: consigner l'iteration T06`
