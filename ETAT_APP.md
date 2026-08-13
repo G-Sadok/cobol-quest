@@ -42,7 +42,7 @@ l'itération suivante avant de continuer.
       crédités/retirés, jauge et passage « VALIDÉ », encart commande BERTHA.
 - [x] T13 — Badges automatiques + « sur l'honneur » ; écran LE LIVRET (badges +
       échelons).
-- [ ] T14 — Contenu des quiz J01→J05 (8 QCM/épreuve en JSON, fidèles aux mémos,
+- [x] T14 — Contenu des quiz J01→J05 (8 QCM/épreuve en JSON, fidèles aux mémos,
       ≥2 questions « sortie exacte / colonnes » chacun).
 - [ ] T15 — Contenu des quiz J06→J09 + RUSH01 + RUSH02 (mêmes règles).
 - [ ] T16 — Écran QUIZ DU SOIR : déroulé, correction commentée, +10 XP si ≥6/8,
@@ -212,3 +212,12 @@ l'itération suivante avant de continuer.
   passage les vrais glyphes et compte 26 decorations au lieu de 25. Build vert,
   222 tests verts, autotest Electron vert (26 medailles, 9 echelons dont un
   seul tenu, decoration accordee sur l'honneur puis rendue).
+- 2026-08-14 T14 : les cinq premiers quiz du soir sont ecrits. Un fichier JSON
+  par epreuve dans `app/src/data/quiz/` (J01 a J05), 8 questions a 4 choix,
+  chacune avec sa correction commentee ; `data/quiz.js` les embarque par
+  `import.meta.glob` comme le corpus et sait noter une copie. Chaque question
+  porte une `categorie` : 'sortie' pour les questions de sortie exacte ou de
+  colonnes (3 par quiz, 4 pour J02, jamais moins des 2 exigees), 'memo'
+  sinon ; le test refuse un quiz qui descendrait sous le quota. Rien n'est
+  invente : chaque reponse se retrouve dans le memo ou dans une sortie
+  attendue du sujet. Build vert, 257 tests verts.

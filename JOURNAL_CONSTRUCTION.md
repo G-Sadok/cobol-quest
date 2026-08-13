@@ -862,3 +862,46 @@ Commits créés :
 - `electron: verifier le livret dans l autotest`
 - `app: donner au terminal les medailles du catalogue`
 - `doc: consigner l iteration T13`
+
+## T14 - Les cinq premiers quiz du soir
+
+Tâche : rédiger le contenu des quiz de J01 à J05, 8 QCM par épreuve, quatre
+choix, correction commentée, au moins deux questions par quiz sur les sorties
+exactes ou les colonnes (cahier des charges, §5.4). L'écran qui les fera passer
+arrive en T16 : cette itération ne livre que la matière et le module qui la
+sert.
+
+Forme retenue : un fichier JSON par épreuve dans `app/src/data/quiz/`, nommé par
+l'identifiant de l'épreuve, contenant `epreuve`, `titre` et huit questions
+`{ id, categorie, enonce, choix, bonne, commentaire }`. `bonne` est le rang du
+bon choix (0 à 3) plutôt que son texte : une seule source de vérité, et une
+copie se note par comparaison d'entiers. `data/quiz.js` les embarque par
+`import.meta.glob('./quiz/*.json', { eager: true })`, exactement comme le corpus
+en T03 : aucune lecture disque à l'exécution, donc un comportement identique en
+dev et dans le `.app`.
+
+Trois décisions. La première : chaque question porte une `categorie`, `sortie`
+pour celles qui interrogent une sortie exacte ou une largeur de colonne, `memo`
+pour les autres. Le quota du cahier des charges devient ainsi mesurable, et le
+test le fait respecter ; les quiz livrés en portent trois chacun, quatre pour
+J02. La deuxième : aucune question ne sort d'une culture générale du COBOL,
+toutes se répondent avec le mémo du jour ou une sortie attendue du sujet, et le
+commentaire de correction dit d'où vient la réponse (les 14 espaces d'une
+`PIC X(20)` qui reçoit MARCEL, les 120 caractères du FILLER des 8 agences, le
+`DEPASSEMENT DE CAPACITE A N = 21` de la factorielle). La troisième : la
+notation vit ici, dans `noterCopie`, et non dans le futur écran, pour être
+testée sans React ; une case laissée vide compte comme une erreur, ce qui rend
+le score honnête même sur une copie abandonnée en route.
+
+Fichiers touchés : `app/src/data/quiz/J01.json` à `J05.json` (nouveaux),
+`app/src/data/quiz.js` (nouveau), `app/src/data/quiz.test.js` (nouveau),
+`ETAT_APP.md`, `JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert (JS 518,22 ko, CSS 32,85 ko),
+`npx vitest run` vert (15 fichiers, 257 tests).
+
+Commits créés :
+- `quiz: les huit QCM du soir de J01 a J05`
+- `app: embarquer les quiz du soir et noter les copies`
+- `tests: controler la forme des quiz du soir`
+- `doc: consigner l iteration T14`
