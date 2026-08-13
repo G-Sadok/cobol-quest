@@ -27,7 +27,7 @@ l'itération suivante avant de continuer.
       croisé avec le livret consigné au JOURNAL.
 - [x] T06 — `programme.js` : MISSIONS M01→M06 + PHASE3 ; `echelons.js`
       (9 échelons, seuils + conditions).
-- [ ] T07 — `store/progression.js` (état, sélecteurs, actions, brancher la
+- [x] T07 — `store/progression.js` (état, sélecteurs, actions, brancher la
       persistance IPC avec debounce + repli mémoire en dev navigateur) + tests
       vitest complets (XP, seuils, déblocage, échelons, unicité quiz,
       export→import identique).
@@ -122,3 +122,15 @@ l'itération suivante avant de continuer.
   et ses 2 badges ouvrent le neuvieme echelon. `echelons.js` transcrit le
   tableau 2 du livret ; le barreau 8 a une case XP vide (`xpRequis: null`). Le
   calcul de l'echelon courant reste au store (T07). Build vert, 30 tests verts.
+- 2026-08-13 T07 : le store est coupe en trois. `store/progression.js` est le
+  module pur (etat, selecteurs, actions, serialisation) ; `store/persistance.js`
+  porte le pont IPC, l'amortissement a 500 ms, le vidage a la fermeture et le
+  repli memoire ; `store/useProgression.js` raccorde le tout a React. Regles
+  tranchees : les XP du quiz comptent au total mais PAS dans la validation d'une
+  epreuve (le seuil du jour se gagne aux exercices) ; la phase 3, sans XP ni
+  moulinette, se valide en cochant ses jalons ; la remise a zero garde les
+  reglages ; une fiche d'epreuve vide n'est jamais conservee, ce qui rend
+  l'aller-retour export/import exact. Constat a garder pour T13 : l'echelon 7
+  demande 4 500 XP alors que tous les baremes de base ne pesent que 4 210 XP, il
+  exige donc des bonus ou des quiz. Build vert, 93 tests verts, autotest Electron
+  vert (clic dans la coque, ecriture amortie, relecture apres relance).

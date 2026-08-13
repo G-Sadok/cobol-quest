@@ -328,3 +328,88 @@ Commits créés :
 - `app: etendre le manifeste aux missions M01 a M06 et a la phase 3`
 - `app: poser les neuf echelons de carriere dans echelons.js`
 - `doc: consigner l'iteration T06`
+
+## T07 - Le store de progression et sa persistance
+
+La tâche demandait l'état, les sélecteurs, les actions, le branchement IPC et
+les tests. Elle est livrée en trois modules aux responsabilités disjointes,
+pour que le module testé reste pur (cahier des charges, §8) :
+
+- `app/src/store/progression.js` : l'état, ses sélecteurs et ses actions. Aucune
+  dépendance à React, à Electron ni au DOM. Une action prend l'état et en rend
+  un nouveau ; quand elle ne change rien, elle rend l'état reçu tel quel, ce qui
+  permet à la persistance de ne pas écrire pour rien.
+- `app/src/store/persistance.js` : le pont `window.cgba`, l'amortissement des
+  écritures, le vidage à la fermeture, l'export/import (les boîtes natives
+  arrivent en T17) et le repli mémoire du navigateur de développement.
+- `app/src/store/useProgression.js` : le raccord React, un seul appel à la
+  racine. Le contexte qui le distribuera aux six écrans vient avec T08.
+
+Décisions tranchées :
+
+- **Les XP du quiz ne valident pas l'épreuve.** Le livret compte le quiz du soir
+  dans les XP cumulés (+10 par épreuve), mais le seuil du jour est un barème
+  d'exercices : `xpExercices()` décide de la validation, `xpParEpreuve()` ajoute
+  le quiz pour le total de carrière. Sans cette séparation, deux quiz réussis
+  feraient franchir un seuil sans avoir écrit une ligne de COBOL.
+- **Les +10 XP tombent une seule fois.** L'état du quiz garde `tentatives`,
+  `meilleurScore` et `xpCredite` : les re-tentatives restent libres (§5.4), le
+  meilleur score ne redescend jamais, et le crédit ne se rejoue pas.
+- **La phase 3 se valide sur l'honneur.** Elle n'a ni XP ni moulinette : son
+  seuil à 0 la déclarerait validée d'emblée. `epreuveValidee()` bascule donc sur
+  « tous les jalons obligatoires cochés » quand l'épreuve porte `surLHonneur`.
+- **Une fiche d'épreuve vide n'est jamais conservée.** Cocher puis décocher rend
+  exactement l'état de départ. L'état reste canonique, et l'aller-retour
+  export/import rend un objet strictement égal, ce que le test exige.
+- **La remise à zéro garde les réglages.** Rythme, scanlines et thème sont de
+  l'ergonomie, pas de la carrière : les effacer punirait l'apprenti deux fois.
+- **Les identifiants de badges ne sont pas filtrés.** Le catalogue complet (dont
+  DOMPTEUR DE BERTHA, qui n'appartient à aucune épreuve) arrive en T13 ; le
+  store se contente de stocker la source, `auto` ou `honneur`.
+- **Le déblocage reste séquentiel.** Une épreuve s'ouvre quand la précédente est
+  validée. Les conditions d'échelon du livret sont des conséquences de ces
+  validations, pas des verrous supplémentaires : les cumuler fermerait des
+  salles que le corpus déclare ouvertes.
+- **`etatEpreuve()` rend les quatre états de salle** de La Carte (verrouillée,
+  disponible, en cours, validée) : ouvrir un sujet suffit à passer « en cours »,
+  ce que le design attend des salles visitées.
+
+Constat relevé par les tests, à garder pour T13 : le septième échelon exige
+4 500 XP alors que la somme de tous les barèmes de base ne pèse que 4 210 XP. Ce
+barreau n'est donc atteignable qu'avec des bonus ou des quiz du soir. Ce n'est
+pas un écart du manifeste (les deux tableaux du livret sont recopiés fidèlement)
+mais une exigence du livret lui-même, à afficher clairement au Livret.
+
+Vérification. Aux tests unitaires s'ajoute une vérification de bout en bout :
+l'autotest Electron (`CQ_AUTOTEST=1`, le protocole interdit les serveurs) charge
+l'interface compilée, lit le fichier de progression, clique le témoin de la
+coque, attend l'amortissement, relit le fichier et compare. Deux passages
+consécutifs sortent en 0 : la progression est écrite puis relue au lancement
+suivant, ce qui est exactement le parcours exigé au §10. Le fichier d'essai a
+été retiré du dossier utilisateur après contrôle.
+
+Aucun test de `useProgression.js` : il faudrait `@testing-library/react`, hors
+de la liste du §2. Le crochet est mince et sans logique propre ; la logique est
+dans les deux modules testés, et son intégration réelle est couverte par
+l'autotest Electron.
+
+Fichiers touchés : `app/src/store/progression.js` (nouveau),
+`app/src/store/progression.test.js` (nouveau), `app/src/store/persistance.js`
+(nouveau), `app/src/store/persistance.test.js` (nouveau),
+`app/src/store/useProgression.js` (nouveau), `app/src/data/programme.js`
+(recensement des épreuves à quiz), `app/src/data/programme.test.js`,
+`app/src/App.jsx`, `app/src/styles/base.css`, `app/electron/main.cjs`,
+`ETAT_APP.md`, `JOURNAL_CONSTRUCTION.md`. Aucune dépendance ajoutée.
+
+Verdict : `npx vitest run` vert (4 fichiers, 93 tests), `npm run build` vert
+(57 modules, JS 323,44 ko, CSS 6,07 ko), autotest Electron vert (sortie 0).
+
+Commits créés :
+- `app: recenser dans le manifeste les epreuves a quiz du soir`
+- `app: poser le store de progression (etat, selecteurs, actions)`
+- `tests: couvrir XP, seuils, deblocage, echelons, quiz et export/import`
+- `app: brancher la progression sur l'IPC (debounce 500 ms, repli memoire)`
+- `tests: couvrir la persistance amortie et son repli memoire`
+- `app: montrer echelon, XP et epreuve du moment dans la coque provisoire`
+- `electron: verifier le rendu et l'aller-retour de progression dans l'autotest`
+- `doc: consigner l'iteration T07`
