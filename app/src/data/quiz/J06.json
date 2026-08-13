@@ -1,0 +1,110 @@
+{
+  "epreuve": "J06",
+  "titre": "Le langage des chaînes",
+  "questions": [
+    {
+      "id": "q1",
+      "categorie": "memo",
+      "enonce": "Dans un STRING, quelle est la différence entre `DELIMITED BY SPACE` et `DELIMITED BY SIZE` ?",
+      "choix": [
+        "SPACE s'arrête au premier espace de la source, SIZE prend toute la zone, espaces compris",
+        "SPACE ajoute un espace après la zone, SIZE n'en ajoute aucun",
+        "SPACE coupe les espaces de tête, SIZE coupe ceux de queue",
+        "SPACE limite la source à un mot de 20 caractères, SIZE à la zone de destination"
+      ],
+      "bonne": 0,
+      "commentaire": "SPACE sert à recoudre des zones cadrées à gauche sans traîner leurs espaces de remplissage ; SIZE sert aux séparateurs littéraux, qu'il faut prendre entiers. Et le mémo insiste : un MOVE SPACES sur la destination AVANT le STRING, sinon un ancien libellé plus long dépasse par la droite."
+    },
+    {
+      "id": "q2",
+      "categorie": "memo",
+      "enonce": "Pourquoi faut-il mettre `WS-NB-CHAMPS` à zéro avant un `UNSTRING ... TALLYING IN WS-NB-CHAMPS` ?",
+      "choix": [
+        "Parce qu'UNSTRING refuse une zone TALLYING non initialisée",
+        "Parce que TALLYING ajoute son compte à ce qui s'y trouve déjà",
+        "Parce que le compte démarre à 1 dans les zones non initialisées",
+        "Parce que TALLYING ne sait compter que jusqu'à la valeur de départ"
+      ],
+      "bonne": 1,
+      "commentaire": "TALLYING cumule, il ne remplace pas. Dans une boucle qui découpe mille lignes, une zone jamais remise à zéro finit par annoncer mille champs sur la dernière ligne. Le même piège vaut pour le TALLYING d'INSPECT."
+    },
+    {
+      "id": "q3",
+      "categorie": "memo",
+      "enonce": "Que rend `FUNCTION LENGTH(WS-NOM)` quand `WS-NOM` est en `PIC X(20)` et contient `MARCEL` ?",
+      "choix": [
+        "6, la longueur du contenu utile",
+        "7, le contenu plus le caractère de fin",
+        "20, la longueur déclarée de la zone",
+        "0, tant que la zone n'est pas cadrée"
+      ],
+      "bonne": 2,
+      "commentaire": "LENGTH rend la longueur DÉCLARÉE, jamais le contenu : une zone COBOL est toujours pleine, complétée d'espaces. Pour obtenir la longueur réelle, le mémo impose l'idiome de 1991 : compter les espaces de tête de `FUNCTION REVERSE(WS-NOM)` avec INSPECT TALLYING FOR LEADING SPACES, puis soustraire."
+    },
+    {
+      "id": "q4",
+      "categorie": "memo",
+      "enonce": "Le code de César se fait en deux `INSPECT CONVERTING`. Que produit le second ?",
+      "choix": [
+        "Il déchiffre, en convertissant l'alphabet codé vers l'alphabet clair",
+        "Il chiffre une seconde fois, pour un décalage total de 6 lettres",
+        "Il remet les espaces que le premier INSPECT a écrasés",
+        "Il vérifie que le message chiffré ne contient que des lettres"
+      ],
+      "bonne": 0,
+      "commentaire": "CONVERTING transcode caractère par caractère selon deux alphabets de même longueur : de CST-ALPHA-CLAIR vers CST-ALPHA-CODE à l'aller, l'inverse au retour. Les caractères absents des alphabets, les espaces par exemple, ne bougent pas."
+    },
+    {
+      "id": "q5",
+      "categorie": "sortie",
+      "enonce": "La couturière sort `=>JEAN DUPONT<=`. À quoi servent les balises `=>` et `<=` ?",
+      "choix": [
+        "À montrer que STRING a bien été employé plutôt que plusieurs DISPLAY",
+        "À prouver qu'aucun espace parasite ne traîne avant ou après le nom complet",
+        "À marquer la zone que BERTHA doit recopier dans son compte rendu",
+        "À signaler que la zone de destination est plus large que son contenu"
+      ],
+      "bonne": 1,
+      "commentaire": "Sans balises, un espace de queue est invisible à l'écran et passe la moulinette par accident. Avec elles, `=>JEAN DUPONT <=` saute aux yeux : c'est un STRING mal délimité, ou un DISPLAY de la zone entière au lieu de sa partie utile."
+    },
+    {
+      "id": "q6",
+      "categorie": "sortie",
+      "enonce": "Le masque rend `FR76*******************0123` sur un IBAN de 27 caractères. Quelle tranche reçoit les étoiles ?",
+      "choix": [
+        "`WS-IBAN(4:19)`",
+        "`WS-IBAN(5:19)`",
+        "`WS-IBAN(5:23)`",
+        "`WS-IBAN(5:19:1)`"
+      ],
+      "bonne": 1,
+      "commentaire": "La modification de référence s'écrit (position de départ : longueur), pas (début : fin). On garde les 4 premiers et les 4 derniers, donc on masque de la position 5 sur 19 caractères : 4 + 19 + 4 = 27. Un `MOVE ALL \"*\"` suffit, sans une seule boucle."
+    },
+    {
+      "id": "q7",
+      "categorie": "sortie",
+      "enonce": "Le mot `MARCEL` est saisi dans une zone `X(20)`. Que sort la vraie longueur ?",
+      "choix": [
+        "`LONGUEUR DECLAREE : 20` puis `LONGUEUR REELLE   : 06`",
+        "`LONGUEUR DECLAREE : 06` puis `LONGUEUR REELLE   : 20`",
+        "`LONGUEUR DECLAREE : 20` puis `LONGUEUR REELLE   : 6`",
+        "`LONGUEUR DECLAREE : 20` puis `LONGUEUR REELLE   : 14`"
+      ],
+      "bonne": 0,
+      "commentaire": "La déclarée vaut 20, la réelle 6, et les deux sont éditées en `9(2)` : d'où le zéro de tête de `06`, qui n'est pas une coquette mais la largeur imposée. 14 serait le nombre d'espaces de queue, c'est ce que compte l'INSPECT avant la soustraction."
+    },
+    {
+      "id": "q8",
+      "categorie": "sortie",
+      "enonce": "Le découpeur reçoit la ligne `KOSSOU;;PARAKOU`. Que doit-il annoncer ?",
+      "choix": [
+        "`CHAMPS : 2`, le prénom vide n'étant pas un champ",
+        "`CHAMPS : 3`, la ligne `PRENOM :` étant suivie d'espaces",
+        "`CHAMPS : 3`, la ligne `PRENOM :` reprenant le nom précédent",
+        "`SAISIE INVALIDE`, deux points-virgules se suivant"
+      ],
+      "bonne": 1,
+      "commentaire": "UNSTRING compte les champs délimités, pas les champs remplis : deux séparateurs consécutifs livrent un champ vide qui compte quand même. La zone reçoit des espaces, à condition qu'elle ait été vidée avant : UNSTRING n'efface pas ce qui restait de la ligne précédente."
+    }
+  ]
+}

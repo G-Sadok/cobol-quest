@@ -1,0 +1,110 @@
+{
+  "epreuve": "RUSH02",
+  "titre": "La paie de la CGBA",
+  "questions": [
+    {
+      "id": "q1",
+      "categorie": "memo",
+      "enonce": "Comment se calcule le brut d'une semaine de plus de 35 heures ?",
+      "choix": [
+        "Toutes les heures sont payées au taux majoré de 1.25",
+        "Les 35 premières heures au taux normal, les suivantes au taux multiplié par 1.25",
+        "Les heures au-delà de 35 sont payées au taux normal et primées en fin de mois",
+        "Les 35 premières heures au taux majoré, les suivantes au taux normal"
+      ],
+      "bonne": 1,
+      "commentaire": "La majoration ne porte que sur la tranche supplémentaire, pas sur la semaine entière. Majorer tout donnerait 40 x 45 x 1.25 = 2250.00 pour la semaine 04 de Marcel au lieu de 1856.25 : l'erreur classique, et la plus chère."
+    },
+    {
+      "id": "q2",
+      "categorie": "memo",
+      "enonce": "Comment se calcule la prime d'ancienneté ?",
+      "choix": [
+        "2% du brut heures par tranche complète de 5 ans, plafonnée à 10%",
+        "2% du brut heures par année d'ancienneté, plafonnée à 10%",
+        "5% du brut total par tranche de 2 ans, sans plafond",
+        "2% du brut total par tranche complète de 5 ans, plafonnée à 20%"
+      ],
+      "bonne": 0,
+      "commentaire": "Tranche COMPLÈTE : 8 ans donnent une tranche, donc 2%, et non une fraction. La prime porte sur le brut heures, et le brut total vient APRÈS, une fois la prime ajoutée : l'ordre des lignes du bulletin est aussi l'ordre du calcul."
+    },
+    {
+      "id": "q3",
+      "categorie": "memo",
+      "enonce": "Pourquoi le programme trie-t-il `HEURES.DAT` avant de le traiter ?",
+      "choix": [
+        "Parce que la rupture de contrôle par matricule exige un fichier trié sur la clé de rupture",
+        "Parce que le SORT supprime au passage les matricules inconnus",
+        "Parce que le fichier des employés est chargé en table par SEARCH ALL",
+        "Parce que les copybooks ne se compilent que sur des fichiers triés"
+      ],
+      "bonne": 0,
+      "commentaire": "BERTHA mélange le fichier avant de tester : sans SORT sur matricule puis semaine, la rupture éditerait un bulletin par groupe de lignes contiguës et Marcel en recevrait trois. Le tri est la condition d'existence du motif, pas une politesse."
+    },
+    {
+      "id": "q4",
+      "categorie": "memo",
+      "enonce": "Comment le taux de cotisation de 22% doit-il être placé dans l'architecture imposée ?",
+      "choix": [
+        "Dans PAIE, CALCNET recevant le taux en paramètre BY CONTENT",
+        "Dans les deux copybooks, pour rester lisible des deux côtés",
+        "Uniquement dans CALCNET, qui reçoit le brut total BY CONTENT et rend cotisations et net BY REFERENCE",
+        "Uniquement dans CALCNET, qui reçoit et rend toutes ses zones BY CONTENT"
+      ],
+      "bonne": 2,
+      "commentaire": "Un taux de cotisation change par décret : il doit avoir un seul domicile, le sous-programme. Et les paramètres suivent la règle CGBA de J09 : l'entrée est une copie intouchable, les deux sorties sont des zones passées par référence, sinon l'appelant ne récupère rien."
+    },
+    {
+      "id": "q5",
+      "categorie": "sortie",
+      "enonce": "Marcel gagne 45.00 de l'heure et a fait 40 heures en semaine 04. Que porte le bulletin ?",
+      "choix": [
+        "` SEMAINE 04 : 40.00 H  BRUT :    1800.00`",
+        "` SEMAINE 04 : 40.00 H  BRUT :    1856.25`",
+        "` SEMAINE 04 : 40.00 H  BRUT :    2250.00`",
+        "` SEMAINE 04 : 40.00 H  BRUT :    1575.00`"
+      ],
+      "bonne": 1,
+      "commentaire": "35 x 45 = 1575.00 pour la part normale, plus 5 x 45 x 1.25 = 281.25 pour les 5 heures supplémentaires : 1856.25. 1800.00 serait la semaine payée sans majoration, 2250.00 la semaine entièrement majorée. Éditions : heures en `Z9.99`, montants en `ZZZZZZ9.99`."
+    },
+    {
+      "id": "q6",
+      "categorie": "sortie",
+      "enonce": "Marcel a 42 ans d'ancienneté et un brut heures de 6750.00. Que vaut sa prime ?",
+      "choix": [
+        "1080.00, soit 16% pour 8 tranches complètes de 5 ans",
+        "675.00, soit 10% : le plafond est atteint",
+        "567.00, soit 2% par tranche de 5 ans arrondi à l'inférieur",
+        "135.00, soit 2% du brut heures"
+      ],
+      "bonne": 1,
+      "commentaire": "42 ans font 8 tranches complètes, donc 16% en théorie, mais la règle plafonne à 10% : 675.00. C'est le contrôle que Josiane demande de faire avant BERTHA, parce qu'un plafond oublié ne se voit sur aucun bulletin de jeune embauché."
+    },
+    {
+      "id": "q7",
+      "categorie": "sortie",
+      "enonce": "La cotisation de Josiane tombe sur 895.356. Que doit porter son bulletin, et pourquoi ?",
+      "choix": [
+        "`895.35`, COBOL tronquant ce qui dépasse deux décimales",
+        "`895.36`, la clause ROUNDED arrondissant le demi-centime au supérieur",
+        "`895.40`, les cotisations étant arrondies au dizième de franc",
+        "`896.00`, les cotisations étant arrondies à l'unité"
+      ],
+      "bonne": 1,
+      "commentaire": "Sans ROUNDED, COBOL tronque : 895.35. Josiane le dit sans détour, obtenir 895.35 signifie qu'un ROUNDED manque quelque part. La règle 7 l'impose à CHAQUE étape monétaire, et c'est aussi ce qui permet au `CONTROLE` de tomber sur OK au centime près."
+    },
+    {
+      "id": "q8",
+      "categorie": "sortie",
+      "enonce": "L'enregistrement `0001MARCEL DUBOIS       0450042` d'`EMPLOYES.DAT` fait 31 caractères. Comment se découpe-t-il ?",
+      "choix": [
+        "Matricule 9(4), nom X(20), taux 9(3)V99 sur 5 positions, ancienneté 9(2)",
+        "Matricule 9(4), nom X(20), taux 9(4)V99 sur 6 positions, ancienneté 9(1)",
+        "Matricule 9(4), nom X(21), taux 9(3)V99 sur 5 positions, ancienneté 9(1)",
+        "Matricule 9(5), nom X(19), taux 9(3)V99 sur 5 positions, ancienneté 9(2)"
+      ],
+      "bonne": 0,
+      "commentaire": "4 + 20 + 5 + 2 = 31. Le `V` de `9(3)V99` ne prend aucune position : `04500` se lit 45.00, et `42` sont les années d'ancienneté. Décaler d'une seule colonne, et Marcel gagne 450.04 de l'heure avec 2 ans de maison."
+    }
+  ]
+}

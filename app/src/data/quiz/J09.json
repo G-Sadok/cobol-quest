@@ -1,0 +1,110 @@
+{
+  "epreuve": "J09",
+  "titre": "SORT, ruptures et sous-programmes",
+  "questions": [
+    {
+      "id": "q1",
+      "categorie": "memo",
+      "enonce": "Le fichier de travail du SORT se décrit par `SD F-TRI` et non par `FD F-TRI`. Pourquoi ?",
+      "choix": [
+        "Parce que SD désigne un fichier de tri, que seul le verbe SORT ouvre et ferme",
+        "Parce que SD accepte les enregistrements de longueur variable, pas FD",
+        "Parce que SD réserve le fichier en mémoire au lieu du disque",
+        "Parce que SD décrit la clé de tri, le FD décrivant les données"
+      ],
+      "bonne": 0,
+      "commentaire": "Un fichier de tri n'a ni OPEN ni CLOSE ni READ dans le programme : le SORT s'en occupe seul, du début à la fin. C'est cette prise en charge complète que le SD annonce au compilateur ; un FD ici et rien ne se compile."
+    },
+    {
+      "id": "q2",
+      "categorie": "memo",
+      "enonce": "Quels verbes emploie-t-on dans une INPUT PROCEDURE et dans une OUTPUT PROCEDURE ?",
+      "choix": [
+        "WRITE en entrée, READ en sortie",
+        "RELEASE en entrée, RETURN en sortie",
+        "RETURN en entrée, RELEASE en sortie",
+        "RELEASE dans les deux, le sens étant donné par la clause GIVING"
+      ],
+      "bonne": 1,
+      "commentaire": "RELEASE remet un enregistrement au trieur, RETURN en reprend un une fois trié. C'est ainsi que l'écrémage garde les 3 plus gros soldes au vol, au lieu de trier tout le fichier puis de le couper avec un second programme, ce que le sujet interdit."
+    },
+    {
+      "id": "q3",
+      "categorie": "memo",
+      "enonce": "Quelle est la règle CGBA pour les paramètres d'un CALL, et comment un sous-programme rend-il la main ?",
+      "choix": [
+        "Entrées BY CONTENT, sorties BY REFERENCE, retour par GOBACK",
+        "Entrées BY REFERENCE, sorties BY CONTENT, retour par GOBACK",
+        "Entrées BY CONTENT, sorties BY REFERENCE, retour par STOP RUN",
+        "Tout BY REFERENCE, le retour se faisant par EXIT PROGRAM uniquement"
+      ],
+      "bonne": 0,
+      "commentaire": "BY CONTENT passe une copie : l'appelé ne peut pas abîmer l'entrée. BY REFERENCE passe la zone elle-même, seule façon de rendre un résultat. Et GOBACK rend la main à l'appelant, là où STOP RUN arrêterait toute la chaîne, y compris l'état comptable en cours d'édition."
+    },
+    {
+      "id": "q4",
+      "categorie": "memo",
+      "enonce": "À quoi sert un copybook, et que gagne-t-on à y mettre la description de l'enregistrement client ?",
+      "choix": [
+        "À compiler plus vite, le copybook étant précompilé une fois pour toutes",
+        "À partager une description entre N programmes : le format change dans UN seul fichier",
+        "À masquer la description aux programmes qui n'ont pas le droit de la lire",
+        "À déclarer les zones en LINKAGE sans les répéter dans le CALL"
+      ],
+      "bonne": 1,
+      "commentaire": "Le COPY est une inclusion de source à la compilation, rien de plus. Son intérêt est ailleurs : le jour où le solde passe de 9(7)V99 à 9(9)V99, on modifie un fichier et on recompile, au lieu de chercher la description dans trois mille programmes. La CGBA en a 3 200."
+    },
+    {
+      "id": "q5",
+      "categorie": "sortie",
+      "enonce": "Le tri multi-clés se fait sur ville croissante puis solde décroissant. Quel est l'ordre attendu dans `triville.dat` ?",
+      "choix": [
+        "TRAORE, JOHNSON, KOSSOU, AHOYO, NDIAYE, DUPONT, DUBOIS, MARTIN",
+        "TRAORE, KOSSOU, AHOYO, JOHNSON, NDIAYE, DUPONT, DUBOIS, MARTIN",
+        "TRAORE, JOHNSON, AHOYO, KOSSOU, NDIAYE, DUPONT, DUBOIS, MARTIN",
+        "MARTIN, DUBOIS, DUPONT, NDIAYE, AHOYO, KOSSOU, JOHNSON, TRAORE"
+      ],
+      "bonne": 0,
+      "commentaire": "La première clé range les villes : ABIDJAN, BRUXELLES, COTONOU, DAKAR, PARIS. La seconde ne joue qu'à l'intérieur d'une ville : COTONOU donne KOSSOU (250000.00) avant AHOYO (75300.10), et PARIS donne DUPONT, DUBOIS, MARTIN."
+    },
+    {
+      "id": "q6",
+      "categorie": "sortie",
+      "enonce": "Dans l'état par ville, quelle ligne manque le plus souvent, et que vaut le total général ?",
+      "choix": [
+        "Le sous-total du dernier groupe, PARIS ; total général 1342338.60",
+        "Le sous-total du premier groupe, ABIDJAN ; total général 1342338.60",
+        "Le sous-total du dernier groupe, PARIS ; total général 1342296.60",
+        "L'en-tête de la dernière ville, PARIS ; total général 1342338.60"
+      ],
+      "bonne": 0,
+      "commentaire": "Le sous-total s'édite quand la clé CHANGE, or après le dernier enregistrement la clé ne change plus : il faut l'éditer une dernière fois hors de la boucle. BERTHA vérifie cette ligne en premier. Le total général reprend la somme des 8 soldes, celle du trésorier de J07."
+    },
+    {
+      "id": "q7",
+      "categorie": "sortie",
+      "enonce": "L'état des frais se termine par `TOTAL FRAIS :     20.00`. Où vit le barème qui produit ces montants ?",
+      "choix": [
+        "Dans le programme principal, CALCFRAI ne faisant que le cumul",
+        "Dans le copybook CLIENT.CPY, partagé par les deux programmes",
+        "Uniquement dans CALCFRAI, le principal ne connaissant aucun montant",
+        "Dans les deux, le principal contrôlant le résultat de CALCFRAI"
+      ],
+      "bonne": 2,
+      "commentaire": "Le sous-programme existe pour que le barème n'ait qu'un seul domicile : le jour où les frais changent, on recompile CALCFRAI. Un montant écrit dans le principal, même pour vérifier, rouvre exactement le bug que le découpage venait fermer."
+    },
+    {
+      "id": "q8",
+      "categorie": "sortie",
+      "enonce": "Dans la rupture enrichie, la moyenne générale s'édite `167792.33`. D'où vient le dernier chiffre ?",
+      "choix": [
+        "De la troncature de 1342338.60 / 8, qui vaut 167792.32",
+        "Du ROUNDED sur 1342338.60 / 8 = 167792.325, arrondi à 167792.33",
+        "De la somme des cinq moyennes par ville, divisée par cinq",
+        "Du cumul en COMP-3, qui ajoute un centime de correction"
+      ],
+      "bonne": 1,
+      "commentaire": "1342338.60 / 8 = 167792.325 : sans ROUNDED, COBOL tronque et rend .32. La clause d'arrondi n'est pas un détail de présentation, c'est la différence entre un état juste et un état qui ne tombe pas en pied de page."
+    }
+  ]
+}

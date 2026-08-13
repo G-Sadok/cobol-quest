@@ -1,0 +1,110 @@
+{
+  "epreuve": "J08",
+  "titre": "Les fichiers indexés",
+  "questions": [
+    {
+      "id": "q1",
+      "categorie": "memo",
+      "enonce": "Que change `ALTERNATE RECORD KEY IS CPT-VILLE WITH DUPLICATES` par rapport au `RECORD KEY` ?",
+      "choix": [
+        "Elle remplace la clé primaire dès qu'un doublon apparaît",
+        "Elle ajoute un second index, cette fois avec doublons permis",
+        "Elle trie physiquement le fichier sur la ville",
+        "Elle autorise les doublons sur la clé primaire elle aussi"
+      ],
+      "bonne": 1,
+      "commentaire": "La clé primaire est unique et sert d'accès direct ; la clé alternative est un chemin d'entrée supplémentaire. Sans `WITH DUPLICATES`, charger trois clients de PARIS ferait tomber le second WRITE en statut 22."
+    },
+    {
+      "id": "q2",
+      "categorie": "memo",
+      "enonce": "Pourquoi le jour retient-il `ACCESS MODE IS DYNAMIC` ?",
+      "choix": [
+        "Parce qu'il est le seul mode compatible avec OPEN I-O",
+        "Parce qu'il autorise l'accès à la clé ET le parcours séquentiel dans le même programme",
+        "Parce qu'il reconstruit l'index à chaque ouverture du fichier",
+        "Parce qu'il choisit tout seul la clé la plus rapide selon la demande"
+      ],
+      "bonne": 1,
+      "commentaire": "SEQUENTIAL lit dans l'ordre des clés, RANDOM lit à la clé, DYNAMIC fait les deux. Le mini-guichet consulte à la clé puis parcourt : sans DYNAMIC, il faudrait fermer et rouvrir le fichier entre deux gestes."
+    },
+    {
+      "id": "q3",
+      "categorie": "memo",
+      "enonce": "Comment lit-on les comptes à partir d'une clé donnée, sans repartir du premier ?",
+      "choix": [
+        "Un `READ ... INVALID KEY` puis des `READ NEXT` jusqu'au AT END",
+        "Un `START ... KEY IS >=` puis des `READ NEXT` jusqu'au AT END",
+        "Un `SEARCH ALL` sur la clé puis des `READ` à la clé suivante",
+        "Un `OPEN INPUT` positionné par la clause `POSITION` du SELECT"
+      ],
+      "bonne": 1,
+      "commentaire": "START ne lit rien : il place seulement le curseur du fichier sur la première clé qui satisfait la condition, et rend INVALID KEY si aucune ne convient. Ce sont les READ NEXT qui suivent qui ramènent les enregistrements."
+    },
+    {
+      "id": "q4",
+      "categorie": "memo",
+      "enonce": "Que signifient les statuts `22` et `23` sur un fichier indexé ?",
+      "choix": [
+        "22 : clé en double à l'écriture. 23 : clé absente à la lecture",
+        "22 : clé absente à la lecture. 23 : clé en double à l'écriture",
+        "22 : fichier introuvable. 23 : fichier déjà ouvert",
+        "22 : fin de fichier atteinte. 23 : enregistrement verrouillé"
+      ],
+      "bonne": 0,
+      "commentaire": "22 sanctionne un WRITE sur une clé déjà prise, 23 un READ, un REWRITE ou un DELETE sur une clé qui n'existe pas. INVALID KEY est le raccourci lisible pour ces deux cas, mais l'Article 8 de la Norme veut le FILE STATUS contrôlé quand même."
+    },
+    {
+      "id": "q5",
+      "categorie": "sortie",
+      "enonce": "Le guichet de consultation reçoit le numéro `99999`. Que sort-il exactement ?",
+      "choix": [
+        "`COMPTE INCONNU`",
+        "`COMPTE : 99999` puis trois lignes vides",
+        "`ERREUR ES COMPTES STATUT 23`",
+        "`AUCUN COMPTE`"
+      ],
+      "bonne": 0,
+      "commentaire": "La branche INVALID KEY du READ à la clé porte le message, en une ligne et rien d'autre. `AUCUN COMPTE` appartient au parcours partiel, quand START ne trouve aucune clé au-delà du numéro demandé : deux messages voisins, deux exercices différents, BERTHA ne les confond pas."
+    },
+    {
+      "id": "q6",
+      "categorie": "sortie",
+      "enonce": "Sur le compte 00008 (solde 42.00), un retrait de 5000.00 est demandé. Que se passe-t-il ?",
+      "choix": [
+        "`PROVISION INSUFFISANTE` et aucun REWRITE n'est fait",
+        "`PROVISION INSUFFISANTE` puis le solde est remis à zéro",
+        "`MONTANT INVALIDE`, le montant dépassant le solde",
+        "`NOUVEAU SOLDE :     -4958.00`, le découvert étant journalisé"
+      ],
+      "bonne": 0,
+      "commentaire": "Le refus doit tomber AVANT toute réécriture : le fichier reste intact. L'ordre des contrôles est imposé, compte puis code puis montant puis provision, pour qu'un compte inconnu ne produise jamais un message de provision."
+    },
+    {
+      "id": "q7",
+      "categorie": "sortie",
+      "enonce": "La recherche par ville reçoit une ville absente du fichier, `LAGOS`. Que sort-elle ?",
+      "choix": [
+        "`0 COMPTES A LAGOS`, la ville étant TRIMée",
+        "`0 COMPTES A LAGOS          `, la ville gardant sa largeur X(15)",
+        "`VILLE INCONNUE`",
+        "Rien : la clé alternative sort en INVALID KEY sans message"
+      ],
+      "bonne": 0,
+      "commentaire": "La ville est lue dans une zone `X(15)` : la recoller telle quelle laisse dix espaces avant la fin de ligne, invisibles à l'oeil et fatals à la moulinette. D'où le TRIM exigé, et la même règle sur les titres de rupture de J09."
+    },
+    {
+      "id": "q8",
+      "categorie": "sortie",
+      "enonce": "Le chargeur est lancé deux fois de suite. Que doit-il afficher au second passage, et grâce à quel OPEN ?",
+      "choix": [
+        "`16 COMPTES CHARGES`, l'OPEN EXTEND ajoutant les 8 nouveaux",
+        "`0 COMPTES CHARGES`, l'OPEN I-O refusant les clés déjà prises",
+        "`8 COMPTES CHARGES`, l'OPEN OUTPUT repartant d'un fichier vide",
+        "`8 COMPTES CHARGES`, l'OPEN I-O réécrivant les enregistrements existants"
+      ],
+      "bonne": 2,
+      "commentaire": "OPEN OUTPUT sur un fichier indexé le recrée de zéro, index compris : le chargeur est donc rejouable à l'infini. BERTHA le relance avant chaque exercice de la journée, exactement pour que personne ne teste sur une base sale."
+    }
+  ]
+}

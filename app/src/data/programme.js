@@ -470,7 +470,8 @@ export const epreuves = Object.freeze([...epreuvesPiscine, ...epreuvesMissions, 
 /**
  * Les épreuves qui portent un quiz du soir (cahier des charges, §5.4) : les
  * journées J01 à J09 et les deux rushs. J00 n'a pas de mémo à réviser, J10 est
- * l'examen, et les missions se jugent au rendu. Le contenu arrive en T14/T15.
+ * l'examen, et les missions se jugent au rendu. Les onze quiz sont rédigés :
+ * un fichier par épreuve dans data/quiz/, embarqué par data/quiz.js.
  */
 export const idsAvecQuiz = Object.freeze([
   'J01', 'J02', 'J03', 'J04', 'J05', 'RUSH01', 'J06', 'J07', 'J08', 'J09', 'RUSH02'
