@@ -133,6 +133,17 @@ function creerFenetre () {
           await attendre(60)
           const titreCarte = titre()
 
+          // La Carte se lit sans rien cliquer : ouvrir une salle ecrirait
+          // l'epreuve retenue dans la progression de l'utilisateur.
+          const tuiles = [...document.querySelectorAll('.salle')]
+          const plan = {
+            salles: tuiles.length,
+            etats: [...new Set(tuiles.map((t) => t.dataset.etat))].sort(),
+            ouvrables: tuiles.filter((t) => !t.disabled).length,
+            legende: document.querySelectorAll('.carte-legende .puce-etat').length,
+            machine: lire('.salle-machine')
+          }
+
           const theme = document.querySelector('.bouton-theme')
           const sombreDepart = racine.dataset.sombre
           if (theme) theme.click()
@@ -153,7 +164,8 @@ function creerFenetre () {
             ecrit: sombreDe(avant) !== sombreDe(pendant) && sombreDe(avant) === sombreDe(apres),
             effets: racine.dataset.effets,
             profil: (document.querySelector('.profil') || {}).innerText || '',
-            tableau
+            tableau,
+            plan
           }
         })()`)
         const profil = typeof rapport.profil === 'string' ? rapport.profil : ''
@@ -166,6 +178,18 @@ function creerFenetre () {
           tableau.commande.includes('$ ') &&
           tableau.citation.includes('MEMO DE MARCEL') &&
           tableau.releve.includes('RELEVE DE SERVICE')
+        // Le plan porte les 19 epreuves du programme (11 journees, 2 rushs,
+        // 6 missions), la legende ses 4 etats, et au moins une salle s'ouvre.
+        const plan = rapport.plan ?? {}
+        const etatsConnus = ['disponible', 'en-cours', 'validee', 'verrouillee']
+        const carte =
+          plan.salles === 19 &&
+          plan.legende === 4 &&
+          Array.isArray(plan.etats) &&
+          plan.etats.length > 0 &&
+          plan.etats.every((e) => etatsConnus.includes(e)) &&
+          plan.ouvrables >= 1 &&
+          (plan.machine ?? '').includes('PHASE 3 ·')
         verdict =
           rapport.pont &&
           rapport.ipc?.ok === true &&
@@ -175,13 +199,15 @@ function creerFenetre () {
           rapport.ecrit &&
           rapport.effets === '1' &&
           profil.includes('Échelon') &&
-          bord
+          bord &&
+          carte
             ? 0
             : 1
         console.log(
           `autotest : pont ${rapport.pont ? 'actif' : 'absent'}, ${rapport.nav} ecrans, ` +
             `navigation ${rapport.navigation ? 'ok' : 'ko'}, ` +
             `tableau de bord ${bord ? 'complet' : 'incomplet'}, ` +
+            `plan ${carte ? plan.salles + ' salles' : 'incomplet'}, ` +
             `theme ${rapport.theme ? 'bascule' : 'fige'}, ` +
             `reglage ${rapport.ecrit ? 'ecrit et repris' : 'inchange'}`
         )
