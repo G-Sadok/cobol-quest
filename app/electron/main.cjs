@@ -271,6 +271,65 @@ function creerFenetre () {
           await attendre(60)
           const livretApres = { obtenues: obtenues(), ton: ton() }
 
+          // Les reglages : trois blocs, deux boites natives et l'encart rouge.
+          // Le rythme se change puis se remet comme il etait ; la remise a
+          // zero s'ouvre, passe sa PREMIERE confirmation, et se referme par
+          // « Echap » a la seconde. La progression de l'utilisateur ne risque
+          // rien : c'est le dernier bouton, jamais atteint ici, qui efface.
+          if (items[5]) items[5].click()
+          await attendre(60)
+          const rythmes = () => [...document.querySelectorAll('.rythme-ligne')]
+          const rythmeTenu = () => {
+            const ligne = rythmes().find((r) => r.getAttribute('aria-checked') === 'true')
+            return ligne ? ligne.innerText : ''
+          }
+          const boite = () => document.querySelector('.modale')
+          const titreBoite = () => lire('.modale-titre')
+          const interrupteurs = [...document.querySelectorAll('.interrupteur')]
+          const posteAvant = {
+            titreEcran: titre(),
+            rythmes: rythmes().length,
+            tenu: rythmeTenu(),
+            interrupteurs: interrupteurs.length,
+            etatsInter: interrupteurs.map((i) => i.getAttribute('aria-checked')),
+            fichiers: [...document.querySelectorAll('.reglages-progression .bouton-secondaire')]
+              .map((b) => b.innerText),
+            ouverts: [...document.querySelectorAll('.reglages-progression .bouton-secondaire')]
+              .filter((b) => !b.disabled).length,
+            releve: lire('.reglages-releve'),
+            danger: lire('.reglages-danger .bouton-danger'),
+            boites: document.querySelectorAll('.modale').length
+          }
+
+          const autre = rythmes().find((r) => r.getAttribute('aria-checked') !== 'true')
+          if (autre) autre.click()
+          await attendre(60)
+          const postePendant = { tenu: rythmeTenu(), toast: lire('.toast'), ton: ton() }
+
+          const depart = rythmes().find((r) => r.innerText === posteAvant.tenu)
+          if (depart) depart.click()
+          await attendre(60)
+          const posteRendu = rythmeTenu()
+
+          const effacer = document.querySelector('.reglages-danger .bouton-danger')
+          if (effacer) effacer.click()
+          await attendre(60)
+          const boite1 = {
+            ouverte: Boolean(boite()),
+            titre: titreBoite(),
+            corps: lire('.modale-corps'),
+            confirmer: lire('.modale-boutons .bouton-danger')
+          }
+
+          const suivre = document.querySelector('.modale-boutons .bouton-danger')
+          if (suivre) suivre.click()
+          await attendre(60)
+          const boite2 = { titre: titreBoite(), confirmer: lire('.modale-boutons .bouton-danger') }
+
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+          await attendre(60)
+          const boitesApres = document.querySelectorAll('.modale').length
+
           const theme = document.querySelector('.bouton-theme')
           const sombreDepart = racine.dataset.sombre
           if (theme) theme.click()
@@ -296,7 +355,15 @@ function creerFenetre () {
             sujet,
             route: { avant: routeAvant, pendant: routePendant, apres: routeApres },
             soir: { avant: soirAvant, pendant: soirPendant, apres: soirApres },
-            livret: { avant: livretAvant, pendant: livretPendant, apres: livretApres }
+            livret: { avant: livretAvant, pendant: livretPendant, apres: livretApres },
+            poste: {
+              avant: posteAvant,
+              pendant: postePendant,
+              rendu: posteRendu,
+              boite1,
+              boite2,
+              boitesApres
+            }
           }
         })()`)
         const profil = typeof rapport.profil === 'string' ? rapport.profil : ''
@@ -399,6 +466,33 @@ function creerFenetre () {
           (livretPendant.toast ?? '').includes("SUR L'HONNEUR") &&
           livretApres.obtenues === livretAvant.obtenues &&
           livretApres.ton === 'non'
+        // Les reglages portent les trois rythmes, les deux interrupteurs, les
+        // deux boites natives et l'encart rouge. Le rythme change puis revient,
+        // et la remise a zero demande bien DEUX confirmations avant d'effacer.
+        const p = rapport.poste ?? {}
+        const posteAvant = p.avant ?? {}
+        const postePendant = p.pendant ?? {}
+        const boite1 = p.boite1 ?? {}
+        const boite2 = p.boite2 ?? {}
+        const poste =
+          posteAvant.titreEcran === 'Réglages' &&
+          posteAvant.rythmes === 3 &&
+          posteAvant.interrupteurs === 2 &&
+          posteAvant.etatsInter.every((e) => ['true', 'false'].includes(e)) &&
+          posteAvant.fichiers.length === 2 &&
+          posteAvant.ouverts === (rapport.pont ? 2 : 0) &&
+          (posteAvant.releve ?? '').length > 0 &&
+          (posteAvant.danger ?? '').startsWith('Tout effacer') &&
+          posteAvant.boites === 0 &&
+          postePendant.tenu !== posteAvant.tenu &&
+          (postePendant.toast ?? '').startsWith('RYTHME') &&
+          p.rendu === posteAvant.tenu &&
+          boite1.ouverte === true &&
+          boite1.titre.startsWith('Effacer toute la progression') &&
+          (boite1.corps ?? '').length > 0 &&
+          boite2.titre !== boite1.titre &&
+          boite2.confirmer === 'Effacer définitivement' &&
+          p.boitesApres === 0
         verdict =
           rapport.pont &&
           rapport.ipc?.ok === true &&
@@ -413,7 +507,8 @@ function creerFenetre () {
           lecteur &&
           feuille &&
           soir &&
-          dossier
+          dossier &&
+          poste
             ? 0
             : 1
         console.log(
@@ -425,6 +520,7 @@ function creerFenetre () {
             `feuille de route ${feuille ? avant.lignes + ' case' + (avant.lignes > 1 ? 's' : '') + ' dont ' + avant.bonus + ' bonus, cochee puis rendue' : 'incomplete'}, ` +
             `quiz ${soir ? soirAvant.puces + ' seances, ' + (seanceOuverte ? 'question corrigee puis suivante' : 'seance encore verrouillee') : 'incomplet'}, ` +
             `livret ${dossier ? livretAvant.tuiles + ' medailles dont ' + livretAvant.obtenues + ' obtenues, ' + livretAvant.echelons + ' echelons, decoration accordee puis rendue' : 'incomplet'}, ` +
+            `reglages ${poste ? posteAvant.rythmes + ' rythmes, ' + posteAvant.interrupteurs + ' interrupteurs, effacement a deux confirmations' : 'incomplets'}, ` +
             `theme ${rapport.theme ? 'bascule' : 'fige'}, ` +
             `reglage ${rapport.ecrit ? 'ecrit et repris' : 'inchange'}`
         )
