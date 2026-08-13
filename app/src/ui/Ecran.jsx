@@ -1,7 +1,7 @@
 // L'enveloppe commune des ecrans : la colonne centree et ses marges
 // (40px en haut, 28px sur les cotes, 72px en bas), a la largeur que le
-// registre fixe pour cet ecran. Un ecran qui gere sa propre mise en page
-// (le lecteur et ses deux volets) passe `largeur` a null.
+// registre fixe pour cet ecran. Un ecran qui gere sa propre mise en page ne
+// passe pas par ici : le lecteur et ses deux volets posent leur propre grille.
 
 export default function Ecran({ largeur, children }) {
   return (
