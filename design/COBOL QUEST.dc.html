@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+:root, [data-sombre="0"] {
+  --canevas: #EFE9DC;
+  --carte: #FDFBF6;
+  --tete: #F7F3EA;
+  --panneau: #E9E3D5;
+  --barre: #E6E0D2;
+  --console: #16160F;
+  --sur-vert: #F6F2E8;
+  --sur-vert2: #F3EFE5;
+  --sur-plein: #FDFBF6;
+  --pastille: #FDFBF6;
+  --survol-doux: #F2EDE1;
+  --tete-2: #F0EBDF;
+  --ligne-active: #F5F2E9;
+  --ligne-cochee: #F7F5EE;
+  --badge-off: #EDE9DF;
+  --verrou-bg: #EBE6DA;
+  --validee-bg: #F1F5EF;
+  --succes-bg: #F0F5EE;
+  --zebra: #F4F7F2;
+  --warn-bg: #FDF6E8;
+  --medaille-bg: #F6EBD6;
+  --danger-bg: #FBF0EE;
+  --chip-bg: #F2E6CC;
+  --pilule-bg: #E7E1D3;
+  --piste: #E3DDCE;
+  --puce-nav: #DCD5C5;
+  --inter-off: #CFC6B2;
+  --scroll-survol: #B9AE95;
+  --trait: #D8D0BE;
+  --trait-doux: #E5DECD;
+  --trait-doux2: #EAE4D6;
+  --trait-doux3: #EDE7DA;
+  --trait-doux4: #DFD8C8;
+  --trait-fort: #C3B9A2;
+  --trait-verrou: #BCB09A;
+  --trait-barre: #D3CAB6;
+  --trait-toolbar: #DDD5C3;
+  --trait-console: #2E3A2E;
+  --bd-medaille: #E0C99B;
+  --bd-validee: #C3D4C1;
+  --bd-succes: #C9DCC6;
+  --bd-warn: #E8D5AE;
+  --bd-danger: #E7C6C1;
+  --bd-danger-btn: #DDA9A2;
+  --encre: #1B1915;
+  --lecture: #2A2721;
+  --encre-2: #5C554A;
+  --encre-3: #615B4F;
+  --verrou-txt: #5F594D;
+  --badge-off-txt: #6B6458;
+  --warn-txt: #3A3327;
+  --danger-txt: #7A4A44;
+  --vert: #1C5D38;
+  --vert-survol: #164A2C;
+  --lien-survol: #134527;
+  --validee-code: #4A6350;
+  --validee-titre: #3F5343;
+  --ambre: #8F5A08;
+  --rouge: #A82C22;
+  --rouge-survol: #8E211A;
+  --phosphore: #79E08D;
+  --phosphore-2: #7E9484;
+  --phosphore-3: #DDEBDF;
+  --phosphore-4: #8FA893;
+  --phosphore-bd: #4A6650;
+  --toast-txt: #E3EDE4;
+  --toast-non: #F28B82;
+  --o1: rgba(27,25,21,.05);
+  --o2: rgba(27,25,21,.06);
+  --o-btn: rgba(27,25,21,.16);
+  --o-modale: rgba(27,25,21,.3);
+  --o-toast: rgba(27,25,21,.28);
+  --o-past: rgba(27,25,21,.22);
+  --o-sub: rgba(27,25,21,.04);
+  --lien-bd: rgba(28,93,56,.3);
+  --lueur: rgba(28,93,56,.28);
+  --halo: rgba(28,93,56,.09);
+  --toolbar: rgba(239,233,220,.86);
+  --voile: rgba(30,26,20,.34);
+  --sur-vert-dim: rgba(246,242,232,.75);
+}
+[data-sombre="1"] {
+  --canevas: #14150F;
+  --carte: #1D1E17;
+  --tete: #23241C;
+  --panneau: #191A13;
+  --barre: #101109;
+  --console: #0A0B06;
+  --sur-vert: #0C1710;
+  --sur-vert2: #0C1710;
+  --sur-plein: #0C1710;
+  --pastille: #E9E4D6;
+  --survol-doux: #2A2C22;
+  --tete-2: #23241C;
+  --ligne-active: #232418;
+  --ligne-cochee: #202118;
+  --badge-off: #191A13;
+  --verrou-bg: #1A1B14;
+  --validee-bg: #16241A;
+  --succes-bg: #16241A;
+  --zebra: #1B2418;
+  --warn-bg: #26200F;
+  --medaille-bg: #2C2312;
+  --danger-bg: #2A1512;
+  --chip-bg: #3A2F13;
+  --pilule-bg: #23241C;
+  --piste: #2A2C22;
+  --puce-nav: #2E3025;
+  --inter-off: #3E4034;
+  --scroll-survol: #55584A;
+  --trait: #33352A;
+  --trait-doux: #2B2D22;
+  --trait-doux2: #292B20;
+  --trait-doux3: #2A2C21;
+  --trait-doux4: #33352A;
+  --trait-fort: #4A4D3E;
+  --trait-verrou: #3E4034;
+  --trait-barre: #26281E;
+  --trait-toolbar: #26281E;
+  --bd-medaille: #5A4720;
+  --bd-validee: #2E4634;
+  --bd-succes: #2E4634;
+  --bd-warn: #574618;
+  --bd-danger: #55302A;
+  --bd-danger-btn: #6B392F;
+  --encre: #F1EDE1;
+  --lecture: #DFDACB;
+  --encre-2: #B5AF9E;
+  --encre-3: #9C9585;
+  --verrou-txt: #9A9384;
+  --badge-off-txt: #8E8778;
+  --warn-txt: #E4D9BE;
+  --danger-txt: #E5B9B2;
+  --vert: #4FBF7B;
+  --vert-survol: #6BD494;
+  --lien-survol: #8FE2AE;
+  --validee-code: #8FC29E;
+  --validee-titre: #C8DCCD;
+  --ambre: #E3A94E;
+  --rouge: #E8837A;
+  --rouge-survol: #F09A92;
+  --o1: rgba(0,0,0,.35);
+  --o2: rgba(0,0,0,.45);
+  --o-btn: rgba(0,0,0,.45);
+  --o-modale: rgba(0,0,0,.62);
+  --o-toast: rgba(0,0,0,.55);
+  --o-past: rgba(0,0,0,.5);
+  --o-sub: rgba(0,0,0,.3);
+  --lien-bd: rgba(79,191,123,.4);
+  --lueur: rgba(79,191,123,.34);
+  --halo: rgba(79,191,123,.16);
+  --toolbar: rgba(20,21,15,.86);
+  --voile: rgba(0,0,0,.58);
+  --sur-vert-dim: rgba(12,23,16,.72);
+}
+  html, body { margin:0; padding:0; background:var(--canevas); }
+  * { box-sizing:border-box; }
+  a { color:var(--vert); text-decoration:none; border-bottom:1px solid var(--lien-bd); }
+  a:hover { color:var(--lien-survol); border-bottom-color:var(--lien-survol); }
+  @keyframes tampon { 0% { transform:rotate(-7deg) scale(1.6); opacity:0 } 55% { transform:rotate(-7deg) scale(.97); opacity:1 } 100% { transform:rotate(-7deg) scale(1); opacity:1 } }
+  @keyframes toastin { from { transform:translate(-50%,14px); opacity:0 } to { transform:translate(-50%,0); opacity:1 } }
+  @keyframes phosphore { 0%,49% { opacity:1 } 50%,100% { opacity:.15 } }
+  ::-webkit-scrollbar { width:12px }
+  ::-webkit-scrollbar-track { background:transparent }
+  ::-webkit-scrollbar-thumb { background:var(--inter-off); border-radius:6px; border:3px solid var(--canevas) }
+  ::-webkit-scrollbar-thumb:hover { background:var(--scroll-survol) }
+</style>
+</helmet>
+<div data-sombre="{{ sombre }}" style="position:relative; display:flex; height:100vh; min-height:800px; min-width:1280px; background:var(--canevas); color:var(--encre); font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue','Segoe UI',sans-serif; font-size:15px; line-height:1.6; overflow:hidden;">
+
+  <div style="flex:0 0 248px; display:flex; flex-direction:column; background:var(--barre); border-right:1px solid var(--trait-barre);">
+    <div style="height:52px; flex:0 0 52px; display:flex; align-items:center; gap:8px; padding:0 16px;">
+      <div style="width:12px; height:12px; border-radius:50%; background:#F2604C;"></div>
+      <div style="width:12px; height:12px; border-radius:50%; background:#F5BE4F;"></div>
+      <div style="width:12px; height:12px; border-radius:50%; background:#61C554;"></div>
+    </div>
+
+    <div style="padding:6px 16px 20px;">
+      <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.22em; color:var(--encre-3);">CGBA · 1962</div>
+      <div style="font-size:17px; font-weight:650; letter-spacing:-.01em; margin-top:3px;">Cobol Quest</div>
+      <div style="font-size:12px; color:var(--encre-3);">Opération Marcel</div>
+    </div>
+
+    <div style="padding:0 10px; display:flex; flex-direction:column; gap:2px;">
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6">
+        <button onClick="{{ n.aller }}" style="{{ n.style }}">
+          <span style="{{ n.puceStyle }}">{{ n.code }}</span>
+          <span style="flex:1; text-align:left;">{{ n.libelle }}</span>
+          <span style="{{ n.pastilleStyle }}">{{ n.compteur }}</span>
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="flex:1;"></div>
+
+    <div style="margin:14px; padding:14px; background:var(--carte); border:1px solid var(--trait); border-radius:8px; box-shadow:0 1px 2px var(--o1);">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+        <div style="width:34px; height:34px; border-radius:50%; background:var(--vert); color:var(--sur-vert2); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600;">SD</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:13px; font-weight:600; line-height:1.3;">Pupitreur</div>
+          <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.1em; color:var(--encre-3);">MATRICULE 4417</div>
+        </div>
+      </div>
+      <div style="height:5px; border-radius:3px; background:var(--piste); overflow:hidden;">
+        <div style="height:100%; width:62%; background:var(--vert); border-radius:3px;"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-top:7px; font-size:11px; color:var(--encre-3);">
+        <span>Échelon 3 / 9</span><span style="color:var(--ambre); font-weight:600;">1 240 XP</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
+    <div style="height:52px; flex:0 0 52px; display:flex; align-items:center; gap:14px; padding:0 28px; background:var(--toolbar); backdrop-filter:blur(20px); border-bottom:1px solid var(--trait-toolbar);">
+      <span style="font-size:13px; font-weight:600;">{{ titreBarre }}</span>
+      <span style="font-size:13px; color:var(--encre-3);">{{ sousTitreBarre }}</span>
+      <span style="flex:1;"></span>
+      <button onClick="{{ basculerSombre }}" title="Basculer le thème" style="width:30px; height:26px; display:flex; align-items:center; justify-content:center; background:var(--pilule-bg); color:var(--encre-2); border:1px solid var(--trait); border-radius:6px; font:inherit; font-size:13px; cursor:pointer; transition:all 130ms ease-out;" style-hover="color:var(--encre); border-color:var(--trait-fort);">{{ glypheTheme }}</button>
+      <div style="display:flex; align-items:center; gap:7px; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; letter-spacing:.08em; color:var(--encre-2); background:var(--pilule-bg); border:1px solid var(--trait); border-radius:6px; padding:5px 10px;">
+        <span style="width:6px; height:6px; border-radius:50%; background:var(--vert); animation:phosphore 2.4s ease-in-out infinite;"></span>BERTHA EN LIGNE
+      </div>
+    </div>
+
+    <div style="flex:1; overflow-y:auto; overflow-x:hidden;">
+
+      <sc-if value="{{ estTerminal }}" hint-placeholder-val="{{ true }}">
+        <div style="max-width:1020px; margin:0 auto; padding:40px 28px 72px;">
+          <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; letter-spacing:.18em; color:var(--encre-3); margin-bottom:10px;">JEUDI 13 AOUT · POSTE 07 · NANTERRE</div>
+          <h1 style="margin:0 0 6px; font-size:30px; font-weight:680; letter-spacing:-.02em;">Bonjour. BERTHA vous attend.</h1>
+          <p style="margin:0 0 34px; font-size:16px; color:var(--encre-2); max-width:62ch;">Quatre salles derrière vous, quinze devant. Marcel part dans onze semaines.</p>
+
+          <div style="display:grid; grid-template-columns:1fr 300px; gap:22px; align-items:start;">
+            <div style="display:flex; flex-direction:column; gap:22px;">
+
+              <div style="background:var(--carte); border:1px solid var(--trait); border-radius:10px; box-shadow:0 1px 2px var(--o1),0 10px 28px var(--o1); overflow:hidden;">
+                <div style="display:flex; align-items:center; gap:10px; padding:12px 22px; border-bottom:1px solid var(--trait-doux); background:var(--tete);">
+                  <span style="width:7px; height:7px; border-radius:50%; background:var(--ambre);"></span>
+                  <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; letter-spacing:.14em; color:var(--ambre);">EPREUVE EN COURS</span>
+                </div>
+                <div style="padding:26px 22px 22px;">
+                  <div style="display:flex; align-items:flex-start; gap:24px;">
+                    <div style="flex:1;">
+                      <div style="display:flex; align-items:baseline; gap:10px;">
+                        <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:13px; color:var(--encre-3);">J03</span>
+                        <h2 style="margin:0; font-size:22px; font-weight:640; letter-spacing:-.01em;">Les conditions</h2>
+                      </div>
+                      <div style="font-size:13px; color:var(--encre-3); margin:5px 0 20px;">Couloir La Piscine · seuil de validation 5 exercices sur 7</div>
+                      <div style="display:flex; align-items:center; gap:12px; max-width:400px;">
+                        <div style="flex:1; height:7px; border-radius:4px; background:var(--panneau); overflow:hidden;"><div style="height:100%; width:43%; background:var(--ambre); border-radius:4px;"></div></div>
+                        <span style="font-size:12px; font-weight:600; color:var(--ambre);">3 / 7</span>
+                      </div>
+                    </div>
+                    <button onClick="{{ allerLecteur }}" style="padding:12px 22px; background:var(--vert); color:var(--sur-vert); border:none; border-radius:7px; font:inherit; font-size:14px; font-weight:600; cursor:pointer; box-shadow:0 1px 2px var(--o-btn); transition:all 130ms ease-out;" style-hover="background:var(--vert-survol); box-shadow:0 3px 10px var(--lueur);">Reprendre</button>
+                  </div>
+
+                  <div style="margin-top:22px; border-radius:8px; background:var(--console); padding:14px 16px; display:flex; align-items:center; gap:12px;">
+                    <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:13px; color:var(--phosphore);">$ ./bertha/bertha.sh J03/ex05</span>
+                    <span style="width:8px; height:15px; background:var(--phosphore); animation:phosphore 1.06s step-end infinite;"></span>
+                    <span style="flex:1;"></span>
+                    <button onClick="{{ copier }}" style="padding:5px 11px; background:transparent; color:var(--phosphore-4); border:1px solid var(--trait-console); border-radius:5px; font:inherit; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.1em; cursor:pointer; transition:all 130ms ease-out;" style-hover="color:var(--phosphore); border-color:var(--phosphore-bd);">COPIER</button>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:12px;">
+                  <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; letter-spacing:.16em; color:var(--encre-3);">DERNIERES DECORATIONS</span>
+                  <button onClick="{{ allerLivret }}" style="background:none; border:none; padding:0; font:inherit; font-size:13px; color:var(--vert); cursor:pointer;" style-hover="color:var(--lien-survol);">Tout le livret →</button>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
+                  <sc-for list="{{ badgesRecents }}" as="b" hint-placeholder-count="3">
+                    <div style="background:var(--carte); border:1px solid var(--trait); border-radius:9px; padding:16px; box-shadow:0 1px 2px var(--o1);">
+                      <div style="width:36px; height:36px; border-radius:50%; background:var(--medaille-bg); border:1px solid var(--bd-medaille); color:var(--ambre); display:flex; align-items:center; justify-content:center; font-size:16px; margin-bottom:11px;">{{ b.glyphe }}</div>
+                      <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; letter-spacing:.09em; font-weight:600; margin-bottom:3px;">{{ b.nom }}</div>
+                      <div style="font-size:12px; color:var(--encre-3);">{{ b.date }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:22px;">
+              <div style="background:var(--tete); border:1px solid var(--trait); border-radius:10px; padding:20px;">
+                <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.2em; color:var(--encre-3); margin-bottom:12px;">MARCEL DUBOIS</div>
+                <div style="font-size:16px; line-height:1.65; letter-spacing:-.01em;">« Le code qui tourne depuis 1984, ce n'est pas du vieux code. C'est du code qui a eu raison plus longtemps que toi. »</div>
+                <div style="font-size:12px; color:var(--encre-3); margin-top:14px;">Cafétéria du 2e sous-sol, mardi.</div>
+              </div>
+
+              <div style="background:var(--carte); border:1px solid var(--trait); border-radius:10px; padding:6px 18px 12px; box-shadow:0 1px 2px var(--o1);">
+                <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.2em; color:var(--encre-3); margin:14px 0 8px;">RELEVE DE SERVICE</div>
+                <sc-for list="{{ releve }}" as="r" hint-placeholder-count="4">
+                  <div style="display:flex; justify-content:space-between; align-items:baseline; padding:9px 0; border-top:1px solid var(--trait-doux2); font-size:13px;">
+                    <span style="color:var(--encre-2);">{{ r.cle }}</span><span style="font-weight:600;">{{ r.valeur }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ estCarte }}" hint-placeholder-val="{{ true }}">
+        <div style="max-width:1080px; margin:0 auto; padding:40px 28px 72px;">
+          <div style="display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:26px;">
+            <div>
+              <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; letter-spacing:.18em; color:var(--encre-3); margin-bottom:8px;">PLAN DES SOUS-SOLS · DOCUMENT INTERNE</div>
+              <h1 style="margin:0; font-size:30px; font-weight:680; letter-spacing:-.02em;">La carte</h1>
+            </div>
+            <div style="display:flex; gap:16px; font-size:12px; color:var(--encre-2);">
+              <span style="display:flex; align-items:center; gap:7px;"><span style="width:14px; height:14px; border-radius:4px; background:var(--verrou-bg); border:1px dashed var(--trait-fort);"></span>Verrouillée</span>
+              <span style="display:flex; align-items:center; gap:7px;"><span style="width:14px; height:14px; border-radius:4px; background:var(--carte); border:1.5px solid var(--vert);"></span>Disponible</span>
+              <span style="display:flex; align-items:center; gap:7px;"><span style="width:14px; height:14px; border-radius:4px; background:var(--warn-bg); border:1.5px solid var(--ambre);"></span>En cours</span>
+              <span style="display:flex; align-items:center; gap:7px;"><span style="width:14px; height:14px; border-radius:4px; background:var(--validee-bg); border:1px solid var(--bd-validee);"></span>Validée</span>
+            </div>
+          </div>
+
+          <div style="background:var(--carte); border:1px solid var(--trait); border-radius:12px; box-shadow:0 1px 2px var(--o1),0 14px 36px var(--o2); overflow:hidden;">
+            <div style="padding:30px 30px 8px;">
+              <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:18px;">
+                <span style="font-size:18px; font-weight:640; letter-spacing:-.01em;">La Piscine</span>
+                <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.16em; color:var(--encre-3);">NIVEAU −1 · FONDAMENTAUX · 11 SALLES</span>
+                <span style="flex:1; height:1px; background:var(--trait-doux);"></span>
+                <span style="font-size:12px; color:var(--vert); font-weight:600;">4 validées</span>
+              </div>
+
+              <div style="display:flex; gap:20px; align-items:flex-start;">
+                <div style="flex:1; display:grid; grid-template-columns:repeat(6,1fr); gap:11px;">
+                  <sc-for list="{{ piscine }}" as="s" hint-placeholder-count="11">
+                    <button onClick="{{ s.ouvrir }}" style="{{ s.style }}">
+                      <span style="{{ s.etiqStyle }}">{{ s.etiquette }}</span>
+                      <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:12px; letter-spacing:.1em; color:{{ s.couleurCode }}; font-weight:600;">{{ s.code }}</span>
+                      <span style="font-size:12.5px; line-height:1.35; color:{{ s.couleurTitre }}; letter-spacing:-.005em;">{{ s.titre }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <div style="flex:0 0 148px; padding-left:20px; border-left:1px dashed var(--trait); display:flex; flex-direction:column; gap:11px;">
+                  <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.16em; color:var(--encre-3);">SALLES RUSH</div>
+                  <sc-for list="{{ rush }}" as="s" hint-placeholder-count="2">
+                    <button onClick="{{ s.ouvrir }}" style="{{ s.style }}">
+                      <span style="{{ s.etiqStyle }}">{{ s.etiquette }}</span>
+                      <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:12px; letter-spacing:.1em; color:{{ s.couleurCode }}; font-weight:600;">{{ s.code }}</span>
+                      <span style="font-size:12.5px; line-height:1.35; color:{{ s.couleurTitre }};">{{ s.titre }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:14px; padding:26px 30px 0;">
+              <span style="flex:1; height:1px; background:var(--trait-doux);"></span>
+              <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.16em; color:var(--encre-3);">ESCALIER DE SERVICE</span>
+              <span style="flex:1; height:1px; background:var(--trait-doux);"></span>
+            </div>
+
+            <div style="padding:22px 30px 30px;">
+              <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:18px;">
+                <span style="font-size:18px; font-weight:640; letter-spacing:-.01em;">Les Missions</span>
+                <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.16em; color:var(--encre-3);">NIVEAU −2 · PROJETS · 6 BUREAUX</span>
+                <span style="flex:1; height:1px; background:var(--trait-doux);"></span>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:11px;">
+                <sc-for list="{{ missions }}" as="s" hint-placeholder-count="6">
+                  <button onClick="{{ s.ouvrir }}" style="{{ s.style }}">
+                    <span style="{{ s.etiqStyle }}">{{ s.etiquette }}</span>
+                    <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:12px; letter-spacing:.1em; color:{{ s.couleurCode }}; font-weight:600;">{{ s.code }}</span>
+                    <span style="font-size:12.5px; line-height:1.35; color:{{ s.couleurTitre }};">{{ s.titre }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:18px; padding:22px 30px; background:var(--console);">
+              <div style="width:44px; height:44px; border-radius:9px; border:1px solid var(--trait-console); color:#5F7A63; display:flex; align-items:center; justify-content:center; font-size:19px;">⌧</div>
+              <div style="flex:1;">
+                <div style="font-size:17px; font-weight:640; color:var(--phosphore-3); letter-spacing:-.01em;">La salle machine</div>
+                <div style="font-size:13px; color:var(--phosphore-2); margin-top:2px;">BERTHA en production. S'ouvre après les six missions.</div>
+              </div>
+              <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.14em; color:var(--phosphore-2); border:1px solid var(--trait-console); border-radius:5px; padding:6px 12px;">PHASE 3 · VERROUILLEE</div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ estLecteur }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid; grid-template-columns:1fr 340px; min-height:100%;">
+          <div style="padding:44px 48px 80px;">
+            <div style="max-width:68ch; margin:0 auto;">
+              <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; letter-spacing:.18em; color:var(--encre-3); margin-bottom:10px;">LA PISCINE · SALLE J03</div>
+              <h1 style="margin:0 0 8px; font-size:32px; font-weight:680; letter-spacing:-.022em;">Les conditions</h1>
+              <div style="font-size:13px; color:var(--encre-3); padding-bottom:26px; border-bottom:1px solid var(--trait-doux4); margin-bottom:30px;">2 h 15 · 7 exercices · 2 bonus · seuil 5 / 7</div>
+
+              <p style="margin:0 0 22px; font-size:17px; line-height:1.75; color:var(--lecture); text-wrap:pretty;">Marcel pose son café sur le bord du pupitre. « Une banque, c'est une suite de <em style="font-style:italic;">si</em>. Si le solde est négatif, si le client a plus de soixante ans, si la date de valeur est un jour ouvré. Tout le reste n'est que de la plomberie. »</p>
+              <p style="margin:0 0 34px; font-size:17px; line-height:1.75; color:var(--lecture); text-wrap:pretty;">Aujourd'hui vous écrivez vos premiers branchements en COBOL. On commence par la forme la plus lisible, celle que BERTHA avale sans broncher depuis 1971.</p>
+
+              <h3 style="margin:0 0 12px; font-size:19px; font-weight:640; letter-spacing:-.015em;">1. La forme IF / ELSE / END-IF</h3>
+              <p style="margin:0 0 20px; font-size:17px; line-height:1.75; color:var(--lecture);">Un bloc conditionnel se ferme explicitement. Le point final est réservé à la fin du paragraphe : c'est la première habitude à prendre.</p>
+
+              <pre style="margin:0 0 26px; padding:20px 22px; background:var(--console); border-radius:9px; overflow-x:auto; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:13.5px; line-height:1.75; color:var(--phosphore);">IF SOLDE-CLIENT &lt; 0
+    MOVE "DECOUVERT" TO STATUT-CPT
+    ADD 1 TO CPT-ALERTES
+ELSE
+    MOVE "OK" TO STATUT-CPT
+END-IF</pre>
+
+              <p style="margin:0 0 22px; font-size:17px; line-height:1.75; color:var(--lecture);">Les conditions de niveau 88 rendent le code lisible par un auditeur qui ne programme pas. Marcel y tient beaucoup.</p>
+
+              <table style="width:100%; border-collapse:collapse; margin:0 0 30px; font-size:14px; border:1px solid var(--trait-doux4); border-radius:8px; overflow:hidden;">
+                <thead>
+                  <tr style="background:var(--tete-2);">
+                    <th style="text-align:left; padding:11px 14px; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.14em; font-weight:600; color:var(--encre-2); border-bottom:1px solid var(--trait-doux4);">OPERATEUR</th>
+                    <th style="text-align:left; padding:11px 14px; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.14em; font-weight:600; color:var(--encre-2); border-bottom:1px solid var(--trait-doux4);">FORME LONGUE</th>
+                    <th style="text-align:left; padding:11px 14px; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.14em; font-weight:600; color:var(--encre-2); border-bottom:1px solid var(--trait-doux4);">EXEMPLE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td style="padding:11px 14px; font-family:ui-monospace,'SF Mono',Menlo,monospace; color:var(--vert);">=</td><td style="padding:11px 14px;">EQUAL TO</td><td style="padding:11px 14px; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:12.5px; color:var(--encre-2);">IF AGE = 60</td></tr>
+                  <tr style="background:var(--zebra);"><td style="padding:11px 14px; font-family:ui-monospace,'SF Mono',Menlo,monospace; color:var(--vert);">&gt;</td><td style="padding:11px 14px;">GREATER THAN</td><td style="padding:11px 14px; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:12.5px; color:var(--encre-2);">IF SOLDE &gt; 1000</td></tr>
+                  <tr><td style="padding:11px 14px; font-family:ui-monospace,'SF Mono',Menlo,monospace; color:var(--vert);">NOT =</td><td style="padding:11px 14px;">NOT EQUAL TO</td><td style="padding:11px 14px; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:12.5px; color:var(--encre-2);">IF CODE NOT = "FR"</td></tr>
+                </tbody>
+              </table>
+
+              <div style="background:var(--warn-bg); border:1px solid var(--bd-warn); border-radius:9px; padding:18px 20px;">
+                <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.16em; color:var(--ambre); margin-bottom:7px;">PIEGE CLASSIQUE</div>
+                <div style="font-size:15px; line-height:1.7; color:var(--warn-txt);">Un point après <code style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:13px; background:var(--chip-bg); border-radius:4px; padding:1px 5px;">MOVE "OK" TO STATUT-CPT</code> ferme le paragraphe entier. Le <code style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:13px; background:var(--chip-bg); border-radius:4px; padding:1px 5px;">ELSE</code> devient orphelin, et le compilateur vous le fera payer à la ligne 214.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding:44px 24px 80px; background:var(--panneau); border-left:1px solid var(--trait);">
+            <div style="font-size:15px; font-weight:640; margin-bottom:4px;">Feuille de route</div>
+            <div style="font-size:12px; color:var(--encre-3); margin-bottom:18px;">Cochez au fil de l'eau. BERTHA vérifie.</div>
+
+            <div style="background:var(--carte); border:1px solid var(--trait); border-radius:9px; overflow:hidden; box-shadow:0 1px 2px var(--o1);">
+              <sc-for list="{{ exercices }}" as="e" hint-placeholder-count="7">
+                <label onClick="{{ e.basculer }}" style="{{ e.ligneStyle }}">
+                  <span style="{{ e.caseStyle }}">{{ e.marque }}</span>
+                  <span style="flex:1; font-size:13.5px; line-height:1.45; color:{{ e.couleur }};">{{ e.titre }}</span>
+                  <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; color:var(--ambre); white-space:nowrap;">{{ e.xp }}</span>
+                </label>
+              </sc-for>
+            </div>
+
+            <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.16em; color:var(--encre-3); margin:24px 0 10px;">BONUS — POUR LES ZELES</div>
+            <div style="border:1px dashed var(--trait-fort); border-radius:9px; overflow:hidden;">
+              <sc-for list="{{ bonus }}" as="e" hint-placeholder-count="2">
+                <label onClick="{{ e.basculer }}" style="{{ e.ligneStyle }}">
+                  <span style="{{ e.caseStyle }}">{{ e.marque }}</span>
+                  <span style="flex:1; font-size:13.5px; line-height:1.45; color:{{ e.couleur }};">{{ e.titre }}</span>
+                  <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; color:var(--ambre); white-space:nowrap;">{{ e.xp }}</span>
+                </label>
+              </sc-for>
+            </div>
+
+            <div style="margin-top:24px; background:var(--carte); border:1px solid var(--trait); border-radius:9px; padding:18px;">
+              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:11px;">
+                <span style="font-size:13px; font-weight:600;">Seuil de validation</span>
+                <span style="font-size:13px; color:var(--vert); font-weight:600;">{{ faits }} / 7</span>
+              </div>
+              <div style="position:relative; height:8px; border-radius:4px; background:var(--panneau); overflow:visible;">
+                <div style="height:100%; border-radius:4px; background:var(--vert); width:{{ jauge }};"></div>
+                <div style="position:absolute; top:-5px; bottom:-5px; left:71.4%; width:2px; border-radius:1px; background:var(--ambre);"></div>
+              </div>
+              <div style="margin-top:10px; font-size:12px; color:var(--encre-3);">Repère ambre : 5 exercices, la journée est validée.</div>
+              <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--trait-doux2); display:flex; justify-content:space-between; font-size:13px;">
+                <span style="color:var(--encre-2);">Total du jour</span><span style="font-weight:600; color:var(--ambre);">{{ xpTotal }} XP</span>
+              </div>
+            </div>
+
+            <div style="margin-top:16px; background:var(--console); border-radius:9px; padding:16px; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11.5px; line-height:1.8; color:var(--phosphore-2);">
+              <div style="color:var(--phosphore); letter-spacing:.14em; margin-bottom:6px;">BERTHA</div>
+              Dernière compilation : <span style="color:var(--phosphore);">ex04 · RC=0000</span><br />
+              Temps CPU 0,42 s<br />
+              Fichier <span style="color:var(--phosphore-3);">J03EX04.CBL</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ estQuiz }}" hint-placeholder-val="{{ true }}">
+        <div style="max-width:720px; margin:0 auto; padding:52px 28px 80px;">
+          <div style="text-align:center; margin-bottom:30px;">
+            <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; letter-spacing:.18em; color:var(--encre-3); margin-bottom:8px;">18 H 45 · AVANT DE RENDRE LE PUPITRE</div>
+            <h1 style="margin:0; font-size:30px; font-weight:680; letter-spacing:-.02em;">Le quiz du soir</h1>
+          </div>
+
+          <sc-if value="{{ quizEnCours }}" hint-placeholder-val="{{ true }}">
+            <div style="background:var(--carte); border:1px solid var(--trait); border-radius:12px; box-shadow:0 1px 2px var(--o1),0 14px 36px var(--o2); overflow:hidden;">
+              <div style="display:flex; align-items:center; gap:14px; padding:14px 24px; border-bottom:1px solid var(--trait-doux); background:var(--tete);">
+                <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; letter-spacing:.12em; color:var(--encre-2);">QUESTION {{ qNum }} / 8</span>
+                <div style="flex:1; height:5px; border-radius:3px; background:var(--piste); overflow:hidden;"><div style="height:100%; background:var(--vert); border-radius:3px; width:{{ qProgres }};"></div></div>
+                <span style="font-size:12px; color:var(--encre-3);">Score {{ score }}</span>
+              </div>
+              <div style="padding:32px 28px 28px;">
+                <div style="font-size:21px; font-weight:600; line-height:1.5; letter-spacing:-.015em; margin-bottom:26px; text-wrap:pretty;">{{ question }}</div>
+                <div style="display:flex; flex-direction:column; gap:9px;">
+                  <sc-for list="{{ reponses }}" as="r" hint-placeholder-count="4">
+                    <button onClick="{{ r.choisir }}" style="{{ r.style }}">
+                      <span style="{{ r.lettreStyle }}">{{ r.lettre }}</span>
+                      <span style="flex:1;">{{ r.texte }}</span>
+                      <span style="font-size:15px; color:{{ r.couleurMarque }};">{{ r.marque }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <sc-if value="{{ aRepondu }}" hint-placeholder-val="{{ false }}">
+                  <div style="{{ styleFeedback }}">
+                    <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.16em; margin-bottom:6px; color:{{ couleurFeedback }};">{{ titreFeedback }}</div>
+                    <div style="font-size:15px; line-height:1.7; color:var(--lecture);">{{ explication }}</div>
+                  </div>
+                  <div style="display:flex; justify-content:flex-end; margin-top:22px;">
+                    <button onClick="{{ suivante }}" style="padding:12px 22px; background:var(--vert); color:var(--sur-vert); border:none; border-radius:7px; font:inherit; font-size:14px; font-weight:600; cursor:pointer; box-shadow:0 1px 2px var(--o-btn);" style-hover="background:var(--vert-survol);">Question suivante</button>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ quizFini }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--carte); border:1px solid var(--trait); border-radius:12px; box-shadow:0 1px 2px var(--o1),0 14px 36px var(--o2); padding:48px 40px; text-align:center;">
+              <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.2em; color:var(--encre-3);">RESULTAT DU SOIR</div>
+              <div style="font-size:66px; font-weight:700; letter-spacing:-.04em; color:var(--vert); margin:10px 0 2px;">{{ score }}/8</div>
+              <div style="font-size:15px; color:var(--encre-2); max-width:36ch; margin:0 auto 30px;">Seuil atteint. Marcel hoche la tête, ce qui chez lui vaut une ovation.</div>
+              <div style="display:inline-block; border:2.5px double var(--rouge); color:var(--rouge); border-radius:6px; padding:9px 24px; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:19px; font-weight:600; letter-spacing:.2em; transform:rotate(-7deg); opacity:.88; animation:tampon 440ms cubic-bezier(.2,.8,.3,1) both; margin-bottom:32px;">VALIDE +10 XP</div>
+              <div style="display:flex; gap:10px; justify-content:center;">
+                <button onClick="{{ retenter }}" style="padding:11px 20px; background:var(--carte); color:var(--encre); border:1px solid var(--trait-fort); border-radius:7px; font:inherit; font-size:14px; cursor:pointer; transition:all 130ms ease-out;" style-hover="background:var(--survol-doux);">Retenter</button>
+                <button onClick="{{ allerTerminal }}" style="padding:11px 20px; background:var(--vert); color:var(--sur-vert); border:none; border-radius:7px; font:inherit; font-size:14px; font-weight:600; cursor:pointer; box-shadow:0 1px 2px var(--o-btn);" style-hover="background:var(--vert-survol);">Retour au terminal</button>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ estLivret }}" hint-placeholder-val="{{ true }}">
+        <div style="max-width:1080px; margin:0 auto; padding:40px 28px 72px;">
+          <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; letter-spacing:.18em; color:var(--encre-3); margin-bottom:8px;">DOSSIER PERSONNEL · MATRICULE 4417</div>
+          <h1 style="margin:0 0 30px; font-size:30px; font-weight:680; letter-spacing:-.02em;">Le livret</h1>
+
+          <div style="display:grid; grid-template-columns:1fr 360px; gap:24px; align-items:start;">
+            <div>
+              <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.18em; color:var(--encre-3); margin-bottom:14px;">DECORATIONS · 3 SUR 9</div>
+              <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
+                <sc-for list="{{ badges }}" as="b" hint-placeholder-count="9">
+                  <div style="{{ b.style }}">
+                    <div style="{{ b.medaille }}">{{ b.glyphe }}</div>
+                    <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; letter-spacing:.08em; font-weight:600; color:{{ b.couleurNom }}; margin-bottom:6px;">{{ b.nom }}</div>
+                    <div style="font-size:12px; line-height:1.5; color:var(--encre-3);">{{ b.condition }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="background:var(--carte); border:1px solid var(--trait); border-radius:10px; overflow:hidden; box-shadow:0 1px 2px var(--o1);">
+              <div style="padding:15px 20px; border-bottom:1px solid var(--trait-doux); background:var(--tete); font-size:14px; font-weight:640;">Grille des échelons</div>
+              <sc-for list="{{ echelons }}" as="e" hint-placeholder-count="9">
+                <div style="{{ e.style }}">
+                  <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; color:var(--encre-3); width:20px;">{{ e.rang }}</span>
+                  <span style="flex:1; font-size:13.5px; color:{{ e.couleur }}; font-weight:{{ e.graisse }};">{{ e.nom }}</span>
+                  <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11px; color:var(--encre-3);">{{ e.seuil }}</span>
+                  <span style="{{ e.marqueStyle }}">{{ e.marque }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ estReglages }}" hint-placeholder-val="{{ true }}">
+        <div style="max-width:680px; margin:0 auto; padding:40px 28px 72px;">
+          <h1 style="margin:0 0 30px; font-size:30px; font-weight:680; letter-spacing:-.02em;">Réglages</h1>
+
+          <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.18em; color:var(--encre-3); margin-bottom:10px;">RYTHME DE FORMATION</div>
+          <div style="background:var(--carte); border:1px solid var(--trait); border-radius:10px; overflow:hidden; margin-bottom:28px; box-shadow:0 1px 2px var(--o1);">
+            <sc-for list="{{ rythmes }}" as="r" hint-placeholder-count="3">
+              <label onClick="{{ r.choisir }}" style="{{ r.style }}">
+                <span style="{{ r.puceStyle }}"><span style="{{ r.pointStyle }}"></span></span>
+                <span style="flex:1; font-size:14px; font-weight:{{ r.graisse }};">{{ r.nom }}</span>
+                <span style="font-size:12.5px; color:var(--encre-3);">{{ r.detail }}</span>
+              </label>
+            </sc-for>
+          </div>
+
+          <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.18em; color:var(--encre-3); margin-bottom:10px;">AFFICHAGE</div>
+          <div style="background:var(--carte); border:1px solid var(--trait); border-radius:10px; overflow:hidden; margin-bottom:28px; box-shadow:0 1px 2px var(--o1);">
+            <div style="display:flex; align-items:center; gap:18px; padding:16px 20px;">
+              <div style="flex:1;">
+                <div style="font-size:14px;">Thème sombre</div>
+                <div style="font-size:12.5px; color:var(--encre-3); margin-top:2px;">Salle machine de nuit. Actuellement : {{ infoTheme }}.</div>
+              </div>
+              <button onClick="{{ basculerSombre }}" style="{{ styleInter3 }}"><span style="{{ stylePast3 }}"></span></button>
+            </div>
+            <div style="display:flex; align-items:center; gap:18px; padding:16px 20px; border-top:1px solid var(--trait-doux2);">
+              <div style="flex:1;">
+                <div style="font-size:14px;">Console BERTHA en phosphore</div>
+                <div style="font-size:12.5px; color:var(--encre-3); margin-top:2px;">Blocs de code et console sur fond sombre.</div>
+              </div>
+              <button onClick="{{ basculerPhosphore }}" style="{{ styleInter1 }}"><span style="{{ stylePast1 }}"></span></button>
+            </div>
+            <div style="display:flex; align-items:center; gap:18px; padding:16px 20px; border-top:1px solid var(--trait-doux2);">
+              <div style="flex:1;">
+                <div style="font-size:14px;">Curseur clignotant</div>
+                <div style="font-size:12.5px; color:var(--encre-3); margin-top:2px;">Petit bloc vert après les commandes.</div>
+              </div>
+              <button onClick="{{ basculerCurseur }}" style="{{ styleInter2 }}"><span style="{{ stylePast2 }}"></span></button>
+            </div>
+          </div>
+
+          <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:10px; letter-spacing:.18em; color:var(--encre-3); margin-bottom:10px;">PROGRESSION</div>
+          <div style="background:var(--carte); border:1px solid var(--trait); border-radius:10px; padding:18px 20px; margin-bottom:28px; display:flex; align-items:center; gap:10px; box-shadow:0 1px 2px var(--o1);">
+            <button onClick="{{ exporter }}" style="padding:9px 16px; background:var(--carte); color:var(--encre); border:1px solid var(--trait-fort); border-radius:7px; font:inherit; font-size:13.5px; cursor:pointer; transition:all 130ms ease-out;" style-hover="background:var(--survol-doux);">Exporter…</button>
+            <button onClick="{{ importer }}" style="padding:9px 16px; background:var(--carte); color:var(--encre); border:1px solid var(--trait-fort); border-radius:7px; font:inherit; font-size:13.5px; cursor:pointer; transition:all 130ms ease-out;" style-hover="background:var(--survol-doux);">Importer…</button>
+            <span style="flex:1;"></span>
+            <span style="font-size:12px; color:var(--encre-3);">Dernier export : 11 août 2026</span>
+          </div>
+
+          <div style="background:var(--danger-bg); border:1px solid var(--bd-danger); border-radius:10px; padding:18px 20px; display:flex; align-items:center; gap:18px;">
+            <div style="flex:1;">
+              <div style="font-size:14px; font-weight:600; color:var(--rouge);">Remise à zéro</div>
+              <div style="font-size:12.5px; color:var(--danger-txt); margin-top:3px; line-height:1.55;">XP, badges, salles et quiz. Marcel ne le dira à personne, mais il sera déçu.</div>
+            </div>
+            <button onClick="{{ ouvrirModale }}" style="padding:9px 16px; background:var(--carte); color:var(--rouge); border:1px solid var(--bd-danger-btn); border-radius:7px; font:inherit; font-size:13.5px; font-weight:600; cursor:pointer; transition:all 130ms ease-out;" style-hover="background:var(--rouge); color:var(--sur-plein); border-color:var(--rouge);">Tout effacer…</button>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+
+  <sc-if value="{{ modale }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; background:var(--voile); backdrop-filter:blur(3px); display:flex; align-items:center; justify-content:center; z-index:40;">
+      <div style="width:420px; background:var(--carte); border:1px solid var(--trait-fort); border-radius:13px; box-shadow:0 24px 60px var(--o-modale); padding:26px 26px 20px; text-align:center;">
+        <div style="width:44px; height:44px; margin:0 auto 16px; border-radius:50%; background:var(--danger-bg); border:1px solid var(--bd-danger); color:var(--rouge); display:flex; align-items:center; justify-content:center; font-size:20px;">!</div>
+        <div style="font-size:16px; font-weight:640; margin-bottom:8px;">Effacer toute la progression ?</div>
+        <div style="font-size:13.5px; line-height:1.65; color:var(--encre-2); margin-bottom:22px;">1 240 XP, 3 badges et 4 salles validées partent au broyeur. Cette opération est définitive.</div>
+        <div style="display:flex; gap:10px;">
+          <button onClick="{{ fermerModale }}" style="flex:1; padding:10px; background:var(--carte); color:var(--encre); border:1px solid var(--trait-fort); border-radius:7px; font:inherit; font-size:14px; cursor:pointer;" style-hover="background:var(--tete-2);">Annuler</button>
+          <button onClick="{{ confirmerReset }}" style="flex:1; padding:10px; background:var(--rouge); color:var(--sur-plein); border:none; border-radius:7px; font:inherit; font-size:14px; font-weight:600; cursor:pointer;" style-hover="background:var(--rouge-survol);">Effacer</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toastVisible }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ styleToast }}">
+      <span style="{{ stylePucePastille }}"></span>
+      <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:11.5px; letter-spacing:.06em;">{{ texteToast }}</span>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:800},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Clair&quot;,&quot;Sombre&quot;],&quot;default&quot;:&quot;Clair&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Affichage&quot;},&quot;phosphore&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Affichage&quot;},&quot;curseur&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Affichage&quot;},&quot;rythme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Tranquille&quot;,&quot;Soutenu&quot;,&quot;Marcel en 1987&quot;],&quot;default&quot;:&quot;Soutenu&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Formation&quot;}}">
+const VERT = 'var(--vert)', AMBRE = 'var(--ambre)', ROUGE = 'var(--rouge)', ENCRE = 'var(--encre)', ENCRE2 = 'var(--encre-2)', ENCRE3 = 'var(--encre-3)';
+const MONO = "ui-monospace,'SF Mono',Menlo,monospace";
+
+const NAV = [
+  ['terminal', 'Le terminal', 'TR', ''], ['carte', 'La carte', 'CA', '19'],
+  ['lecteur', 'Le sujet', 'SU', 'J03'], ['quiz', 'Le quiz', 'QZ', ''],
+  ['livret', 'Le livret', 'LV', '3'], ['reglages', 'Réglages', 'RG', '']
+];
+
+const PISCINE = [
+  ['J00', "Prise de poste", 'validee', 120], ['J01', "Divisions et PIC", 'validee', 180],
+  ['J02', "MOVE et calculs", 'validee', 180], ['J03', "Les conditions", 'encours', 200],
+  ['J04', "Les boucles", 'dispo', 200], ['J05', "Tables et OCCURS", 'verrou', 220],
+  ['J06', "Fichiers séquentiels", 'verrou', 240], ['J07', "Tris et ruptures", 'verrou', 240],
+  ['J08', "Sous-programmes", 'verrou', 260], ['J09', "COPY et normes", 'verrou', 260],
+  ['J10', "JCL et soumission", 'verrou', 300]
+];
+const RUSH = [['R01', "Rush debug", 'dispo', 150], ['R02', "Rush performance", 'verrou', 150]];
+const MISSIONS = [
+  ['M01', "Relevé mensuel", 'dispo', 400], ['M02', "Agios et découverts", 'verrou', 450],
+  ['M03', "Rejets de prélèvement", 'verrou', 500], ['M04', "Clôture de journée", 'verrou', 550],
+  ['M05', "Reprise d'historique", 'verrou', 600], ['M06', "Migration BERTHA", 'verrou', 700]
+];
+
+const EXOS = [
+  ['ex01', "Écrire un IF simple sur le solde", 25], ['ex02', "Ajouter la branche ELSE", 25],
+  ['ex03', "Fermer proprement avec END-IF", 25], ['ex04', "Conditions composées AND / OR", 35],
+  ['ex05', "Déclarer trois niveaux 88", 35], ['ex06', "EVALUATE sur le code produit", 40],
+  ['ex07', "Corriger le paragraphe de Marcel", 45]
+];
+const BONUS = [['bx1', "IF imbriqué sur trois profils clients", 30], ['bx2', "Réécrire un GO TO en EVALUATE", 50]];
+
+const QUESTIONS = [
+  { q: "Quelle instruction ferme explicitement un bloc conditionnel en COBOL ?",
+    r: ["END.", "END-IF", "FI", "STOP IF"], bonne: 1,
+    exp: "END-IF ferme le bloc sans clore le paragraphe, contrairement au point." },
+  { q: "Que déclare un niveau 88 ?",
+    r: ["Une zone numérique packée", "Un nom de condition", "Un fichier indexé", "Un sous-programme"], bonne: 1,
+    exp: "Le niveau 88 nomme une condition sur la zone qui le précède." },
+  { q: "PIC 9(5)V99 stocke quelle valeur maximale ?",
+    r: ["9 999,99", "99 999,99", "999 999", "99 999"], bonne: 1,
+    exp: "Cinq chiffres avant la virgule implicite, deux après." }
+];
+
+const BADGES = [
+  ['⌁', "PREMIER RC=0000", "Compiler un programme sans erreur.", true],
+  ['⛨', "TUEUR DE GO TO", "Réécrire trois GO TO en structures propres.", true],
+  ['☕', "PAUSE DE MARCEL", "Six jours d'affilée sans manquer une séance.", true],
+  ['☠', "NECROMANCIEN", "Faire tourner un programme de 1979 sans le toucher.", false],
+  ['▤', "MAITRE DES TABLES", "Valider J05 avec les deux bonus.", false],
+  ['⇅', "TRIEUR FOU", "Trier un million d'enregistrements en une passe.", false],
+  ['✚', "SANS FILET", "Un quiz 8/8 du premier coup.", false],
+  ['⌸', "PORTE-CLES", "Ouvrir les six bureaux des Missions.", false],
+  ['❖', "HERITIER DE BERTHA", "Terminer la Phase 3.", false]
+];
+
+const ECHELONS = [
+  ["Stagiaire perforé", 0], ["Aide-pupitreur", 600], ["Pupitreur", 1200],
+  ["Opérateur console", 2000], ["Programmeur junior", 3000], ["Programmeur", 4200],
+  ["Analyste-programmeur", 5600], ["Chef de projet mainframe", 7200], ["Gardien de BERTHA", 9000]
+];
+
+const RYTHMES = [
+  ["Tranquille", "1 salle tous les deux jours"],
+  ["Soutenu", "1 salle par jour"],
+  ["Marcel en 1987", "1 salle par jour + rush le samedi"]
+];
+
+const ETATS = {
+  verrou:  { bg: 'var(--verrou-bg)', bd: '1px dashed var(--trait-verrou)', code: 'var(--verrou-txt)', titre: 'var(--verrou-txt)', et: 'Verrouillée', etC: 'var(--verrou-txt)', etBg: 'transparent', etBd: 'var(--trait-verrou)' },
+  dispo:   { bg: 'var(--carte)', bd: '1.5px solid var(--vert)', code: VERT, titre: ENCRE, et: 'Disponible', etC: 'var(--sur-vert)', etBg: VERT, etBd: VERT },
+  encours: { bg: 'var(--warn-bg)', bd: '1.5px solid var(--ambre)', code: AMBRE, titre: ENCRE, et: 'En cours', etC: 'var(--sur-plein)', etBg: AMBRE, etBd: AMBRE },
+  validee: { bg: 'var(--validee-bg)', bd: '1px solid var(--bd-validee)', code: 'var(--validee-code)', titre: 'var(--validee-titre)', et: '', etC: ROUGE, etBg: 'transparent', etBd: ROUGE }
+};
+
+class Component extends DCLogic {
+  state = {
+    ecran: 'terminal',
+    coches: { ex01: true, ex02: true, ex03: true },
+    qIdx: 0, choix: null, score: 0, fini: false,
+    modale: false, toast: null,
+    sombre: (this.props.theme ?? 'Clair') === 'Sombre',
+    phosphore: this.props.phosphore ?? true,
+    curseur: this.props.curseur ?? true,
+    rythme: this.props.rythme ?? 'Soutenu'
+  };
+
+  componentWillUnmount() { clearTimeout(this._t); }
+
+  dire(texte, ok) {
+    clearTimeout(this._t);
+    this.setState({ toast: { texte, ok } });
+    this._t = setTimeout(() => this.setState({ toast: null }), 2400);
+  }
+
+  salle(def) {
+    const [code, titre, etat, xp] = def;
+    const e = ETATS[etat];
+    const halo = etat === 'dispo' ? ' box-shadow:0 1px 2px var(--o1),0 0 0 3px var(--halo);'
+      : (etat === 'verrou' ? '' : ' box-shadow:0 1px 2px var(--o1);');
+    return {
+      code, titre, couleurCode: e.code, couleurTitre: e.titre,
+      etiquette: etat === 'validee' ? 'VALIDE +' + xp : e.et,
+      etiqStyle: etat === 'validee'
+        ? 'position:absolute; top:9px; right:8px; font-family:' + MONO + '; font-size:8px; font-weight:600; letter-spacing:.1em; color:' + ROUGE +
+          '; border:1.5px double ' + ROUGE + '; border-radius:3px; padding:1px 4px; transform:rotate(-7deg); opacity:.8;'
+        : 'position:absolute; top:9px; right:8px; font-size:9.5px; font-weight:600; letter-spacing:.02em; color:' + e.etC +
+          '; background:' + e.etBg + '; border:1px solid ' + e.etBd + '; border-radius:4px; padding:1px 6px;',
+      style: 'position:relative; display:flex; flex-direction:column; align-items:flex-start; gap:5px; min-height:96px; padding:26px 12px 14px; ' +
+        'background:' + e.bg + '; border:' + e.bd + '; border-radius:9px; font:inherit; text-align:left; cursor:' +
+        (etat === 'verrou' ? 'default' : 'pointer') + '; transition:transform 130ms ease-out, box-shadow 130ms ease-out;' + halo,
+      ouvrir: () => {
+        if (etat === 'verrou') return this.dire('BERTHA DIT NON · ' + code + ' VERROUILLEE', false);
+        if (etat === 'validee') return this.dire('BERTHA DIT OUI · ' + code + ' DEJA VALIDEE', true);
+        this.setState({ ecran: 'lecteur' });
+      }
+    };
+  }
+
+  ligneExo(def, dernier) {
+    const [id, titre, xp] = def;
+    const coche = !!this.state.coches[id];
+    return {
+      titre, xp: '+' + xp, marque: coche ? '✓' : '',
+      couleur: coche ? ENCRE3 : ENCRE,
+      ligneStyle: 'display:flex; align-items:flex-start; gap:11px; padding:12px 14px; cursor:pointer; transition:background 120ms ease-out;' +
+        (dernier ? '' : ' border-bottom:1px solid var(--trait-doux3);') + (coche ? ' background:var(--ligne-cochee);' : ''),
+      caseStyle: 'width:18px; height:18px; flex:0 0 18px; margin-top:1px; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--sur-vert); background:' +
+        (coche ? VERT : 'var(--carte)') + '; border:1px solid ' + (coche ? VERT : 'var(--trait-fort)') + '; box-shadow:inset 0 1px 1px var(--o1);',
+      basculer: () => {
+        const c = { ...this.state.coches }; c[id] = !coche;
+        this.setState({ coches: c });
+        this.dire(coche ? 'LIGNE DECOCHEE · −' + xp + ' XP' : 'BERTHA DIT OUI · +' + xp + ' XP', !coche);
+      }
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const faits = EXOS.filter(e => s.coches[e[0]]).length;
+    const xpTotal = EXOS.concat(BONUS).filter(e => s.coches[e[0]]).reduce((a, e) => a + e[2], 0);
+    const q = QUESTIONS[s.qIdx % QUESTIONS.length];
+    const juste = s.choix === q.bonne;
+    const titres = {
+      terminal: ['Le terminal', 'Tableau de bord'], carte: ['La carte', 'Sous-sols de la CGBA'],
+      lecteur: ['J03 — Les conditions', 'La Piscine'], quiz: ['Le quiz du soir', '8 questions'],
+      livret: ['Le livret', 'Décorations et échelons'], reglages: ['Réglages', '']
+    };
+
+    return {
+      titreBarre: titres[s.ecran][0], sousTitreBarre: titres[s.ecran][1],
+      nav: NAV.map(([id, libelle, code, compteur]) => {
+        const actif = s.ecran === id;
+        return {
+          libelle, code, compteur, aller: () => this.setState({ ecran: id }),
+          style: 'display:flex; align-items:center; gap:10px; width:100%; padding:7px 8px; border:none; border-radius:7px; font:inherit; font-size:14px; font-weight:' +
+            (actif ? '600' : '400') + '; color:' + (actif ? 'var(--sur-vert)' : ENCRE) + '; background:' + (actif ? VERT : 'transparent') +
+            '; cursor:pointer; transition:background 120ms ease-out;',
+          puceStyle: 'width:24px; height:24px; flex:0 0 24px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:' + MONO +
+            '; font-size:9px; font-weight:600; letter-spacing:.05em; color:' + (actif ? 'var(--sur-vert)' : ENCRE2) + '; background:' +
+            (actif ? 'rgba(255,255,255,.16)' : 'var(--puce-nav)') + ';',
+          pastilleStyle: 'font-family:' + MONO + '; font-size:10px; letter-spacing:.06em; color:' + (actif ? 'var(--sur-vert-dim)' : 'var(--encre-3)') + ';'
+        };
+      }),
+      estTerminal: s.ecran === 'terminal', estCarte: s.ecran === 'carte', estLecteur: s.ecran === 'lecteur',
+      estQuiz: s.ecran === 'quiz', estLivret: s.ecran === 'livret', estReglages: s.ecran === 'reglages',
+      allerLecteur: () => this.setState({ ecran: 'lecteur' }),
+      allerLivret: () => this.setState({ ecran: 'livret' }),
+      allerTerminal: () => this.setState({ ecran: 'terminal' }),
+      copier: () => this.dire('COMMANDE COPIEE', true),
+
+      badgesRecents: BADGES.filter(b => b[3]).map(b => ({ glyphe: b[0], nom: b[1], date: 'Obtenu le 11 août' })),
+      releve: [
+        { cle: 'Salles validées', valeur: '4 / 19' }, { cle: 'Série en cours', valeur: '6 jours' },
+        { cle: 'Quiz réussis', valeur: '5 / 7' }, { cle: 'Temps de pupitre', valeur: '14 h 20' }
+      ],
+
+      piscine: PISCINE.map(d => this.salle(d)),
+      rush: RUSH.map(d => this.salle(d)),
+      missions: MISSIONS.map(d => this.salle(d)),
+
+      exercices: EXOS.map((e, i) => this.ligneExo(e, i === EXOS.length - 1)),
+      bonus: BONUS.map((e, i) => this.ligneExo(e, i === BONUS.length - 1)),
+      faits, xpTotal, jauge: Math.round((faits / 7) * 100) + '%',
+
+      quizEnCours: !s.fini, quizFini: s.fini,
+      qNum: s.qIdx + 1, qProgres: Math.round(((s.qIdx + (s.choix === null ? 0 : 1)) / 8) * 100) + '%',
+      score: s.score, question: q.q, aRepondu: s.choix !== null, explication: q.exp,
+      titreFeedback: juste ? 'BERTHA DIT OUI' : 'BERTHA DIT NON',
+      couleurFeedback: juste ? VERT : ROUGE,
+      styleFeedback: 'margin-top:24px; padding:16px 18px; border-radius:9px; background:' + (juste ? 'var(--succes-bg)' : 'var(--danger-bg)') +
+        '; border:1px solid ' + (juste ? 'var(--bd-succes)' : 'var(--bd-danger)') + ';',
+      reponses: q.r.map((texte, i) => {
+        const repondu = s.choix !== null, bonne = i === q.bonne, choisi = i === s.choix;
+        let bd = 'var(--trait)', bg = 'var(--carte)', c = ENCRE, marque = '', lettreBg = 'var(--trait-doux3)', lettreC = ENCRE2;
+        if (repondu && bonne) { bd = VERT; bg = 'var(--succes-bg)'; marque = '✓'; lettreBg = VERT; lettreC = 'var(--sur-vert)'; }
+        else if (repondu && choisi) { bd = ROUGE; bg = 'var(--danger-bg)'; marque = '✗'; lettreBg = ROUGE; lettreC = 'var(--sur-plein)'; }
+        else if (repondu) { c = 'var(--badge-off-txt)'; lettreC = 'var(--encre-3)'; }
+        return {
+          texte, lettre: 'ABCD'[i], marque,
+          couleurMarque: bonne ? VERT : ROUGE,
+          lettreStyle: 'width:24px; height:24px; flex:0 0 24px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; background:' +
+            lettreBg + '; color:' + lettreC + ';',
+          style: 'display:flex; align-items:center; gap:13px; width:100%; padding:14px 16px; border-radius:9px; background:' + bg +
+            '; border:1px solid ' + bd + '; color:' + c + '; font:inherit; font-size:15px; text-align:left; cursor:' +
+            (repondu ? 'default' : 'pointer') + '; transition:all 130ms ease-out; box-shadow:0 1px 2px var(--o-sub);',
+          choisir: () => {
+            if (repondu) return;
+            this.setState({ choix: i, score: s.score + (bonne ? 1 : 0) });
+            this.dire(bonne ? 'BERTHA DIT OUI' : 'BERTHA DIT NON', bonne);
+          }
+        };
+      }),
+      suivante: () => {
+        if (s.qIdx >= 2) this.setState({ fini: true, score: 6 });
+        else this.setState({ qIdx: s.qIdx + 1, choix: null });
+      },
+      retenter: () => this.setState({ qIdx: 0, choix: null, score: 0, fini: false }),
+
+      badges: BADGES.map(([glyphe, nom, condition, obtenu]) => ({
+        glyphe, nom, condition,
+        couleurNom: obtenu ? ENCRE : 'var(--badge-off-txt)',
+        style: 'padding:18px 16px; border-radius:10px; background:' + (obtenu ? 'var(--carte)' : 'var(--badge-off)') + '; border:1px solid ' +
+          (obtenu ? 'var(--trait)' : 'var(--trait-doux4)') + ';' + (obtenu ? ' box-shadow:0 1px 2px var(--o1);' : ''),
+        medaille: 'width:40px; height:40px; margin-bottom:12px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:17px; background:' +
+          (obtenu ? 'var(--medaille-bg)' : 'transparent') + '; border:1px solid ' + (obtenu ? 'var(--bd-medaille)' : 'var(--trait-barre)') + '; color:' + (obtenu ? AMBRE : 'var(--encre-3)') + ';'
+      })),
+      echelons: ECHELONS.map(([nom, seuil], i) => {
+        const actuel = i === 2, passe = i < 2;
+        return {
+          nom, rang: String(i + 1).padStart(2, '0'), seuil: seuil.toLocaleString('fr-FR') + ' XP',
+          marque: actuel ? 'VOUS' : (passe ? '✓' : ''),
+          couleur: actuel ? ENCRE : (passe ? ENCRE2 : 'var(--badge-off-txt)'),
+          graisse: actuel ? '640' : '400',
+          marqueStyle: 'width:46px; text-align:right; font-family:' + MONO + '; font-size:9px; font-weight:600; letter-spacing:.1em; color:' +
+            (actuel ? VERT : 'var(--encre-3)') + ';',
+          style: 'display:flex; align-items:center; gap:12px; padding:11px 20px; border-top:1px solid var(--trait-doux3);' + (actuel ? ' background:var(--validee-bg);' : '')
+        };
+      }),
+
+      rythmes: RYTHMES.map(([nom, detail], i) => {
+        const actif = s.rythme === nom;
+        return {
+          nom, detail, graisse: actif ? '600' : '400',
+          puceStyle: 'width:17px; height:17px; flex:0 0 17px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:' +
+            (actif ? VERT : 'var(--carte)') + '; border:1px solid ' + (actif ? VERT : 'var(--trait-fort)') + ';',
+          pointStyle: 'width:6px; height:6px; border-radius:50%; background:' + (actif ? 'var(--sur-vert)' : 'transparent') + ';',
+          style: 'display:flex; align-items:center; gap:12px; padding:14px 20px; cursor:pointer;' +
+            (i ? ' border-top:1px solid var(--trait-doux3);' : '') + (actif ? ' background:var(--ligne-active);' : ''),
+          choisir: () => this.setState({ rythme: nom })
+        };
+      }),
+      sombre: s.sombre ? '1' : '0',
+      glypheTheme: s.sombre ? '☀' : '☾',
+      infoTheme: s.sombre ? 'Sombre' : 'Clair',
+      basculerSombre: () => this.setState({ sombre: !s.sombre }),
+      styleInter3: this.inter(s.sombre), stylePast3: this.past(s.sombre),
+      basculerPhosphore: () => this.setState({ phosphore: !s.phosphore }),
+      basculerCurseur: () => this.setState({ curseur: !s.curseur }),
+      styleInter1: this.inter(s.phosphore), stylePast1: this.past(s.phosphore),
+      styleInter2: this.inter(s.curseur), stylePast2: this.past(s.curseur),
+      exporter: () => this.dire('PROGRESSION EXPORTEE · cobolquest-4417.json', true),
+      importer: () => this.dire('AUCUN FICHIER SELECTIONNE', false),
+      ouvrirModale: () => this.setState({ modale: true }),
+      fermerModale: () => this.setState({ modale: false }),
+      confirmerReset: () => { this.setState({ modale: false }); this.dire('PROGRESSION EFFACEE', false); },
+      modale: s.modale,
+
+      toastVisible: !!s.toast,
+      texteToast: s.toast ? s.toast.texte : '',
+      stylePucePastille: 'width:7px; height:7px; border-radius:50%; background:' + (s.toast && s.toast.ok ? 'var(--phosphore)' : 'var(--toast-non)') + ';',
+      styleToast: 'position:absolute; left:50%; bottom:28px; z-index:50; display:flex; align-items:center; gap:10px; padding:11px 18px; border-radius:9px; background:var(--console); color:var(--toast-txt); box-shadow:0 10px 30px var(--o-toast); animation:toastin 190ms ease-out;'
+    };
+  }
+
+  inter(on) {
+    return 'width:44px; height:26px; padding:2px; border-radius:13px; border:none; background:' + (on ? VERT : 'var(--inter-off)') +
+      '; cursor:pointer; display:flex; justify-content:' + (on ? 'flex-end' : 'flex-start') + '; transition:background 150ms ease-out;';
+  }
+  past(on) {
+    return 'display:block; width:22px; height:22px; border-radius:50%; background:var(--pastille); box-shadow:0 1px 3px var(--o-past);';
+  }
+}
+
+</script>
+</body>
+</html>
