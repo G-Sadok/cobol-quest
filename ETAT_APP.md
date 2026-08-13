@@ -17,7 +17,7 @@ l'itération suivante avant de continuer.
       .md du corpus vers `app/src/corpus/` ; module `src/data/corpus.js` avec
       `import.meta.glob(..., { query: '?raw', eager: true })` ; vérifier qu'un
       sujet s'affiche brut dans l'app de dev.
-- [ ] T04 — Couche Electron : `electron/main.cjs` (fenêtre 1280×800, menu FR),
+- [x] T04 — Couche Electron : `electron/main.cjs` (fenêtre 1280×800, menu FR),
       `electron/preload.cjs` (pont `window.cgba`, contextIsolation), IPC
       progression charger/sauver vers `userData/progression.json` ; scripts
       `dev:app`, config `electron-builder` (appId, productName, mac) ; lancement
@@ -88,3 +88,16 @@ l'itération suivante avant de continuer.
   le build (serveurs interdits) : bundle a 298 kB, sujet J01 present dans le
   JS emis et affiche brut par la coque provisoire. Build vert, tests pas encore
   en place (T07).
+- 2026-08-13 T04 : couche Electron posee. `electron/main.cjs` (fenetre
+  1280x800 min, `titleBarStyle: hiddenInset` + feux a x16/y20 pour la barre de
+  52px du design, menu francais minimal, 4 handlers IPC en ecriture atomique
+  vers `userData/progression.json`) et `electron/preload.cjs` (pont
+  `window.cgba`, contextIsolation + sandbox). Les handlers `exporter` et
+  `importer` sont livres ici avec les deux autres : le §4 du cahier des charges
+  definit `main.cjs` avec les quatre ; l'ecran qui s'en sert arrive en T17.
+  Le lancement dev par serveur etant interdit par le protocole, la verification
+  passe par un mode `CQ_AUTOTEST=1` qui charge l'interface compilee, controle
+  le pont et l'aller-retour IPC, puis quitte : sortie 0, `charger` renvoie
+  `{ ok: true, progression: null }` (aucun fichier au premier lancement).
+  4 dependances de developpement ajoutees, toutes prevues au §2 : electron,
+  electron-builder, concurrently, wait-on. Build vert.

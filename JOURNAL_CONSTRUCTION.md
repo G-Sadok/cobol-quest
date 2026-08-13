@@ -150,3 +150,68 @@ Commits créés :
 - `app: synchroniser le corpus vers src/corpus avant dev et build`
 - `app: embarquer le corpus a la compilation et afficher un sujet brut`
 - `doc: consigner l'iteration T03`
+
+## 2026-08-13 - T04 : couche Electron, IPC de progression et empaquetage
+
+Tâche : poser le processus principal, le pont `preload`, la persistance IPC vers
+`userData/progression.json`, les scripts `dev:app` / `dist:mac` et la
+configuration `electron-builder`.
+
+Décisions :
+- **Coque macOS conforme au design.** La fenêtre est en `titleBarStyle:
+  'hiddenInset'` avec `trafficLightPosition: { x: 16, y: 20 }` : les feux
+  systèmes tombent ainsi exactement dans la barre de 52px en haut de la barre
+  latérale, telle que la maquette la dessine (padding 16px, pastilles de 12px).
+  Les faux feux HTML de la maquette ne seront donc pas repris en T08.
+  `backgroundColor: '#EFE9DC'` (valeur du token `--canevas`) évite le flash
+  blanc à l'ouverture ; c'est le seul endroit du projet où une couleur est
+  écrite en dur, le CSS n'ayant pas la main sur la fenêtre native.
+- **Sécurité.** `contextIsolation: true`, `nodeIntegration: false`,
+  `sandbox: true`. L'application étant hors-ligne, `will-navigate` est bloqué
+  hors de l'URL attendue et `setWindowOpenHandler` refuse toute fenêtre.
+- **Quatre handlers, pas deux.** La tâche T04 ne cite que `charger` et `sauver`,
+  mais le §4 du cahier des charges décrit `main.cjs` avec les quatre handlers.
+  `exporter` et `importer` (boîtes natives « Enregistrer sous » et « Ouvrir »,
+  plus validation) sont donc livrés ici, en même temps que le fichier qui les
+  porte ; l'écran Réglages qui les appellera reste pour T17.
+- **Écriture atomique.** Chaque écriture passe par un `.tmp` puis un renommage :
+  une coupure en pleine sauvegarde ne peut pas laisser une progression tronquée.
+- **Validation d'import volontairement structurelle** : objet, `version`
+  numérique, `epreuves` objet, `quiz` / `badges` typés s'ils sont présents. Le
+  store affinera à la lecture en T07 ; refuser trop tôt un fichier au schéma
+  légèrement plus riche serait pire que l'accepter.
+- **Sauvegarde au quit.** `before-quit` diffère la fermeture, envoie
+  `app:avant-fermeture` au rendu et attend son accusé `app:tampon-vide`
+  (plafond 1200 ms). C'est la moitié « principal » de la règle de debounce du
+  §4 ; la moitié « rendu » viendra avec le store en T07.
+- **Menu français minimal** : COBOL Quest, Édition, Affichage, Fenêtre. Les
+  outils de développement n'apparaissent que hors application empaquetée. Pas de
+  menu Fichier : l'export et l'import ont leur place dans Réglages.
+- **Dépendances** : `electron`, `electron-builder`, `concurrently`, `wait-on`,
+  toutes les quatre listées au §2 du cahier des charges. Aucune dépendance hors
+  liste, `cross-env` évité en passant la variable en préfixe de commande (la
+  cible est macOS uniquement).
+
+Vérification : le protocole interdit de lancer un serveur ou `dev:app`, qui ne
+rendent pas la main. Le processus principal embarque donc un mode de contrôle,
+`CQ_AUTOTEST=1 npx electron .` : il charge l'interface compilée exactement comme
+le fera le `.app`, évalue `window.cgba.charger()` dans le rendu, journalise le
+résultat et quitte avec 0 si le pont répond. Sortie observée :
+`autotest : pont actif { ok: true, progression: null }`, code 0. Cela couvre le
+démarrage, le chargement de `dist/index.html` en `file://`, le preload et
+l'aller-retour IPC. Restent non vérifiés à ce stade : le chemin `CQ_URL_DEV`
+(serveur Vite interdit) et l'empaquetage lui-même, qui est la tâche T19.
+
+Fichiers touchés : `app/electron/main.cjs` (nouveau),
+`app/electron/preload.cjs` (nouveau), `app/package.json` (champ `main`, scripts
+`electron:dev` / `dev:app` / `dist:mac`, bloc `build` electron-builder),
+`app/package-lock.json`, `app/src/App.jsx`, `ETAT_APP.md`,
+`JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert (52 modules, JS 298,98 ko, CSS 6,11 ko), contrôle
+de démarrage Electron vert (code 0). Pas encore de tests : vitest arrive en T07.
+
+Commits créés :
+- `electron: poser la fenetre, le menu francais et l'IPC de progression`
+- `app: afficher l'etat du pont cgba dans la coque provisoire`
+- `doc: consigner l'iteration T04`
