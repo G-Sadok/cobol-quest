@@ -630,3 +630,88 @@ Commits créés :
 - `app: brancher l ecran LA CARTE sur le store`
 - `electron: lire le plan des sous-sols dans l autotest`
 - `doc: consigner l'iteration T10`
+
+## T11 - L'écran LE SUJET, le lecteur de markdown
+
+**La tâche.** Rendre lisible le §5.3 : le texte du sujet dans une colonne de
+lecture conforme au design (68ch, corps 17px, interligne 1.75), le code sur
+fond sombre, les tableaux propres, et la navigation vers la salle précédente ou
+suivante. La feuille de route latérale reste pour T12.
+
+**Deux dépendances, prévues au contrat.** `react-markdown` et `remark-gfm` sont
+tous deux dans la liste autorisée du §2 : aucune justification supplémentaire
+n'était requise, l'installation s'est faite telle quelle. Le rendu se fait donc
+sans HTML brut interprété (défaut de react-markdown) et le corpus n'en contient
+d'ailleurs pas.
+
+**Le principe tenu.** Un module pur de plus, `src/ui/lecteur.js` : il détache
+l'en-tête du markdown (`decouperSujet`), écrit l'adresse de la salle
+(`adresseEpreuve`), compose les repères de la ligne grise (`reperesEpreuve`),
+assemble la fiche à lire (`ficheLecture`) et désigne les deux épreuves voisines
+(`voisines`). L'écran ne fait que poser le résultat, et `src/ui/Markdown.jsx` ne
+fait qu'habiller chaque élément d'une classe : toute la mise en forme est dans
+`styles/lecteur.css`, où les couleurs viennent des tokens.
+
+**Trois arbitrages.**
+1. *L'en-tête du sujet.* Les vingt sujets du corpus commencent par la même
+   paire : un titre de niveau 1 puis une ligne de niveau 3 qui annonce la durée
+   et les XP. Le lecteur repose ces deux lignes dans sa propre typographie
+   (label mono, titre 32px, repères, précision) ; les laisser dans le corps les
+   afficherait deux fois. Le sous-titre n'est retiré que si le titre l'a été, et
+   un niveau 1 qui resterait dans le corps redescend en niveau 2 : le titre de
+   la page est celui de l'écran, pas celui du fichier.
+2. *L'enveloppe.* Les cinq autres écrans passent par `ui/Ecran.jsx` et sa
+   colonne centrée. Le lecteur a deux volets (1fr + 340px) et ses propres marges
+   (44px / 48px / 80px, §3 du design) : il pose sa grille lui-même. Le registre
+   `ui/ecrans.js` l'annonçait déjà avec `largeur: null` depuis T08 ; seul le
+   commentaire de `Ecran.jsx` a été corrigé.
+3. *Le bord verrouillé.* La salle suivante peut ne pas être ouverte. Comme sur
+   La Carte, elle reste annoncée (identifiant, titre, et l'épreuve à valider
+   d'abord dans l'infobulle qui sert aussi d'`aria-label`) mais son bouton est
+   `disabled`, gris et en pointillés, jamais un vert atténué (règle 6 du §7).
+
+**Le sombre reste rare.** Note d'intégration 3 : dans le sujet, seul le bloc de
+code passe sur `--console`. Le code en ligne est une puce claire, le mémo de
+Marcel une citation sur la surface d'en-tête (design 6.11), les tableaux un
+cadre clair zébré de vert (6.12). react-markdown ne dit pas si un `code` est en
+ligne ou en bloc : les deux reçoivent la même classe de puce, que le CSS
+neutralise à l'intérieur du bloc sombre. Sous 1180px de large, la feuille de
+route passe sous la colonne de lecture (note 10).
+
+**Vérification.** Deux fichiers de tests. `lecteur.test.js` contrôle le
+découpage sur les vingt sujets du corpus, les repères, la fiche et les voisines.
+`Markdown.test.jsx` rend le markdown par `renderToStaticMarkup` (pas de DOM
+nécessaire) : classes du bloc de code, de la puce, du cadre de tableau, de la
+citation, ouverture des liens hors de la fenêtre, puis rendu des vingt sujets
+sans un mot sur `console.error`. L'autotest Electron lit ensuite l'écran réel :
+adresse, titre, repères, paragraphes rendus, largeur de colonne bornée, deux
+bords. Il ne clique que sur l'item de navigation, donc n'écrit rien dans la
+progression de l'utilisateur.
+
+**Dette assumée.** Le bundle passe de 342 ko à 505 ko (167 ko gzip) : c'est le
+prix de react-markdown et de sa chaîne remark/rehype. Vite avertit au-delà de
+500 ko ; pour une application hors-ligne chargée en `file://`, sans réseau,
+l'avertissement est sans conséquence et le découpage en morceaux n'apporterait
+rien. À revoir seulement si le démarrage devenait perceptible.
+
+Fichiers touchés : `app/src/ui/lecteur.js`, `app/src/ui/lecteur.test.js`,
+`app/src/ui/Markdown.jsx`, `app/src/ui/Markdown.test.jsx`,
+`app/src/styles/lecteur.css` (nouveaux), `app/src/ecrans/Lecteur.jsx` (réécrit),
+`app/src/styles/base.css` (import), `app/src/styles/tokens.css` (largeur du
+volet et marges du lecteur), `app/src/ui/Ecran.jsx` (commentaire),
+`app/electron/main.cjs` (autotest), `app/package.json` et
+`app/package-lock.json` (deux dépendances), `ETAT_APP.md`,
+`JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert (330 modules, JS 504,69 ko, CSS 25,37 ko),
+`npx vitest run` vert (12 fichiers, 172 tests), autotest Electron vert
+(sortie 0, « sujet 11 paragraphes, 5 blocs de code »).
+
+Commits créés :
+- `app: ajouter react-markdown et remark-gfm`
+- `app: derouler le sujet a lire dans un module pur`
+- `app: rendre le markdown du corpus`
+- `design: habiller la colonne de lecture et ses deux volets`
+- `app: brancher l ecran LE SUJET sur le lecteur`
+- `electron: lire le sujet du moment dans l autotest`
+- `doc: consigner l iteration T11`

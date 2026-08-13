@@ -36,7 +36,7 @@ l'itération suivante avant de continuer.
 - [x] T09 — Écran LE TERMINAL branché sur le store.
 - [x] T10 — Écran LA CARTE (couloir piscine, bureaux missions, salle machine ;
       4 états de salle conformes aux maquettes ; navigation vers le lecteur).
-- [ ] T11 — Écran LECTEUR DE SUJET : rendu markdown (code, tableaux), navigation
+- [x] T11 — Écran LECTEUR DE SUJET : rendu markdown (code, tableaux), navigation
       précédent/suivant, largeur de lecture conforme au design.
 - [ ] T12 — Feuille de route latérale : cases exercices + bonus, XP
       crédités/retirés, jauge et passage « VALIDÉ », encart commande BERTHA.
@@ -170,3 +170,15 @@ l'itération suivante avant de continuer.
   emplacement `aside` (la legende des 4 etats). Build vert, 150 tests verts,
   autotest Electron vert (plan lu sans rien cliquer : ouvrir une salle
   ecrirait l'epreuve retenue dans la progression).
+- 2026-08-13 T11 : le sujet se lit. `react-markdown` et `remark-gfm` installes
+  (paragraphe 2 du cahier des charges) ; un module pur de plus,
+  `src/ui/lecteur.js`, detache l'en-tete du markdown, compose les reperes et
+  designe les deux epreuves voisines ; `src/ui/Markdown.jsx` habille chaque
+  element du corpus. Trois arbitrages : le titre et le sous-titre du sujet sont
+  retires du corps et reposes dans la typographie du lecteur (sinon ils
+  s'affichent deux fois), un niveau 1 restant redescend en niveau 2 ; le lecteur
+  n'emprunte pas l'enveloppe `ui/Ecran.jsx`, il pose sa grille a deux volets ;
+  une salle suivante verrouillee reste annoncee mais ne s'ouvre pas, comme sur
+  La Carte. Le volet de droite garde son bloc de chantier jusqu'a T12. Build
+  vert, 172 tests verts, autotest Electron vert (sujet lu sans rien cliquer
+  d'autre que l'item de navigation).
