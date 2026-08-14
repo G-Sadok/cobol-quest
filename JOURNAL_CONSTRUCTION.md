@@ -1219,3 +1219,87 @@ deux applications empaquetées.
 Commits créés :
 - `electron: empaqueter sans identite du trousseau, avec signature ad-hoc`
 - `doc: consigner l iteration T19`
+
+## 2026-08-14 - T20 : finitions, états vides, relecture et README
+
+Tâche : la dernière ligne droite avant le contrôle final. Quatre sujets
+distincts, donc quatre commits de code plus un de documentation.
+
+**La mise en page au-dessus de 1280 px.** Elle ne se relit plus à l'oeil :
+l'autotest Electron la sonde désormais à 1280, 1440 et 1680 px de large, sur
+les six écrans, et refuse le moindre débordement horizontal. Deux mesures
+complémentaires : la zone de contenu ne doit rien avoir à faire défiler en
+largeur (elle est en `overflow-x: hidden`, un débordement s'y couperait en
+silence), et aucun élément ne doit voir son contenu déborder sa propre boîte
+sans défilement pour l'absorber. Un bloc de code ou un cadre de tableau, eux,
+ont le droit : ils défilent seuls. Verdict : rien ne débordait. La sonde a
+levé un seul signal, le repère de seuil de la feuille de route, un trait de
+2 px posé PAR-DESSUS la jauge : une étiquette en surimpression ne serre rien,
+la sonde les excuse explicitement.
+
+Écart corrigé au passage, celui-là bien réel : le design donne 1020, 1080, 720
+et 680 px comme largeurs de CONTENU, marges de 28 px autour. La boîte portait
+ces valeurs marges comprises (`box-sizing: border-box`), donc chaque écran se
+lisait 56 px trop étroit dès que la fenêtre dépassait 1332 px. La largeur du
+registre s'ajoute maintenant aux deux marges (`--marge-ecran`), et rien ne
+change au plancher de 1280 px, où la place manque de toute façon.
+
+**Les états vides.** Trois endroits pouvaient rendre du blanc : le mur des
+décorations d'un dossier neuf (il avait déjà sa phrase, dans un style à lui),
+l'écran du quiz et le volet de la feuille de route quand une progression
+importée désigne une épreuve qui n'existe plus au programme (`return null`,
+donc écran ou volet vide, sans un mot d'explication). `ui/EtatVide.jsx` leur
+donne une forme commune : le même pointillé que les salles verrouillées et les
+bonus facultatifs, c'est-à-dire « pas encore », une phrase qui dit ce qui
+remplira la place, et un geste facultatif. Aucune illustration, aucun carré
+gris : le design n'en prévoit pas.
+
+**Les textes relus.** Deux corrections de fond. Le terminal annonçait
+« EPREUVE EN COURS » même quand la dernière salle du programme était validée :
+il dit maintenant « SALLE VALIDEE », et l'ambre passe au vert, la sémantique
+des couleurs du design voulant l'ambre pour ce qui est en cours et le vert
+pour ce qui est acquis. Les onze quiz passent à l'apostrophe typographique.
+Arbitrage tranché : ce que l'application ÉCRIT prend l'apostrophe courbe,
+ce qu'elle REPREND du corpus (titres d'exercices de `programme.js`, conditions
+d'échelon) garde la sienne, droite, comme les sujets. La conversion épargne
+les extraits de code entre accents graves, où une apostrophe est un délimiteur
+COBOL et non une apostrophe.
+
+`src/ui/textes.test.js` remplace la vigilance par un test : aucun tiret
+cadratin dans les sources ni dans les quiz, aucune chaîne tout en capitales
+avec des accents, aucune étiquette mono écrite en dur qui ne soit en
+majuscules non accentuées, aucune apostrophe droite dans les quiz hors code.
+
+**Le README.** `app/README.md` s'adresse à quelqu'un qui n'a jamais installé
+une application autrement qu'en cliquant dessus : quel `.dmg` prendre selon la
+puce (et comment le savoir), l'installation dans Applications, et surtout la
+première ouverture d'une application non signée (clic droit puis « Ouvrir »,
+une seule fois), avec le recours `xattr -dr com.apple.quarantine` si Gatekeeper
+parle d'application endommagée. Suivent les six écrans et leurs raccourcis, le
+déroulé d'une journée type, le chemin réel de la progression
+(`~/Library/Application Support/cobol-quest/progression.json`, vérifié sur la
+machine), l'export et l'import, la construction depuis les sources, un tableau
+de dépannage et ce que l'application ne fait pas (elle ne juge rien : BERTHA
+fait foi).
+
+Fichiers touchés : `app/electron/main.cjs`, `app/src/ui/Ecran.jsx`,
+`app/src/styles/coque.css`, `app/src/styles/tokens.css`,
+`app/src/ui/EtatVide.jsx` (nouveau), `app/src/ui/EtatVide.test.jsx` (nouveau),
+`app/src/ecrans/Quiz.jsx`, `app/src/ecrans/FeuilleDeRoute.jsx`,
+`app/src/ecrans/Terminal.jsx`, `app/src/styles/composants.css`,
+`app/src/styles/terminal.css`, `app/src/ui/tableauDeBord.js` et son test,
+les onze `app/src/data/quiz/*.json`, `app/src/ui/textes.test.js` (nouveau),
+`app/README.md` (nouveau), `ETAT_APP.md`, `JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert, `npx vitest run` vert (20 fichiers, 358 tests),
+autotest Electron vert, mise en page sans débordement à 1280, 1440 et 1680 px.
+
+Commits créés :
+- `electron: l autotest sonde la mise en page a 1280, 1440 et 1680 px`
+- `app: les largeurs du design sont des largeurs de contenu, marges en plus`
+- `app: un etat vide commun, la ou l ecran restait blanc`
+- `app: le terminal n annonce plus « en cours » une salle deja validee`
+- `quiz: l apostrophe typographique dans les onze seances du soir`
+- `tests: les regles d ecriture (cadratin, capitales, apostrophes) tenues par un test`
+- `doc: le README de l app, ecrit pour un debutant complet`
+- `doc: consigner l iteration T20`

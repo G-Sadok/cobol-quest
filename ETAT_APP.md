@@ -54,7 +54,7 @@ l'itération suivante avant de continuer.
 - [x] T19 — Empaquetage : `npm run dist:mac` produit `.dmg` + `.app` dans
       `app/release/` ; test de lancement de l'app empaquetée ; consigner au
       JOURNAL la taille et tout avertissement.
-- [ ] T20 — Finitions : responsive ≥1280, états vides élégants, textes relus,
+- [x] T20 — Finitions : responsive ≥1280, états vides élégants, textes relus,
       `app/README.md` débutant complet (installation, `.dmg`, première ouverture
       d'une app non signée : clic droit → Ouvrir).
 - [ ] T21 — Contrôle final : build + tests verts, parcours manuel complet décrit
@@ -285,3 +285,23 @@ l'itération suivante avant de continuer.
   sortent 0, la x64 sous Rosetta. `spctl` rejette l'app : c'est le cas
   Gatekeeper prevu au cahier des charges (premiere ouverture par clic droit),
   a documenter dans le README de T20. Build vert, 350 tests verts.
+- 2026-08-14 T20 : les finitions. La mise en page ne se relit plus a l'oeil :
+  l'autotest la sonde a 1280, 1440 et 1680 px sur les six ecrans et refuse le
+  moindre debordement (rien ne debordait, une etiquette posee par-dessus la
+  jauge mise a part). Ecart corrige au passage : les largeurs du design (1020,
+  1080, 720, 680) sont des largeurs de CONTENU, or la boite les portait marges
+  comprises, donc chaque ecran se lisait 56 px trop etroit au-dela de 1332 px.
+  Etats vides : `ui/EtatVide.jsx` (cadre en pointilles, phrase, geste
+  facultatif) remplace le carre ad hoc du terminal et les deux `return null`
+  qui laissaient un ecran ou un volet blanc quand une progression importee a
+  vieilli. Textes relus : le terminal n'annonce plus « EPREUVE EN COURS » d'une
+  salle validee (et son ambre passe au vert), et les onze quiz passent a
+  l'apostrophe typographique. Regle d'arbitrage : ce que l'application ECRIT
+  prend l'apostrophe courbe, ce qu'elle REPREND du corpus (titres d'exercices,
+  conditions d'echelon) garde la sienne. `ui/textes.test.js` tient desormais
+  les trois regles (cadratin, capitales sans accents, apostrophes des quiz).
+  `app/README.md` est ecrit pour quelqu'un qui n'a jamais rien installe : quel
+  .dmg selon la puce, le clic droit « Ouvrir » de la premiere fois, le recours
+  `xattr` si Gatekeeper parle de fichier endommage, les six ecrans, le chemin
+  reel de la progression, la construction depuis les sources et un tableau de
+  depannage. Build vert, 358 tests verts, autotest Electron vert.
