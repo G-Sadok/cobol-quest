@@ -18,6 +18,60 @@ const NOM_PROGRESSION = 'progression.json'
 // Delai maximal laisse au rendu pour ecrire sa progression avant la fermeture.
 const DELAI_VIDAGE = 1200
 
+// Les tailles de fenetre sondees par l'autotest (T20) : le plancher impose par
+// le cahier des charges, puis deux formats plus larges. Rien en dessous : la
+// fenetre ne se redimensionne pas sous 1280x800.
+const TAILLES_SONDEES = [
+  [1280, 800],
+  [1440, 900],
+  [1680, 1050]
+]
+
+/*
+ * Sonde de mise en page : elle repasse les six ecrans et releve, pour chacun,
+ * ce qui deborde horizontalement. Deux mesures complementaires :
+ *   defile  la zone de contenu ne doit RIEN avoir a faire defiler en largeur
+ *           (elle est en overflow-x: hidden, donc un debordement se coupe)
+ *   serres  les elements dont le contenu deborde leur propre boite alors
+ *           qu'ils n'ont aucun defilement pour l'absorber (un bloc de code ou
+ *           un cadre de tableau, eux, ont le droit : ils defilent seuls)
+ */
+const SONDE_LARGEURS = `(async () => {
+  const attendre = (ms) => new Promise((suite) => setTimeout(suite, ms))
+  const zone = () => document.querySelector('.coque-defile')
+  const nom = (n) => String(n.className || n.tagName)
+  // Une etiquette posee PAR-DESSUS (le repere du seuil, un tampon, une
+  // pastille d'etat) a le droit de mordre le bord : elle ne serre rien.
+  const posePardessus = (n) => {
+    const cadre = n.getBoundingClientRect()
+    return [...n.children].some((enfant) => {
+      if (getComputedStyle(enfant).position !== 'absolute') return false
+      const r = enfant.getBoundingClientRect()
+      return r.right > cadre.right - 1 || r.left < cadre.left + 1
+    })
+  }
+  const serres = () => [...zone().querySelectorAll('*')].filter((n) => {
+    const style = getComputedStyle(n)
+    if (style.overflowX === 'auto' || style.overflowX === 'scroll') return false
+    if (n.scrollWidth - n.clientWidth <= 1) return false
+    return !posePardessus(n)
+  }).map(nom)
+
+  const items = [...document.querySelectorAll('.nav-item')]
+  const releve = []
+  for (let rang = 0; rang < items.length; rang += 1) {
+    items[rang].click()
+    await attendre(90)
+    releve.push({
+      ecran: (document.querySelector('.toolbar-titre') || {}).textContent || '',
+      defile: zone().scrollWidth - zone().clientWidth,
+      page: document.documentElement.scrollWidth - window.innerWidth,
+      serres: [...new Set(serres())].slice(0, 6)
+    })
+  }
+  return { largeur: window.innerWidth, ecrans: releve }
+})()`
+
 let fenetre = null
 let fermetureAutorisee = false
 
@@ -366,6 +420,17 @@ function creerFenetre () {
             }
           }
         })()`)
+
+        // La mise en page a trois largeurs (T20). La fenetre revient a son
+        // format de depart : l'autotest ne laisse rien derriere lui.
+        const largeurs = []
+        for (const [large, haut] of TAILLES_SONDEES) {
+          fenetre.setContentSize(large, haut)
+          await new Promise((suite) => setTimeout(suite, 220))
+          largeurs.push(await fenetre.webContents.executeJavaScript(SONDE_LARGEURS))
+        }
+        fenetre.setContentSize(TAILLES_SONDEES[0][0], TAILLES_SONDEES[0][1])
+
         const profil = typeof rapport.profil === 'string' ? rapport.profil : ''
         const tableau = rapport.tableau ?? {}
         // L'epreuve du moment depend de la progression de la machine : on
@@ -493,6 +558,12 @@ function creerFenetre () {
           boite2.titre !== boite1.titre &&
           boite2.confirmer === 'Effacer définitivement' &&
           p.boitesApres === 0
+        // La mise en page tient a partir de 1280 : les six ecrans passent aux
+        // trois largeurs sans rien couper ni rien serrer.
+        const mesure = (m) =>
+          m.ecrans.length === 6 &&
+          m.ecrans.every((e) => e.defile <= 1 && e.page <= 1 && e.serres.length === 0)
+        const responsive = largeurs.length === TAILLES_SONDEES.length && largeurs.every(mesure)
         verdict =
           rapport.pont &&
           rapport.ipc?.ok === true &&
@@ -508,7 +579,8 @@ function creerFenetre () {
           feuille &&
           soir &&
           dossier &&
-          poste
+          poste &&
+          responsive
             ? 0
             : 1
         console.log(
@@ -521,10 +593,12 @@ function creerFenetre () {
             `quiz ${soir ? soirAvant.puces + ' seances, ' + (seanceOuverte ? 'question corrigee puis suivante' : 'seance encore verrouillee') : 'incomplet'}, ` +
             `livret ${dossier ? livretAvant.tuiles + ' medailles dont ' + livretAvant.obtenues + ' obtenues, ' + livretAvant.echelons + ' echelons, decoration accordee puis rendue' : 'incomplet'}, ` +
             `reglages ${poste ? posteAvant.rythmes + ' rythmes, ' + posteAvant.interrupteurs + ' interrupteurs, effacement a deux confirmations' : 'incomplets'}, ` +
+            `mise en page ${responsive ? largeurs.map((m) => m.largeur).join('/') + ' px sans debordement' : 'a revoir'}, ` +
             `theme ${rapport.theme ? 'bascule' : 'fige'}, ` +
             `reglage ${rapport.ecrit ? 'ecrit et repris' : 'inchange'}`
         )
         if (verdict !== 0) console.error('autotest : rapport', rapport)
+        if (!responsive) console.error('autotest : largeurs', JSON.stringify(largeurs, null, 2))
       } catch (erreur) {
         console.error('autotest : echec', erreur)
       }
