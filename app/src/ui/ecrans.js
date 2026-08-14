@@ -1,6 +1,10 @@
-// Le registre des 6 ecrans : l'ordre est fige par le design (section 5 du
+// Le registre des ecrans : l'ordre est fige par le design (section 5 du
 // DESIGN_SYSTEM) et sert a la fois a la barre laterale, au titre de la barre
-// d'outils, aux raccourcis Cmd+1..Cmd+6 et au rendu du contenu.
+// d'outils, aux raccourcis Cmd+1..Cmd+7 et au rendu du contenu.
+//
+// Les 6 premiers sont ceux du cahier des charges. « Le guide » vient apres, en
+// dernier : c'est un mode d'emploi, pas une etape du cursus, et le poser en fin
+// de barre laisse les six raccourcis d'origine a leur place.
 //
 // Module PUR : pas de React ici, pour que la navigation se teste sans DOM.
 //   id        clef interne, aussi la valeur de l'etat de navigation
@@ -11,7 +15,7 @@
 //   largeur   largeur de contenu centree (section 3) ; null = l'ecran se
 //             debrouille (le lecteur a sa propre mise en page a deux volets)
 
-/** Les 6 ecrans, dans l'ordre obligatoire de la barre laterale. */
+/** Les ecrans, dans l'ordre obligatoire de la barre laterale. */
 export const ecrans = Object.freeze([
   {
     id: 'terminal',
@@ -60,6 +64,14 @@ export const ecrans = Object.freeze([
     titre: 'Réglages',
     precision: 'Progression, rythme et affichage',
     largeur: 'var(--l-reglages)'
+  },
+  {
+    id: 'guide',
+    libelle: 'Le guide',
+    code: 'GU',
+    titre: 'Le guide',
+    precision: 'Mode d’emploi',
+    largeur: 'var(--l-quiz)'
   }
 ])
 
@@ -75,8 +87,8 @@ export function ecranParId(id) {
 }
 
 /**
- * L'ecran vise par un raccourci clavier : Cmd+1 ouvre le premier, Cmd+6 le
- * dernier. Renvoie null pour tout le reste, y compris Cmd+0 et Cmd+7.
+ * L'ecran vise par un raccourci clavier : Cmd+1 ouvre le premier, Cmd+7 le
+ * dernier. Renvoie null pour tout le reste, y compris Cmd+0 et Cmd+8.
  */
 export function ecranParRaccourci(touche) {
   const rang = Number(touche)

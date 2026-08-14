@@ -1,9 +1,10 @@
 // La racine : elle charge la progression une fois pour toutes, tient l'ecran
 // ouvert, applique le theme et les effets sur la racine du document, puis
-// distribue le tout aux 6 ecrans par le contexte.
+// distribue le tout aux ecrans par le contexte.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Carte from './ecrans/Carte.jsx'
+import Guide from './ecrans/Guide.jsx'
 import Lecteur from './ecrans/Lecteur.jsx'
 import Livret from './ecrans/Livret.jsx'
 import Quiz from './ecrans/Quiz.jsx'
@@ -22,7 +23,8 @@ const RENDU = {
   lecteur: Lecteur,
   quiz: Quiz,
   livret: Livret,
-  reglages: Reglages
+  reglages: Reglages,
+  guide: Guide
 }
 
 export default function App() {
@@ -59,7 +61,7 @@ export default function App() {
     [appliquer]
   )
 
-  // Cmd+1 a Cmd+6, dans l'ordre de la barre laterale (design, section 5).
+  // Cmd+1 a Cmd+7, dans l'ordre de la barre laterale (design, section 5).
   useEffect(() => {
     function auClavier(evenement) {
       if (!evenement.metaKey || evenement.ctrlKey || evenement.altKey) return

@@ -1,0 +1,253 @@
+/* LE GUIDE : le bloc « ou vous en etes » en tete, puis les chapitres en
+   accordeon. Meme vocabulaire que le reste du design : la carte creme, le
+   filet doux, la console sombre pour ce qui se tape au Terminal. */
+
+.guide-suite {
+  margin-bottom: var(--e10);
+  padding: var(--e8);
+  background: var(--carte);
+  border: 1px solid var(--trait-doux4);
+  border-radius: var(--r-grande-carte);
+  box-shadow: var(--ombre-1);
+}
+
+.guide-suite-texte {
+  margin: var(--e5) 0 var(--e7);
+  padding-left: var(--e6);
+  border-left: 2px solid var(--trait-fort);
+  font-size: var(--t-lecture);
+  line-height: var(--li-lecture);
+  color: var(--lecture);
+}
+
+.guide-suite-texte[data-ton='encours'] {
+  border-left-color: var(--ambre);
+}
+
+.guide-suite-texte[data-ton='oui'] {
+  border-left-color: var(--vert);
+}
+
+/* ------------------------------------------------------------ chapitres */
+
+.guide-chapitres {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e5);
+}
+
+.guide-chapitre {
+  background: var(--carte);
+  border: 1px solid var(--trait-doux4);
+  border-radius: var(--r-carte);
+  overflow: hidden;
+  transition: border-color var(--d-etat) var(--courbe-etat);
+}
+
+.guide-chapitre[data-ouvert='1'] {
+  border-color: var(--trait-fort);
+  box-shadow: var(--ombre-1);
+}
+
+/* La tete est tout entiere cliquable : c'est elle qui ouvre le chapitre. */
+.guide-tete {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: var(--e6);
+  width: 100%;
+  margin: 0;
+  padding: var(--e7);
+  background: none;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--d-etat) var(--courbe-etat);
+}
+
+.guide-tete:hover {
+  background: var(--survol-doux);
+}
+
+.guide-numero {
+  padding-top: var(--e1);
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  color: var(--encre-3);
+  letter-spacing: 0.08em;
+}
+
+.guide-tete-texte {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e2);
+  min-width: 0;
+}
+
+.guide-titre {
+  font-size: var(--t-sous-titre);
+  line-height: var(--li-titre);
+  color: var(--encre);
+}
+
+.guide-resume {
+  font-size: var(--t-corps-2);
+  line-height: var(--li-corps);
+  color: var(--encre-2);
+}
+
+.guide-chevron {
+  font-size: var(--t-titre-section);
+  line-height: 1;
+  color: var(--encre-3);
+}
+
+/* -------------------------------------------------------------- le corps */
+
+.guide-corps {
+  padding: 0 var(--e7) var(--e8) calc(var(--e7) + var(--e9));
+}
+
+/* La ligne d'etat : ce que le chapitre dit de VOTRE dossier, maintenant. */
+.guide-etat {
+  display: block;
+  margin: 0 0 var(--e6);
+  padding: var(--e5) var(--e6);
+  background: var(--badge-off);
+  border-left: 3px solid var(--trait-verrou);
+  border-radius: var(--r-etiquette);
+  font-size: var(--t-corps);
+  line-height: var(--li-corps);
+  color: var(--lecture);
+}
+
+.guide-etat[data-ton='encours'] {
+  border-left-color: var(--ambre);
+}
+
+.guide-etat[data-ton='oui'] {
+  border-left-color: var(--vert);
+}
+
+.guide-etat[data-ton='verrou'] {
+  border-left-color: var(--trait-verrou);
+  color: var(--encre-2);
+}
+
+.guide-console {
+  margin-bottom: var(--e6);
+  padding: var(--e6);
+  background: var(--console);
+  border-radius: var(--r-tuile);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.8;
+  color: var(--phosphore-2);
+}
+
+.guide-console-label {
+  margin-bottom: var(--e1);
+  color: var(--phosphore);
+  letter-spacing: 0.14em;
+}
+
+.guide-console-commande {
+  display: block;
+  overflow-x: auto;
+  color: var(--phosphore-3);
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.guide-chemin {
+  display: block;
+  overflow-x: auto;
+  margin-bottom: var(--e6);
+  padding: var(--e5) var(--e6);
+  background: var(--badge-off);
+  border-radius: var(--r-etiquette);
+  font-family: var(--mono);
+  font-size: var(--t-tableau);
+  color: var(--encre-2);
+}
+
+.guide-points {
+  margin: 0 0 var(--e7);
+  padding-left: var(--e7);
+  font-size: var(--t-corps);
+  line-height: var(--li-lecture);
+  color: var(--lecture);
+}
+
+.guide-points li {
+  margin-bottom: var(--e4);
+}
+
+.guide-points li::marker {
+  color: var(--encre-3);
+}
+
+/* ---------------------------------------------------------- raccourcis */
+
+.guide-raccourcis {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e2);
+  margin-bottom: var(--e7);
+}
+
+.guide-raccourci {
+  display: grid;
+  grid-template-columns: 92px 1fr auto;
+  align-items: baseline;
+  gap: var(--e6);
+  padding: var(--e4) var(--e5);
+  border-bottom: 1px solid var(--trait-doux3);
+  font-size: var(--t-corps-2);
+}
+
+.guide-raccourci:last-child {
+  border-bottom: 0;
+}
+
+.guide-touche {
+  font-family: var(--mono);
+  font-size: var(--t-meta-2);
+  color: var(--encre-2);
+  letter-spacing: 0.06em;
+}
+
+.guide-raccourci-nom {
+  color: var(--encre);
+}
+
+.guide-raccourci-precision {
+  color: var(--encre-3);
+  font-size: var(--t-meta);
+  text-align: right;
+}
+
+.guide-geste {
+  display: flex;
+}
+
+.guide-pied {
+  margin: var(--e10) 0 0;
+  font-size: var(--t-meta);
+  line-height: var(--li-corps);
+  color: var(--encre-3);
+}
+
+/* Sous 1400px, la precision des raccourcis serre la colonne du milieu pour
+   rien : elle disparait, le libelle suffit. */
+@media (max-width: 1400px) {
+  .guide-raccourci {
+    grid-template-columns: 92px 1fr;
+  }
+
+  .guide-raccourci-precision {
+    display: none;
+  }
+}
