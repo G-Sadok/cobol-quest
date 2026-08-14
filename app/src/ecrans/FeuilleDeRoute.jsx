@@ -8,6 +8,7 @@
 // passer les XP, la jauge etant trop lente pour un exercice a 10 XP.
 
 import { basculerExercice } from '../store/progression.js'
+import EtatVide from '../ui/EtatVide.jsx'
 import { useApp } from '../ui/contexte.js'
 import { feuilleDeRoute, verdictBascule } from '../ui/feuilleDeRoute.js'
 
@@ -37,8 +38,16 @@ export default function FeuilleDeRoute({ idEpreuve }) {
   const { etat, appliquer, annoncer } = useApp()
   const feuille = feuilleDeRoute(etat, idEpreuve)
 
-  // Garde-fou pour une progression importee qui aurait vieilli.
-  if (!feuille) return null
+  // Garde-fou pour une progression importee qui aurait vieilli : la salle
+  // ouverte n'existe plus au programme. Le volet le dit au lieu de rester vide.
+  if (!feuille) {
+    return (
+      <EtatVide
+        label="FEUILLE INTROUVABLE"
+        texte="Cette salle ne figure plus au programme : aucune feuille de route à cocher ici. Repassez par La carte pour en ouvrir une autre."
+      />
+    )
+  }
 
   const { epreuve, jauge, bertha } = feuille
 

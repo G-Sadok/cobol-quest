@@ -137,16 +137,7 @@
   color: var(--encre-3);
 }
 
-/* Etat vide : le design veut une phrase, pas un carre gris. */
-.decorations-vide {
-  margin: 0;
-  padding: var(--e7) var(--e8);
-  background: var(--tete);
-  border: 1px dashed var(--trait-fort);
-  border-radius: var(--r-carte);
-  font-size: var(--t-corps-2);
-  color: var(--encre-2);
-}
+/* L'etat vide du mur des decorations est celui de tout le monde (.etat-vide). */
 
 /* ----------------------------------------------------- la colonne de service */
 

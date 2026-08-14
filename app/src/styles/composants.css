@@ -378,6 +378,35 @@
   }
 }
 
+/* ---------------------------------------------------------- l'etat vide */
+
+/*
+ * Rien a montrer se dit avec une phrase sur un cadre en pointilles : le meme
+ * pointille que les salles verrouillees et les bonus facultatifs, c'est-a-dire
+ * « pas encore ». Aucune illustration, aucun carre gris.
+ */
+.etat-vide {
+  padding: var(--e7) var(--e8);
+  background: var(--tete);
+  border: 1px dashed var(--trait-fort);
+  border-radius: var(--r-carte);
+}
+
+.etat-vide .etiquette-mono {
+  display: block;
+  margin-bottom: var(--e4);
+}
+
+.etat-vide-texte {
+  margin: 0;
+  color: var(--encre-2);
+  font-size: var(--t-corps-2);
+}
+
+.etat-vide-action {
+  margin-top: var(--e6);
+}
+
 /* ------------------------------------------------------------ les effets */
 
 /*

@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { citationDeMarcel } from '../data/citations.js'
 import Console from '../ui/Console.jsx'
 import Ecran, { EnteteEcran } from '../ui/Ecran.jsx'
+import EtatVide from '../ui/EtatVide.jsx'
 import { useApp } from '../ui/contexte.js'
 import { ecranParId } from '../ui/ecrans.js'
 import { espacerMilliers } from '../ui/format.js'
@@ -130,9 +131,14 @@ export default function Terminal() {
               </button>
             </div>
             {decorations.length === 0 ? (
-              <p className="decorations-vide">
-                Aucune décoration pour l’instant. Elles tombent en validant les salles.
-              </p>
+              <EtatVide
+                texte="Aucune décoration pour l’instant. La première tombe dès la première salle validée."
+                action={
+                  <button type="button" className="bouton-lien" onClick={() => aller('livret')}>
+                    Voir ce qu’il y a à décrocher →
+                  </button>
+                }
+              />
             ) : (
               <div className="decorations-grille">
                 {decorations.map((decoration) => (

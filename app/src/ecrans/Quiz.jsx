@@ -13,6 +13,7 @@
 import { useEffect, useState } from 'react'
 import { enregistrerQuiz, quizReussi } from '../store/progression.js'
 import Ecran from '../ui/Ecran.jsx'
+import EtatVide from '../ui/EtatVide.jsx'
 import { useApp } from '../ui/contexte.js'
 import { ecranParId } from '../ui/ecrans.js'
 import {
@@ -170,8 +171,28 @@ export default function Quiz() {
   const entete = enteteSeance(etat, idEpreuve)
   const seances = sommaireDesSeances(etat)
 
-  // Garde-fou pour une progression importee qui aurait vieilli.
-  if (!entete) return null
+  // Garde-fou pour une progression importee qui aurait vieilli : la seance
+  // demandee ne figure plus au programme. On le dit et on rend le geste qui
+  // ramene a la seance du moment, plutot que de laisser un ecran blanc.
+  if (!entete) {
+    return (
+      <Ecran largeur={ecranParId('quiz').largeur}>
+        <div className="quiz-entete">
+          <div className="etiquette-mono">18 H 45 · AVANT DE RENDRE LE PUPITRE</div>
+          <h1 className="ecran-titre">Le quiz du soir</h1>
+        </div>
+        <EtatVide
+          label="SEANCE INTROUVABLE"
+          texte="Cette séance ne figure plus au programme : elle vient sans doute d’une progression importée d’une version précédente."
+          action={
+            <button type="button" className="bouton-primaire" onClick={() => setChoisie(null)}>
+              Revenir à la séance du soir
+            </button>
+          }
+        />
+      </Ecran>
+    )
+  }
 
   const releve = resultatSeance(idEpreuve, seance.copie, seance.dejaCredite)
   const fiche = seance.fini ? null : ficheQuestion(idEpreuve, seance.rang, seance.copie)
