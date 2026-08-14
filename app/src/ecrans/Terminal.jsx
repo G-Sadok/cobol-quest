@@ -69,8 +69,16 @@ export default function Terminal() {
         <div className="terminal-colonne">
           <section className="carte" aria-labelledby="terminal-moment">
             <div className="carte-tete">
-              <span className="moment-point" aria-hidden="true" />
-              <span className="etiquette-mono etiquette-ambre">EPREUVE EN COURS</span>
+              <span
+                className="moment-point"
+                data-validee={moment.validee ? '1' : '0'}
+                aria-hidden="true"
+              />
+              <span
+                className={`etiquette-mono ${moment.validee ? 'etiquette-verte' : 'etiquette-ambre'}`}
+              >
+                {moment.etiquette}
+              </span>
             </div>
             <div className="carte-corps">
               <div className="moment">
@@ -85,7 +93,7 @@ export default function Terminal() {
                     {moment.lieu} · {mesure}
                   </div>
                   <div className="moment-avancement">
-                    <div className="jauge jauge-ambre">
+                    <div className={moment.validee ? 'jauge' : 'jauge jauge-ambre'}>
                       <div
                         className="jauge-remplissage"
                         style={{ width: `${Math.round(moment.avancement * 100)}%` }}

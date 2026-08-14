@@ -27,6 +27,11 @@
   background: var(--ambre);
 }
 
+/* Salle deja validee : le point suit l'etiquette et passe au vert. */
+.moment-point[data-validee='1'] {
+  background: var(--vert);
+}
+
 .moment {
   display: flex;
   align-items: flex-start;

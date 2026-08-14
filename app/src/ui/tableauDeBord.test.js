@@ -82,6 +82,17 @@ describe('epreuveDuMoment', () => {
     expect(moment.prochainExercice.id).toBe('s4')
     expect(moment.commande).toBeNull()
   })
+
+  it('annonce « en cours », puis « validee » quand il ne reste rien a faire', () => {
+    expect(epreuveDuMoment(etatInitial()).etiquette).toBe('EPREUVE EN COURS')
+
+    // Tout le programme est derriere : la carte montre la derniere salle, et
+    // elle est validee. Elle ne peut plus s'annoncer « en cours ».
+    const etat = idsEpreuves.reduce((cumul, id) => valider(cumul, id), etatInitial())
+    const moment = epreuveDuMoment(etat)
+    expect(moment.validee).toBe(true)
+    expect(moment.etiquette).toBe('SALLE VALIDEE')
+  })
 })
 
 describe('dernieresDecorations', () => {

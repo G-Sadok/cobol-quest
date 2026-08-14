@@ -76,6 +76,7 @@ export function epreuveDuMoment(etat) {
 
   const restant = epreuve.exercices.find((ex) => !exerciceCoche(etat, epreuve.id, ex.id))
   const prochainExercice = restant ?? epreuve.exercices[epreuve.exercices.length - 1] ?? null
+  const validee = epreuveValidee(etat, epreuve.id)
 
   return {
     epreuve,
@@ -84,7 +85,11 @@ export function epreuveDuMoment(etat) {
     faits,
     total,
     avancement: total > 0 ? Math.min(1, faits / total) : 1,
-    validee: epreuveValidee(etat, epreuve.id),
+    validee,
+    // La carte annonce ce qu'elle montre : une salle deja validee qu'on revoit
+    // n'est plus « en cours », et son ambre passe au vert (design 1, semantique
+    // des couleurs).
+    etiquette: validee ? 'SALLE VALIDEE' : 'EPREUVE EN COURS',
     prochainExercice,
     commande: commandeBertha(prochainExercice)
   }

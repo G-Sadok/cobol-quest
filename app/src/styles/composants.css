@@ -16,6 +16,10 @@
   color: var(--ambre);
 }
 
+.etiquette-verte {
+  color: var(--vert);
+}
+
 .carte {
   overflow: hidden;
   background: var(--carte);
