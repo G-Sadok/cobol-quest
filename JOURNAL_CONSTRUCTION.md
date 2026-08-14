@@ -1303,3 +1303,98 @@ Commits créés :
 - `tests: les regles d ecriture (cadratin, capitales, apostrophes) tenues par un test`
 - `doc: le README de l app, ecrit pour un debutant complet`
 - `doc: consigner l iteration T20`
+
+## 2026-08-14 - T21 : le contrôle final
+
+Tâche : build et tests verts, parcours manuel complet consigné ici, `git tag
+v1.0.0`, puis `app/.MISSION_TERMINEE`.
+
+**Blocage levé d'abord.** La boucle tournait à vide depuis plusieurs tours :
+`boucle.log` ne contient plus, sur ses douze dernières tentatives, que
+« You've hit your session limit ». Le quota de session était épuisé, chaque
+tour relançait l'agent, se faisait refuser aussitôt, dormait 30 secondes et
+recommençait, sans jamais produire une ligne. Rien à corriger dans
+l'application : T21 n'a jamais commencé. À noter pour l'avenir, un défaut du
+script de boucle qui a masqué la panne : `CODE=$?` est lu après un `| tee`,
+donc il relève le code de `tee` (0) et jamais celui de l'agent. Le script
+appartient au périmètre en lecture seule (protocole, point 6), il n'a pas été
+touché : la correction est proposée à l'utilisateur, pas appliquée.
+
+**Le parcours du §10 ne se raconte plus, il se joue.** Le cahier des charges
+demande un parcours manuel « cocher J00, XP, J01 débloqué, quiz J01, badge,
+export/import, relance de l'app : progression conservée ». Le raconter en prose
+n'aurait rien prouvé, et l'autotest d'Electron ne pouvait pas s'en charger : il
+est bâti pour ne RIEN laisser derrière lui (chaque case cochée est rendue),
+alors que ce parcours-ci ne vaut que par ce qu'il écrit. D'où deux fichiers
+nouveaux :
+
+- `app/electron/parcours.cjs` : les deux scénarios, joués dans la fenêtre.
+- `app/scripts/parcours.mjs` : le pilote, qui enchaîne DEUX lancements de
+  l'application sur un même dossier utilisateur, et lit le fichier de
+  progression avec ses propres yeux entre les deux.
+
+L'aller, sur un dossier neuf : le plan montre J00 disponible et J01
+verrouillée, dossier à 0 XP ; on ouvre J00, on coche sa feuille de route, la
+jauge passe le seuil et le tampon VALIDE tombe, la barre latérale affiche
+30 XP ; au livret, la décoration PREMIERE COMPILE s'est accrochée toute seule
+(elle se déduit de l'exercice coché, T13) ; le plan a bougé, J00 est validée et
+J01 s'est ouverte ; la séance du soir de J01 est menée au bout, huit bonnes
+réponses, 8/8, tampon « VALIDE +10 XP », total à 40 XP ; on repasse la même
+séance, encore 8/8, et le total reste à 40 XP (les XP du quiz ne se gagnent
+qu'une fois, §5.4) ; enfin l'export écrit le fichier. L'application se ferme
+par le vrai chemin de fermeture, celui qui vide le tampon d'écriture amorti.
+
+Le retour, application relancée de zéro sur le même dossier : 40 XP toujours
+là, J00 validée, J01 en cours (ses 10 XP de quiz l'ont mise en route), la
+décoration au mur, la séance de J01 marquée réussie ; puis l'import du fichier
+exporté à l'aller, qui rend exactement le même dossier. Le pilote compare
+lui-même, hors application : progression après l'aller, fichier exporté et
+progression après l'import sont trois fois le même JSON.
+
+Verdict du parcours : 11 étapes à l'aller, 5 au retour, 8 contrôles de fichiers
+du pilote, tous tenus. Et deux fois plutôt qu'une : sur les sources, puis sur
+`release/mac-arm64/COBOL Quest.app`, l'application empaquetée que l'apprenti
+installera vraiment (`npm run parcours -- "release/mac-arm64/COBOL Quest.app"`).
+
+**Trois précautions.** Le dossier de l'apprenti n'est jamais touché :
+`CQ_USER_DATA` détourne `userData` vers un dossier temporaire, effacé à la fin.
+Les deux boîtes natives de macOS ne peuvent pas s'ouvrir sans quelqu'un pour
+cliquer : `CQ_PARCOURS_FICHIER` leur impose un fichier, et c'est la seule
+entorse, les quatre handlers IPC restant exactement ceux de la vraie
+application. Enfin la question du quiz se reconnaît à son RANG et non à son
+texte : un énoncé de J01 aligne quatorze espaces pour montrer le remplissage
+d'une `PIC X(20)`, et le HTML les replie en un seul ; l'énoncé sert quand même
+de garde-fou, blancs repliés des deux côtés.
+
+**L'empaquetage refait** avec les sources d'aujourd'hui (T20 avait modifié
+l'interface après le `dist:mac` de T19) :
+
+| Livrable | Taille |
+| --- | --- |
+| COBOL Quest-1.0.0-arm64.dmg | 114,9 Mio (120 472 698 octets) |
+| COBOL Quest-1.0.0.dmg (Intel) | 119,5 Mio (125 266 518 octets) |
+| release/mac-arm64/COBOL Quest.app | 282 Mio |
+| release/mac/COBOL Quest.app | 285 Mio |
+
+Les deux applications empaquetées repassent l'autotest (sortie 0, la x64 sous
+Rosetta), avec les mêmes avertissements qu'en T19 et pour les mêmes raisons :
+`spctl` répond `rejected` (application non signée, cas Gatekeeper expliqué au
+README), lot JS au-dessus du seuil d'alerte de Vite (application hors-ligne),
+`duplicate dependency references` de l'arbre de `react-markdown`.
+
+Fichiers touchés : `app/electron/parcours.cjs`, `app/scripts/parcours.mjs`
+(nouveaux), `app/electron/main.cjs`, `app/package.json`, `ETAT_APP.md`,
+`JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert (JS 587,39 ko, CSS 42,63 ko),
+`npx vitest run` vert (20 fichiers, 358 tests), autotest Electron vert,
+`npm run parcours` vert sur les sources et sur le `.app` empaqueté,
+`npm run dist:mac` vert. Toutes les cases d'`ETAT_APP.md` sont cochées.
+
+Commits créés :
+- `electron: le parcours de controle de bout en bout, en deux lancements`
+- `app: le pilote du parcours et son script npm run parcours`
+- `app: le parcours sait aussi juger l application empaquetee`
+- `doc: consigner l iteration T21 et clore la feuille de route`
+
+Tag `v1.0.0` posé sur ce dernier commit, `app/.MISSION_TERMINEE` créé.

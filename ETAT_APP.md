@@ -57,7 +57,7 @@ l'itération suivante avant de continuer.
 - [x] T20 — Finitions : responsive ≥1280, états vides élégants, textes relus,
       `app/README.md` débutant complet (installation, `.dmg`, première ouverture
       d'une app non signée : clic droit → Ouvrir).
-- [ ] T21 — Contrôle final : build + tests verts, parcours manuel complet décrit
+- [x] T21 — Contrôle final : build + tests verts, parcours manuel complet décrit
       au JOURNAL (progression conservée après relance de l'app), `git tag
       v1.0.0`, puis créer `app/.MISSION_TERMINEE`.
 
@@ -305,3 +305,18 @@ l'itération suivante avant de continuer.
   `xattr` si Gatekeeper parle de fichier endommage, les six ecrans, le chemin
   reel de la progression, la construction depuis les sources et un tableau de
   depannage. Build vert, 358 tests verts, autotest Electron vert.
+- 2026-08-14 T21 : le controle final. Le parcours du §10 ne se raconte plus, il
+  se joue : `npm run parcours` (pilote `app/scripts/parcours.mjs`, scenario
+  `app/electron/parcours.cjs`) enchaine DEUX lancements de l'application sur un
+  meme dossier utilisateur temporaire. Aller : J00 cochee, 30 XP, decoration
+  PREMIERE COMPILE accordee toute seule, J01 ouverte, quiz de J01 a 8/8 pour
+  +10 XP, seconde tentative sans double credit, export. Retour : application
+  relancee de zero, 40 XP toujours la, puis import du fichier de l'aller. Les
+  16 etapes passent, et les 8 controles de fichiers du pilote aussi, sur les
+  sources COMME sur le .app empaquete. Deux garde-fous pour que le dossier de
+  l'apprenti ne risque rien : `CQ_USER_DATA` detourne le dossier utilisateur,
+  `CQ_PARCOURS_FICHIER` remplace les boites natives. Blocage leve en chemin :
+  la boucle etait a l'arret depuis plusieurs tours, quota de session epuise
+  (`boucle.log` n'a plus que des « session limit »), pas un defaut de l'app.
+  Build vert, 358 tests verts, autotest Electron vert, `npm run dist:mac` vert
+  (deux .dmg, deux .app relancees en autotest), tag `v1.0.0`.
