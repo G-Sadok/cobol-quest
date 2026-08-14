@@ -405,6 +405,41 @@ function creerFenetre () {
           await attendre(60)
           const boitesApres = document.querySelectorAll('.modale').length
 
+          // Le guide : l'accordeon s'ouvre sur le chapitre du moment, un autre
+          // chapitre se deplie a la place, et son geste change d'ecran. On ne
+          // touche a AUCUN geste qui ouvre un sujet : celui-la retiendrait
+          // l'epreuve, donc ecrirait dans la progression de l'utilisateur.
+          if (items[6]) items[6].click()
+          await attendre(60)
+          const chapitres = () => [...document.querySelectorAll('.guide-chapitre')]
+          const ouverts = () => chapitres().filter((c) => c.dataset.ouvert === '1')
+          const guideAvant = {
+            titreEcran: titre(),
+            suite: lire('.guide-suite-texte'),
+            gesteSuite: lire('.guide-suite .bouton-primaire'),
+            chapitres: chapitres().length,
+            ouverts: ouverts().length,
+            etat: lire('.guide-etat'),
+            points: document.querySelectorAll('.guide-points li').length
+          }
+
+          // Le dernier chapitre porte les raccourcis, et son geste ne fait que
+          // changer d'ecran : c'est celui qu'on peut manipuler sans rien ecrire.
+          const dernier = chapitres()[chapitres().length - 1]
+          if (dernier) dernier.querySelector('.guide-tete').click()
+          await attendre(60)
+          const guidePendant = {
+            ouverts: ouverts().length,
+            dernierOuvert: dernier ? dernier.dataset.ouvert === '1' : false,
+            raccourcis: document.querySelectorAll('.guide-raccourci').length,
+            geste: lire('.guide-geste .bouton-secondaire')
+          }
+
+          const gesteGuide = document.querySelector('.guide-geste .bouton-secondaire')
+          if (gesteGuide) gesteGuide.click()
+          await attendre(60)
+          const guideApres = { titreEcran: titre() }
+
           const theme = document.querySelector('.bouton-theme')
           const sombreDepart = racine.dataset.sombre
           if (theme) theme.click()
@@ -438,7 +473,8 @@ function creerFenetre () {
               boite1,
               boite2,
               boitesApres
-            }
+            },
+            guide: { avant: guideAvant, pendant: guidePendant, apres: guideApres }
           }
         })()`)
 
@@ -587,16 +623,35 @@ function creerFenetre () {
           boite2.titre !== boite1.titre &&
           boite2.confirmer === 'Effacer définitivement' &&
           p.boitesApres === 0
-        // La mise en page tient a partir de 1280 : les six ecrans passent aux
+        // Le guide : six chapitres, un seul ouvert a la fois, une ligne d'etat
+        // qui parle du dossier, les raccourcis tires du registre des ecrans, et
+        // un geste qui emmene la ou il annonce.
+        const gu = rapport.guide ?? {}
+        const guideAvant = gu.avant ?? {}
+        const guidePendant = gu.pendant ?? {}
+        const guide =
+          guideAvant.titreEcran === 'Le guide' &&
+          guideAvant.chapitres === 6 &&
+          guideAvant.ouverts === 1 &&
+          (guideAvant.suite ?? '').length > 0 &&
+          (guideAvant.gesteSuite ?? '').length > 0 &&
+          (guideAvant.etat ?? '').length > 0 &&
+          guideAvant.points >= 3 &&
+          guidePendant.ouverts === 1 &&
+          guidePendant.dernierOuvert === true &&
+          guidePendant.raccourcis === 7 &&
+          (guidePendant.geste ?? '').length > 0 &&
+          gu.apres?.titreEcran === 'Le terminal'
+        // La mise en page tient a partir de 1280 : les sept ecrans passent aux
         // trois largeurs sans rien couper ni rien serrer.
         const mesure = (m) =>
-          m.ecrans.length === 6 &&
+          m.ecrans.length === 7 &&
           m.ecrans.every((e) => e.defile <= 1 && e.page <= 1 && e.serres.length === 0)
         const responsive = largeurs.length === TAILLES_SONDEES.length && largeurs.every(mesure)
         verdict =
           rapport.pont &&
           rapport.ipc?.ok === true &&
-          rapport.nav === 6 &&
+          rapport.nav === 7 &&
           rapport.navigation &&
           rapport.theme &&
           rapport.ecrit &&
@@ -609,6 +664,7 @@ function creerFenetre () {
           soir &&
           dossier &&
           poste &&
+          guide &&
           responsive
             ? 0
             : 1
@@ -622,6 +678,7 @@ function creerFenetre () {
             `quiz ${soir ? soirAvant.puces + ' seances, ' + (seanceOuverte ? 'question corrigee puis suivante' : 'seance encore verrouillee') : 'incomplet'}, ` +
             `livret ${dossier ? livretAvant.tuiles + ' medailles dont ' + livretAvant.obtenues + ' obtenues, ' + livretAvant.echelons + ' echelons, decoration accordee puis rendue' : 'incomplet'}, ` +
             `reglages ${poste ? posteAvant.rythmes + ' rythmes, ' + posteAvant.interrupteurs + ' interrupteurs, effacement a deux confirmations' : 'incomplets'}, ` +
+            `guide ${guide ? guideAvant.chapitres + ' chapitres dont un ouvert, ' + guidePendant.raccourcis + ' raccourcis, geste suivi' : 'incomplet'}, ` +
             `mise en page ${
               responsive
                 ? largeurs.map((m) => m.largeur).join('/') +
