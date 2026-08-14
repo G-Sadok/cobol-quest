@@ -207,6 +207,194 @@ function scenarioRetour () {
   })()`
 }
 
+/*
+ * LA SONDE (verification fonctionnelle hors §10) : les chemins que le parcours
+ * ne prend pas, et surtout les chemins d'ECHEC. Un seul lancement, dossier
+ * neuf, et la remise a zero en dernier puisqu'elle emporte tout.
+ */
+function scenarioSonde (reponses) {
+  return `(async () => {
+    ${OUTILS}
+    const REPONSES = ${JSON.stringify(reponses)}
+    const rangAffiche = () => {
+      const trouve = /QUESTION\\s+(\\d+)\\s*\\/\\s*(\\d+)/.exec(lire('.quiz-compteur'))
+      return trouve ? Number(trouve[1]) - 1 : -1
+    }
+    const cocherTout = async () => {
+      const cases = [...document.querySelectorAll('.feuille-case-native')]
+      for (const c of cases) { c.click(); await attendre(${RENDU}) }
+      return cases.length
+    }
+
+    await dossierLu()
+
+    // 1. Le deblocage sequentiel : J02 reste fermee tant que J01 n'est pas
+    //    validee, et J01 tant que J00 ne l'est pas.
+    await aller(1)
+    const depart = { j00: etatSalle('J00'), j01: etatSalle('J01'), j02: etatSalle('J02') }
+    if (salle('J00')) salle('J00').click()
+    await attendre(${RENDU})
+    await cocherTout()
+    await aller(1)
+    const apresJ00 = { j01: etatSalle('J01'), j02: etatSalle('J02'), xp: xp() }
+
+    // 2. Le retrait : une case rendue reprend ses XP et referme la suite.
+    if (salle('J00')) salle('J00').click()
+    await attendre(${RENDU})
+    await cocherTout()
+    await aller(1)
+    const apresRetrait = { j00: etatSalle('J00'), j01: etatSalle('J01'), xp: xp() }
+    if (salle('J00')) salle('J00').click()
+    await attendre(${RENDU})
+    await cocherTout()
+    await attendre(${RENDU})
+
+    // 3. Le quiz RATE : huit mauvaises reponses, aucun XP.
+    await aller(3)
+    for (let n = 0; n < REPONSES.length; n += 1) {
+      const rang = rangAffiche()
+      const choix = [...document.querySelectorAll('.quiz-reponse')]
+      if (rang < 0 || choix.length !== 4) break
+      choix[(REPONSES[rang].bonne + 1) % 4].click()
+      await attendre(${RENDU})
+      const suite = document.querySelector('.quiz-suite .bouton-primaire')
+      if (suite) suite.click()
+      await attendre(${RENDU})
+    }
+    const quizRate = {
+      note: lire('.quiz-note'),
+      tampon: lire('.quiz-tampon'),
+      phrase: lire('.quiz-phrase'),
+      position: seance('J01'),
+      xp: xp()
+    }
+
+    // 4. J01 cochee en entier (bonus compris) : 155 XP, echelon 1, J02 ouverte.
+    await aller(1)
+    if (salle('J01')) salle('J01').click()
+    await attendre(${RENDU})
+    const casesJ01 = await cocherTout()
+    await aller(1)
+    const apresJ01 = {
+      cases: casesJ01,
+      j01: etatSalle('J01'),
+      j02: etatSalle('J02'),
+      j03: etatSalle('J03'),
+      xp: xp(),
+      echelon: lire('.profil-pied'),
+      role: lire('.profil-role')
+    }
+
+    // 4 bis. L'echelon 1 demande 150 XP ET J00 a J02 validees (le livret) :
+    //        a 155 XP sans J02, on doit rester Candidat.
+    if (salle('J02')) salle('J02').click()
+    await attendre(${RENDU})
+    await cocherTout()
+    await aller(1)
+    const apresJ02 = {
+      j02: etatSalle('J02'),
+      j03: etatSalle('J03'),
+      xp: xp(),
+      echelon: lire('.profil-pied'),
+      role: lire('.profil-role')
+    }
+
+    // 5. Une decoration sur l'honneur : elle se coche et elle reste.
+    await aller(4)
+    const colonne = medaille('COLONNE 7')
+    if (colonne) colonne.click()
+    await attendre(${RENDU})
+    const honneur = { obtenue: obtenue('COLONNE 7'), obtenues: decorations() }
+
+    // 6. Le theme sombre, qui est un reglage : il doit survivre a la remise a
+    //    zero (elle emporte le dossier, pas les reglages).
+    const theme = document.querySelector('.bouton-theme')
+    if (theme) theme.click()
+    await attendre(600)
+    const sombre = document.documentElement.dataset.sombre
+
+    // 7. Un import de fichier invalide : refuse, et rien ne bouge.
+    await aller(5)
+    const fichiers = boutonsFichier()
+    if (fichiers[1]) fichiers[1].click()
+    await attendre(${FICHIER})
+    const importRate = {
+      releve: lire('.reglages-releve'),
+      ton: ((document.querySelector('.reglages-releve') || {}).dataset || {}).ton || '',
+      xp: xp()
+    }
+
+    // 8. La remise a zero menee AU BOUT : deux confirmations, tout part.
+    const effacer = document.querySelector('.reglages-danger .bouton-danger')
+    if (effacer) effacer.click()
+    await attendre(${RENDU})
+    const premiere = document.querySelector('.modale-boutons .bouton-danger')
+    if (premiere) premiere.click()
+    await attendre(${RENDU})
+    const seconde = document.querySelector('.modale-boutons .bouton-danger')
+    if (seconde) seconde.click()
+    await attendre(${FICHIER})
+    const efface = {
+      xp: xp(),
+      boites: document.querySelectorAll('.modale').length,
+      releve: lire('.reglages-releve'),
+      sombre: document.documentElement.dataset.sombre
+    }
+    await aller(1)
+    const planEfface = { j00: etatSalle('J00'), j01: etatSalle('J01') }
+    await aller(4)
+    const livretEfface = { obtenues: decorations() }
+
+    return {
+      depart, apresJ00, apresRetrait, quizRate, apresJ01, apresJ02, honneur, sombre,
+      importRate, efface, planEfface, livretEfface
+    }
+  })()`
+}
+
+function verdictSonde (r) {
+  const depart = r.depart ?? {}
+  const apresJ00 = r.apresJ00 ?? {}
+  const apresRetrait = r.apresRetrait ?? {}
+  const quizRate = r.quizRate ?? {}
+  const apresJ01 = r.apresJ01 ?? {}
+  const efface = r.efface ?? {}
+
+  return {
+    'J01 et J02 fermees au depart':
+      depart.j00 === 'disponible' && depart.j01 === 'verrouillee' && depart.j02 === 'verrouillee',
+    'J00 validee ouvre J01, pas J02':
+      apresJ00.j01 === 'disponible' && apresJ00.j02 === 'verrouillee' && apresJ00.xp === '30 XP',
+    // La salle qu'on vient de quitter reste « en cours » : c'est le sujet pose
+    // sur le pupitre, meme sans un seul XP a son compte.
+    'une case rendue reprend ses XP et referme J01':
+      apresRetrait.j00 === 'en-cours' && apresRetrait.j01 === 'verrouillee' && apresRetrait.xp === '0 XP',
+    'un quiz rate ne rapporte rien':
+      quizRate.note === '0/8' && quizRate.tampon === '' &&
+      (quizRate.phrase ?? '').includes('6 bonnes') && quizRate.xp === '30 XP',
+    'la seance reste a repasser': quizRate.position === 'a-repasser',
+    'J01 cochee en entier (bonus compris)': apresJ01.cases === 7 && apresJ01.xp === '155 XP',
+    'J02 ouverte, J03 encore fermee':
+      apresJ01.j01 === 'validee' && apresJ01.j02 === 'disponible' && apresJ01.j03 === 'verrouillee',
+    // Le livret demande 150 XP ET J00 a J02 : les XP seuls ne suffisent pas.
+    "155 XP sans J02 ne font pas l'echelon":
+      (apresJ01.echelon ?? '').includes('Échelon 0') && apresJ01.role === 'Candidat',
+    "J02 validee fait monter l'echelon":
+      (r.apresJ02?.echelon ?? '').includes('Échelon 1') && r.apresJ02?.role === 'Stagiaire' &&
+      r.apresJ02?.j02 === 'validee' && r.apresJ02?.j03 === 'disponible',
+    "la decoration sur l'honneur se coche": r.honneur?.obtenue === true,
+    'un import invalide est refuse':
+      r.importRate?.ton === 'non' &&
+      (r.importRate?.releve ?? '').includes('pas une progression') &&
+      r.importRate?.xp === r.apresJ02?.xp,
+    'la remise a zero emporte tout':
+      efface.xp === '0 XP' && efface.boites === 0 &&
+      r.planEfface?.j00 === 'disponible' && r.planEfface?.j01 === 'verrouillee' &&
+      r.livretEfface?.obtenues === 0,
+    'la remise a zero garde les reglages': efface.sombre === r.sombre && r.sombre === '1'
+  }
+}
+
 // Le verdict de l'aller : chaque etape du §10 du cahier des charges.
 function verdictAller (r) {
   const depart = r.depart ?? {}
@@ -258,14 +446,19 @@ function verdictRetour (r) {
  */
 function jouer (fenetre, app) {
   const phase = process.env.CQ_PARCOURS
-  if (phase !== 'aller' && phase !== 'retour') return
+  if (phase !== 'aller' && phase !== 'retour' && phase !== 'sonde') return
 
   fenetre.webContents.once('did-finish-load', async () => {
     let code = 1
     try {
-      const script = phase === 'aller' ? scenarioAller(reponsesAttendues()) : scenarioRetour()
-      const rapport = await fenetre.webContents.executeJavaScript(script)
-      const etapes = phase === 'aller' ? verdictAller(rapport) : verdictRetour(rapport)
+      const scenarios = {
+        aller: () => scenarioAller(reponsesAttendues()),
+        retour: () => scenarioRetour(),
+        sonde: () => scenarioSonde(reponsesAttendues())
+      }
+      const verdicts = { aller: verdictAller, retour: verdictRetour, sonde: verdictSonde }
+      const rapport = await fenetre.webContents.executeJavaScript(scenarios[phase]())
+      const etapes = verdicts[phase](rapport)
       const manquantes = Object.keys(etapes).filter((cle) => !etapes[cle])
       code = manquantes.length === 0 ? 0 : 1
 

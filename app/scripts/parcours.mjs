@@ -69,7 +69,14 @@ function aLancer (demande) {
   return { binaire: path.join(app, 'Contents', 'MacOS', nom), arguments: [] }
 }
 
-const cible = aLancer(process.argv[2])
+// La sonde (--sonde) prend les chemins que le parcours ne prend pas, et
+// surtout les chemins d'ECHEC : deblocage sequentiel, XP repris quand une case
+// se rend, quiz rate, echelon qui demande plus que des XP, import invalide,
+// remise a zero menee au bout. Un seul lancement, tout est verifie a l'ecran.
+const arguments_ = process.argv.slice(2)
+const enSonde = arguments_.includes('--sonde')
+const cheminApp = arguments_.find((a) => a !== '--sonde')
+const cible = aLancer(cheminApp)
 
 function jouer (phase, environnement) {
   return new Promise((resolve) => {
@@ -108,10 +115,45 @@ const environnement = {
   CQ_PARCOURS_REPONSES: JSON.stringify(reponses)
 }
 
-console.log('PARCOURS DE CONTROLE (T21)')
-console.log(`Application : ${process.argv[2] ? cible.binaire : 'les sources, lancees par Electron'}`)
+console.log(enSonde ? 'SONDE FONCTIONNELLE' : 'PARCOURS DE CONTROLE (T21)')
+console.log(`Application : ${cheminApp ? cible.binaire : 'les sources, lancees par Electron'}`)
 console.log(`Dossier utilisateur temporaire : ${dossier}`)
 console.log(`Quiz de J01 : ${reponses.length} questions lues dans le fichier redige.`)
+
+// ---- La sonde : un seul lancement, les chemins d'echec ---------------------
+if (enSonde) {
+  // Le fichier que la boite « Ouvrir » rendra : volontairement invalide, pour
+  // que l'import soit refuse au lieu d'ecraser le dossier.
+  await fs.writeFile(
+    fichierExport,
+    JSON.stringify({ bonjour: 'je ne suis pas une progression' }, null, 2)
+  )
+
+  const sonde = await jouer('sonde', environnement)
+  console.log(`\n${extraire(sonde.sortie) || sonde.sortie}`)
+  controler('la sonde va au bout', sonde.code === 0, `sortie ${sonde.code}`)
+  if (sonde.code !== 0) console.error(sonde.sortie)
+
+  // Apres la remise a zero : le dossier est vide, les reglages sont restes.
+  const restant = await lireJson(fichierProgression)
+  controler(
+    'la remise a zero laisse un dossier vide',
+    memeJson(restant?.epreuves, {}) && memeJson(restant?.badges, {})
+  )
+  controler(
+    'la remise a zero garde les reglages',
+    restant?.reglages?.sombre === true,
+    JSON.stringify(restant?.reglages ?? {})
+  )
+
+  await fs.rm(dossier, { recursive: true, force: true })
+  const echecs = controles.filter((c) => !c.tenu)
+  console.log(
+    `\nVerdict : ${controles.length - echecs.length} controles sur ${controles.length}` +
+      (echecs.length === 0 ? ' (tous).' : ` (rates : ${echecs.map((c) => c.intitule).join(', ')}).`)
+  )
+  process.exit(echecs.length === 0 ? 0 : 1)
+}
 
 // ---- 1. L'aller ------------------------------------------------------------
 console.log('\n1. Premier lancement : la journee de travail.')
