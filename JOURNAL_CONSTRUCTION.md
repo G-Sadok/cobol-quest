@@ -1445,3 +1445,75 @@ Commits créés :
 - `tests: une sonde fonctionnelle pour les chemins d echec de l app`
 - `tests: attendre le releve plutot qu un delai fixe dans le harnais`
 - `doc: consigner la sonde fonctionnelle`
+
+## 2026-08-14 - Le septième écran : LE GUIDE
+
+Demande de l'utilisateur, après la 1.0.0 : un guide complet et dynamique qui
+montre comment se servir de l'application. Arbitrage tranché avec lui : ce sera
+un écran de l'application (Cmd + 7), pas une page web à côté. Un mode d'emploi
+qui vit dans le produit, hors ligne comme le reste, et surtout qui parle du
+dossier de celui qui le lit.
+
+**Ce qui le rend dynamique.** Rien n'y est un texte figé. Le module pur
+`src/ui/guide.js` dérive tout de l'état :
+
+- le chapitre du plan nomme la salle où l'apprenti en est et propose de
+  l'ouvrir, au lieu de dire « cliquez sur la salle disponible » ;
+- le chapitre de la feuille de route affiche la commande BERTHA de l'exercice
+  qui vient (`./bertha/bertha.sh J01/ex00`) et les XP qui manquent avant le
+  seuil du jour ;
+- le chapitre du soir dit selon le cas ce qui ouvrira la séance, qu'elle attend,
+  ou que ses 10 XP sont déjà au dossier ;
+- le chapitre de carrière compte les décorations et ce qui manque avant le
+  grade suivant ;
+- le chapitre du dossier compte ce qu'il contient en ce moment ;
+- le chapitre des raccourcis se construit à partir du REGISTRE des écrans :
+  ajouter un écran ajoute sa ligne, un raccourci ne peut donc pas mentir.
+
+En tête de l'écran, un bloc « OU VOUS EN ETES » donne la seule chose qui compte
+quand on ouvre l'application : quoi faire maintenant, en une phrase et un
+bouton. Et le guide s'ouvre tout seul sur le chapitre qui correspond à la
+situation (le plan sur un dossier vierge, la feuille de route sur une salle
+entamée, la séance du soir quand elle est due).
+
+**Deux écarts corrigés par les tests, tous les deux dans ma logique, pas dans
+l'application.** `epreuveCourante` désigne toujours la prochaine salle NON
+validée : il n'existe pas d'état « la salle que je viens de finir ». Le guide
+ne pouvait donc pas dire « J00 est validé, passez au quiz ». Et
+`epreuveDeLaSeance` suit le sujet posé sur le pupitre, qui a déjà avancé à la
+salle suivante. La séance en retard se cherche donc dans tout le programme :
+la plus ancienne épreuve validée dont le quiz n'est pas réussi. C'est plus juste
+que ce que j'avais écrit, et cela rattrape une séance sautée il y a trois jours.
+
+**Le septième écran, sans déranger les six premiers.** Il est posé en DERNIER
+dans le registre : les raccourcis Cmd + 1 à Cmd + 6 du cahier des charges ne
+bougent pas d'un cran, et le guide prend Cmd + 7. La barre latérale, le titre de
+la barre d'outils et la sonde de mise en page suivent le registre, donc ils
+l'ont pris tout seuls.
+
+**Un faux positif de l'autotest levé au passage.** La sonde de mise en page
+attendait 220 ms fixes après un `setContentSize`, puis mesurait : elle a annoncé
+« 1280/1440/1440 px » en croyant avoir sondé trois formats. Elle attend
+maintenant que la fenêtre porte vraiment la largeur demandée, et quand l'écran
+de la machine est trop étroit pour l'atteindre (cette machine a deux écrans, un
+interne d'environ 1470 points de large et un externe de 1920), elle le DIT au
+lieu de laisser croire à une largeur qu'elle n'a pas mesurée.
+
+Fichiers touchés : `app/src/ui/guide.js`, `app/src/ui/guide.test.js`,
+`app/src/ecrans/Guide.jsx`, `app/src/styles/guide.css` (nouveaux),
+`app/src/ui/ecrans.js`, `app/src/ui/ecrans.test.js`, `app/src/App.jsx`,
+`app/src/styles/base.css`, `app/electron/main.cjs`, `README.md`,
+`app/README.md`, `JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert, `npx vitest run` vert (21 fichiers, 376 tests,
+soit 18 de plus), autotest Electron vert (7 écrans, 6 chapitres dont un ouvert,
+7 raccourcis, geste suivi), `npm run parcours` et `npm run parcours -- --sonde`
+verts.
+
+Commits créés :
+- `app: l ecran LE GUIDE, un mode d emploi qui lit la progression`
+- `tests: couvrir le guide et le septieme ecran du registre`
+- `electron: sonder la mise en page a la largeur reellement atteinte`
+- `electron: passer le guide dans l autotest`
+- `doc: le guide dans les deux README`
+- `doc: consigner le septieme ecran`
