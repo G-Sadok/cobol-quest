@@ -16,6 +16,7 @@
     "prebuild": "npm run sync:corpus",
     "build": "vite build",
     "test": "vitest run",
+    "parcours": "node scripts/parcours.mjs",
     "preview": "vite preview",
     "icon": "bash scripts/make-icon.sh",
     "predist:mac": "npm run icon",

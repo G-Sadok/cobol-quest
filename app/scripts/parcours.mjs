@@ -1,0 +1,142 @@
+#!/usr/bin/env node
+/*
+ * LE PILOTE DU PARCOURS DE CONTROLE (T21, cahier des charges §10).
+ *
+ * Le controle final demande un parcours mene de bout en bout, RELANCE DE
+ * L'APPLICATION COMPRISE : c'est la seule facon de prouver que la progression
+ * vit dans un vrai fichier et non dans la memoire d'une page. Ce script
+ * orchestre donc deux lancements successifs de l'application sur un MEME
+ * dossier utilisateur temporaire :
+ *
+ *   1. l'aller  : dossier neuf, on coche J00, les XP tombent, J01 s'ouvre, on
+ *                 passe le quiz de J01, une decoration s'accroche, on exporte,
+ *                 on quitte proprement (le tampon d'ecriture est vide au quit)
+ *   2. le retour: meme dossier, application relancee de zero, on relit tout ce
+ *                 qui a survecu, puis on importe le fichier de l'aller
+ *
+ * Entre les deux, et a la fin, le pilote lit le fichier de progression avec ses
+ * propres yeux (Node, pas l'application) et le compare a l'export.
+ *
+ * Le dossier de l'apprenti n'est jamais touche : CQ_USER_DATA detourne le
+ * dossier utilisateur vers un dossier temporaire, efface a la fin.
+ *
+ * Usage : npm run parcours
+ */
+
+import { spawn } from 'node:child_process'
+import fs from 'node:fs/promises'
+import { createRequire } from 'node:module'
+import os from 'node:os'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const require = createRequire(import.meta.url)
+const ICI = path.dirname(fileURLToPath(import.meta.url))
+const RACINE = path.join(ICI, '..')
+const ELECTRON = require('electron')
+
+const controles = []
+function controler (intitule, tenu, detail = '') {
+  controles.push({ intitule, tenu, detail })
+  console.log(`${tenu ? '  ok  ' : ' RATE '} ${intitule}${detail ? ` : ${detail}` : ''}`)
+}
+
+function memeJson (a, b) {
+  return JSON.stringify(a) === JSON.stringify(b)
+}
+
+async function lireJson (chemin) {
+  try {
+    return JSON.parse(await fs.readFile(chemin, 'utf8'))
+  } catch {
+    return null
+  }
+}
+
+function jouer (phase, environnement) {
+  return new Promise((resolve) => {
+    const fils = spawn(ELECTRON, ['.'], {
+      cwd: RACINE,
+      env: { ...process.env, CQ_PARCOURS: phase, ...environnement },
+      stdio: ['ignore', 'pipe', 'pipe']
+    })
+    let sortie = ''
+    fils.stdout.on('data', (m) => { sortie += m })
+    fils.stderr.on('data', (m) => { sortie += m })
+    fils.on('close', (code) => resolve({ code, sortie: sortie.trim() }))
+  })
+}
+
+// Les lignes du parcours, pas le bruit d'Electron autour.
+function extraire (sortie) {
+  return sortie
+    .split('\n')
+    .filter((l) => l.startsWith('parcours ') || l.startsWith('parcours :'))
+    .join('\n')
+}
+
+const dossier = await fs.mkdtemp(path.join(os.tmpdir(), 'cobol-quest-parcours-'))
+const fichierExport = path.join(dossier, 'export-de-l-aller.json')
+const fichierProgression = path.join(dossier, 'progression.json')
+
+// Les bonnes reponses du quiz de J01, lues dans le JSON redige en T14 : le
+// parcours repond juste huit fois, comme un apprenti qui a lu son memo.
+const quiz = await lireJson(path.join(RACINE, 'src', 'data', 'quiz', 'J01.json'))
+const reponses = (quiz?.questions ?? []).map((q) => ({ enonce: q.enonce, bonne: q.bonne }))
+
+const environnement = {
+  CQ_USER_DATA: dossier,
+  CQ_PARCOURS_FICHIER: fichierExport,
+  CQ_PARCOURS_REPONSES: JSON.stringify(reponses)
+}
+
+console.log('PARCOURS DE CONTROLE (T21)')
+console.log(`Dossier utilisateur temporaire : ${dossier}`)
+console.log(`Quiz de J01 : ${reponses.length} questions lues dans le fichier redige.`)
+
+// ---- 1. L'aller ------------------------------------------------------------
+console.log('\n1. Premier lancement : la journee de travail.')
+const aller = await jouer('aller', environnement)
+console.log(extraire(aller.sortie) || aller.sortie)
+controler('le premier lancement va au bout', aller.code === 0, `sortie ${aller.code}`)
+if (aller.code !== 0) console.error(aller.sortie)
+
+const apresAller = await lireJson(fichierProgression)
+const exporte = await lireJson(fichierExport)
+
+controler('le fichier de progression est ecrit', apresAller !== null, fichierProgression)
+controler(
+  "l'exercice de J00 est dans le fichier",
+  apresAller?.epreuves?.J00?.exercices?.ex00 === true
+)
+controler(
+  'les 10 XP du quiz de J01 sont au dossier',
+  apresAller?.epreuves?.J01?.quiz?.xpCredite === true,
+  `meilleur score ${apresAller?.epreuves?.J01?.quiz?.meilleurScore ?? '?'} / 8, ` +
+    `${apresAller?.epreuves?.J01?.quiz?.tentatives ?? '?'} tentatives`
+)
+controler("le fichier exporte est ecrit", exporte !== null, fichierExport)
+controler("l'export est identique a la progression", memeJson(apresAller, exporte))
+
+// ---- 2. Le retour ----------------------------------------------------------
+console.log("\n2. Second lancement : l'application est relancee de zero.")
+const retour = await jouer('retour', environnement)
+console.log(extraire(retour.sortie) || retour.sortie)
+controler('le second lancement va au bout', retour.code === 0, `sortie ${retour.code}`)
+if (retour.code !== 0) console.error(retour.sortie)
+
+const apresRetour = await lireJson(fichierProgression)
+controler(
+  'la progression a survecu a la relance et a l\'import',
+  memeJson(apresAller, apresRetour)
+)
+
+// ---- Verdict ---------------------------------------------------------------
+await fs.rm(dossier, { recursive: true, force: true })
+
+const rates = controles.filter((c) => !c.tenu)
+console.log(
+  `\nVerdict : ${controles.length - rates.length} controles sur ${controles.length}` +
+    (rates.length === 0 ? ' (tous).' : ` (rates : ${rates.map((c) => c.intitule).join(', ')}).`)
+)
+process.exit(rates.length === 0 ? 0 : 1)
