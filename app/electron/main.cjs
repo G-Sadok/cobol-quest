@@ -447,8 +447,16 @@ function creerFenetre () {
         const largeurs = []
         for (const [large, haut] of TAILLES_SONDEES) {
           fenetre.setContentSize(large, haut)
-          await new Promise((suite) => setTimeout(suite, 220))
-          largeurs.push(await fenetre.webContents.executeJavaScript(SONDE_LARGEURS))
+          // Le redimensionnement n'est pas immediat : sans attendre que la
+          // fenetre porte VRAIMENT la largeur demandee, on sonde deux fois le
+          // meme format en croyant en avoir sonde deux.
+          for (let essai = 0; essai < 20; essai += 1) {
+            await new Promise((suite) => setTimeout(suite, 100))
+            const mesure = await fenetre.webContents.executeJavaScript('window.innerWidth')
+            if (mesure === large) break
+          }
+          const sonde = await fenetre.webContents.executeJavaScript(SONDE_LARGEURS)
+          largeurs.push({ ...sonde, demande: large })
         }
         fenetre.setContentSize(TAILLES_SONDEES[0][0], TAILLES_SONDEES[0][1])
 
@@ -614,7 +622,21 @@ function creerFenetre () {
             `quiz ${soir ? soirAvant.puces + ' seances, ' + (seanceOuverte ? 'question corrigee puis suivante' : 'seance encore verrouillee') : 'incomplet'}, ` +
             `livret ${dossier ? livretAvant.tuiles + ' medailles dont ' + livretAvant.obtenues + ' obtenues, ' + livretAvant.echelons + ' echelons, decoration accordee puis rendue' : 'incomplet'}, ` +
             `reglages ${poste ? posteAvant.rythmes + ' rythmes, ' + posteAvant.interrupteurs + ' interrupteurs, effacement a deux confirmations' : 'incomplets'}, ` +
-            `mise en page ${responsive ? largeurs.map((m) => m.largeur).join('/') + ' px sans debordement' : 'a revoir'}, ` +
+            `mise en page ${
+              responsive
+                ? largeurs.map((m) => m.largeur).join('/') +
+                  ' px sans debordement' +
+                  // Une fenetre ne depasse pas l'ecran qui la porte : quand la
+                  // machine est trop etroite, on le DIT plutot que de laisser
+                  // croire qu'on a sonde une largeur qu'on n'a pas atteinte.
+                  (largeurs.some((m) => m.largeur !== m.demande)
+                    ? ` (${largeurs
+                        .filter((m) => m.largeur !== m.demande)
+                        .map((m) => m.demande)
+                        .join('/')} px non atteints, ecran trop etroit)`
+                    : '')
+                : 'a revoir'
+            }, ` +
             `theme ${rapport.theme ? 'bascule' : 'fige'}, ` +
             `reglage ${rapport.ecrit ? 'ecrit et repris' : 'inchange'}`
         )
