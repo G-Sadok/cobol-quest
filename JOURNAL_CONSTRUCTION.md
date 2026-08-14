@@ -1398,3 +1398,50 @@ Commits créés :
 - `doc: consigner l iteration T21 et clore la feuille de route`
 
 Tag `v1.0.0` posé sur ce dernier commit, `app/.MISSION_TERMINEE` créé.
+
+## 2026-08-14 - Après T21 : la sonde fonctionnelle
+
+Le contrôle final (T21) prouve que le parcours nominal du §10 marche. Restait à
+savoir ce que fait l'application quand l'apprenti se trompe. D'où une troisième
+phase au harnais, `npm run parcours -- --sonde`, qui prend les chemins que le
+parcours ne prend pas, et d'abord les chemins d'échec :
+
+- le déblocage séquentiel dans les deux sens : J01 et J02 fermées au départ,
+  J00 validée n'ouvre que J01, et une case rendue reprend ses XP et REFERME
+  J01 (la salle qu'on vient de quitter reste « en cours », c'est le sujet posé
+  sur le pupitre, même à zéro XP) ;
+- un quiz raté : huit mauvaises réponses, 0/8, aucun tampon, aucun XP, et la
+  séance repasse à « à repasser » ;
+- l'échelon, qui ne se gagne pas qu'avec des XP : à 155 XP sans J02 validée on
+  reste Candidat, conformément au livret (« J00 à J02 validés »), et c'est J02
+  cochée qui fait passer Stagiaire ;
+- une décoration sur l'honneur, qui se coche et qui reste ;
+- un import de fichier invalide : refusé, message « Ce fichier n'est pas une
+  progression COBOL Quest », progression inchangée ;
+- la remise à zéro menée jusqu'au bout des deux confirmations : 315 XP,
+  3 décorations et 2 salles partent au broyeur, le plan se reverrouille, le mur
+  des médailles se vide, et les réglages restent (le thème sombre survit, le
+  fichier le montre).
+
+13 étapes à l'écran, 3 contrôles de fichier, tous tenus, sur les sources comme
+sur l'application empaquetée.
+
+Un défaut de MESURE corrigé en chemin, pas un défaut de l'application : l'étape
+d'import s'accordait 400 ms fixes après le clic, ce qui passait sur les sources
+et échouait une fois sur trois sur l'application empaquetée, plus lente à
+répondre. Le harnais attend maintenant que le relevé CHANGE, jusqu'à quatre
+secondes, pour l'export, l'import et la remise à zéro. Trois tours consécutifs
+verts après correction.
+
+Fichiers touchés : `app/electron/parcours.cjs`, `app/scripts/parcours.mjs`,
+`JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run build` vert, `npx vitest run` vert (20 fichiers, 358 tests),
+autotest Electron vert, `npm run parcours` et `npm run parcours -- --sonde`
+verts sur les sources et sur le `.app` empaqueté, `npm run dist:mac` vert.
+Le tag `v1.0.0` reste où il est : ces commits sont de l'outillage de test.
+
+Commits créés :
+- `tests: une sonde fonctionnelle pour les chemins d echec de l app`
+- `tests: attendre le releve plutot qu un delai fixe dans le harnais`
+- `doc: consigner la sonde fonctionnelle`
