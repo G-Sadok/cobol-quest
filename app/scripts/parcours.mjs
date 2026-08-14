@@ -21,6 +21,11 @@
  * dossier utilisateur vers un dossier temporaire, efface a la fin.
  *
  * Usage : npm run parcours
+ *         npm run parcours -- "release/mac-arm64/COBOL Quest.app"
+ *
+ * Sans argument, c'est l'application de developpement (le bundle compile, lance
+ * par Electron) ; avec un chemin de .app, c'est l'application EMPAQUETEE qui
+ * joue le parcours, celle que l'apprenti installera vraiment.
  */
 
 import { spawn } from 'node:child_process'
@@ -53,9 +58,22 @@ async function lireJson (chemin) {
   }
 }
 
+/*
+ * Ce qu'il faut lancer : l'application empaquetee quand on en donne le chemin
+ * (le binaire vit dans Contents/MacOS), Electron sur les sources sinon.
+ */
+function aLancer (demande) {
+  if (!demande) return { binaire: ELECTRON, arguments: ['.'] }
+  const app = path.resolve(process.cwd(), demande)
+  const nom = path.basename(app, '.app')
+  return { binaire: path.join(app, 'Contents', 'MacOS', nom), arguments: [] }
+}
+
+const cible = aLancer(process.argv[2])
+
 function jouer (phase, environnement) {
   return new Promise((resolve) => {
-    const fils = spawn(ELECTRON, ['.'], {
+    const fils = spawn(cible.binaire, cible.arguments, {
       cwd: RACINE,
       env: { ...process.env, CQ_PARCOURS: phase, ...environnement },
       stdio: ['ignore', 'pipe', 'pipe']
@@ -91,6 +109,7 @@ const environnement = {
 }
 
 console.log('PARCOURS DE CONTROLE (T21)')
+console.log(`Application : ${process.argv[2] ? cible.binaire : 'les sources, lancees par Electron'}`)
 console.log(`Dossier utilisateur temporaire : ${dossier}`)
 console.log(`Quiz de J01 : ${reponses.length} questions lues dans le fichier redige.`)
 
