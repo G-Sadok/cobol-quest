@@ -28,6 +28,7 @@
       "output": "release",
       "buildResources": "build"
     },
+    "afterPack": "scripts/signature-adhoc.cjs",
     "files": [
       "dist/**/*",
       "electron/**/*",
@@ -36,6 +37,7 @@
     "mac": {
       "category": "public.app-category.education",
       "icon": "build/icon.icns",
+      "identity": null,
       "target": [
         {
           "target": "dmg",
