@@ -4,8 +4,14 @@
 // passe pas par ici : le lecteur et ses deux volets posent leur propre grille.
 
 export default function Ecran({ largeur, children }) {
+  // La largeur du registre est celle du CONTENU : la boite ajoute ses deux
+  // marges par-dessus, sinon l'ecran se lit 56px trop etroit (design 3).
+  const style = largeur
+    ? { maxWidth: `calc(${largeur} + 2 * var(--marge-ecran))` }
+    : undefined
+
   return (
-    <div className="ecran" style={largeur ? { maxWidth: largeur } : undefined}>
+    <div className="ecran" style={style}>
       {children}
     </div>
   )

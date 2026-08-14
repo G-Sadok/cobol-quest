@@ -289,9 +289,15 @@
   overflow-y: auto;
 }
 
+/*
+ * Les largeurs du design (1020, 1080, 720, 680) sont des largeurs de CONTENU :
+ * les marges de 28px se posent autour, pas dedans. La boite est donc large de
+ * la colonne plus ses deux marges, et se resserre d'elle-meme quand la fenetre
+ * descend a son plancher de 1280px.
+ */
 .ecran {
   margin: 0 auto;
-  padding: var(--e11) 28px var(--e13);
+  padding: var(--e11) var(--marge-ecran) var(--e13);
 }
 
 .ecran-entete {
