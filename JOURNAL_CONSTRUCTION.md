@@ -1149,3 +1149,73 @@ Commits créés :
 - `tests: le dessin de repli de l icone`
 - `app: l icone icon.icns fabriquee depuis design/icone.png`
 - `doc: consigner l iteration T18`
+
+## 2026-08-14 - T19 : empaquetage macOS, les deux disques d'installation
+
+Tâche : produire le `.dmg` et le `.app` par `npm run dist:mac`, lancer l'app
+empaquetée, consigner tailles et avertissements.
+
+Blocage rencontré et levé (l'essentiel de l'itération) : le premier
+`npm run dist:mac` est resté suspendu vingt minutes à l'étape `signing`.
+`electron-builder` découvre tout seul les certificats du trousseau ; il a
+trouvé une identité de développement sans rapport avec ce projet
+(`identityName=CopyDraft Dev`) et `codesign` attendait le déverrouillage du
+trousseau, qu'aucune interface ne pouvait donner. Deux corrections, dans le
+même commit parce qu'elles ne se tiennent pas l'une sans l'autre :
+
+- `mac.identity: null` coupe la découverte automatique. C'est la position
+  juste pour ce projet : COBOL QUEST se distribue non signée, aucun certificat
+  Apple n'y entre, et le cahier des charges prévoit déjà l'ouverture par clic
+  droit sous Gatekeeper.
+- `afterPack: scripts/signature-adhoc.cjs` pose ensuite `codesign --force
+  --deep --sign -` puis vérifie le résultat. Sans cette signature ad-hoc (qui
+  n'exige ni certificat ni trousseau), une application non signée est tuée au
+  démarrage sur Apple Silicon : `identity: null` seul aurait produit un `.dmg`
+  qui ne s'ouvre pas.
+
+Résultats de l'empaquetage, dans `app/release/` :
+
+| Livrable | Taille |
+| --- | --- |
+| COBOL Quest-1.0.0-arm64.dmg | 114,9 Mio (120 468 613 octets) |
+| COBOL Quest-1.0.0.dmg (Intel) | 119,5 Mio (125 262 661 octets) |
+| release/mac-arm64/COBOL Quest.app | 282 Mio |
+| release/mac/COBOL Quest.app | 285 Mio |
+
+Test de lancement : les deux applications empaquetées passent l'autotest
+(`CQ_AUTOTEST=1 "COBOL Quest.app/Contents/MacOS/COBOL Quest"`, sortie 0),
+la version Intel exécutée sous Rosetta. Le rapport est identique à celui du
+mode développement : pont actif, 6 écrans, 19 salles, sujet rendu, feuille de
+route cochée puis rendue, 11 séances de quiz, 26 médailles, 9 échelons,
+réglages complets, thème écrit dans le fichier puis repris. Le `.dmg` arm64 a
+été monté pour contrôle : il porte l'app et le lien vers `/Applications`,
+identifiant `cgba.cobolquest`, `Signature=adhoc`.
+
+Avertissements consignés :
+- `spctl -a` répond `rejected`. Attendu, et non corrigeable sans compte
+  développeur Apple : c'est exactement le cas que le README de T20 doit
+  expliquer (première ouverture par clic droit puis « Ouvrir »).
+- Vite signale un lot JS de 585,53 ko, au-dessus de son seuil d'alerte de
+  500 ko. Sans conséquence ici : l'application est hors-ligne et charge son
+  bundle depuis le disque, pas depuis le réseau. Le corpus embarqué (24 sujets)
+  en est le principal poids. Pas de découpage : il ferait payer un aller-retour
+  de chargement pour rien.
+- `electron-builder` liste des `duplicate dependency references` (l'arbre de
+  `react-markdown`). Diagnostic informatif, aucune action.
+- Les deux `.app` empaquetées héritent d'un message
+  `Most NODE_OPTIONs are not supported in packaged apps` quand le terminal
+  exporte `NODE_OPTIONS` ; il vient de l'environnement de la machine, pas de
+  l'application, et disparaît au lancement normal depuis le Finder.
+
+Rien de tout cela n'entre dans le dépôt : `release/` est ignoré depuis T01.
+
+Fichiers touchés : `app/scripts/signature-adhoc.cjs` (nouveau),
+`app/package.json`, `ETAT_APP.md`, `JOURNAL_CONSTRUCTION.md`.
+
+Verdict : `npm run dist:mac` vert (deux `.dmg`, deux `.app`), `npm run build`
+vert, `npx vitest run` vert (18 fichiers, 350 tests), autotest vert sur les
+deux applications empaquetées.
+
+Commits créés :
+- `electron: empaqueter sans identite du trousseau, avec signature ad-hoc`
+- `doc: consigner l iteration T19`

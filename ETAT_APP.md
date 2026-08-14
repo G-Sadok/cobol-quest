@@ -51,7 +51,7 @@ l'itération suivante avant de continuer.
       remise à zéro double confirmation, rythme, scanlines.
 - [x] T18 — Icône : `design/icone.png` si fourni, sinon dessin de repli ;
       `app/scripts/make-icon.sh` (sips + iconutil) → `app/build/icon.icns`.
-- [ ] T19 — Empaquetage : `npm run dist:mac` produit `.dmg` + `.app` dans
+- [x] T19 — Empaquetage : `npm run dist:mac` produit `.dmg` + `.app` dans
       `app/release/` ; test de lancement de l'app empaquetée ; consigner au
       JOURNAL la taille et tout avertissement.
 - [ ] T20 — Finitions : responsive ≥1280, états vides élégants, textes relus,
@@ -273,3 +273,15 @@ l'itération suivante avant de continuer.
   peinte pixel par pixel et encodee en PNG avec le zlib de Node (zero
   dependance). `npm run icon` fabrique l'icone, `predist:mac` l'appelle avant
   l'empaquetage. Build vert, 350 tests verts.
+- 2026-08-14 T19 : `npm run dist:mac` sort les deux disques d'installation dans
+  `app/release/` : « COBOL Quest-1.0.0-arm64.dmg » (115 Mo) pour Apple Silicon
+  et « COBOL Quest-1.0.0.dmg » (120 Mo) pour Intel, chacun avec son .app de
+  282 et 285 Mo. Blocage leve en chemin : electron-builder cherchait un
+  certificat dans le trousseau, en trouvait un etranger au projet et restait
+  suspendu sur la demande de mot de passe. `identity: null` coupe cette
+  recherche (l'app se distribue non signee) et le hook `afterPack`
+  `scripts/signature-adhoc.cjs` pose la signature ad-hoc, sans laquelle une app
+  ne demarre pas sur Apple Silicon. Les deux .app lancees en `CQ_AUTOTEST=1`
+  sortent 0, la x64 sous Rosetta. `spctl` rejette l'app : c'est le cas
+  Gatekeeper prevu au cahier des charges (premiere ouverture par clic droit),
+  a documenter dans le README de T20. Build vert, 350 tests verts.
