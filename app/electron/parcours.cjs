@@ -20,9 +20,9 @@
 
 const { ipcMain } = require('electron')
 
-// Delai laisse a React apres un clic, et delai des allers-retours IPC.
+// Delai laisse a React apres un clic. Les allers-retours de fichier, eux, ne
+// se comptent pas en millisecondes : on attend que le releve change.
 const RENDU = 80
-const FICHIER = 400
 
 function reponsesAttendues () {
   try {
@@ -49,6 +49,18 @@ const OUTILS = `
   const puce = (id) => [...document.querySelectorAll('.quiz-puce')].find((p) => p.textContent === id)
   const seance = (id) => ((puce(id) || {}).dataset || {}).position || 'absente'
   const boutonsFichier = () => [...document.querySelectorAll('.reglages-progression .bouton-secondaire')]
+  const releveFichier = () => lire('.reglages-releve')
+
+  // Un export ou un import, c'est un aller-retour IPC puis un acces disque :
+  // on attend que le releve CHANGE, au lieu de parier sur un delai fixe (une
+  // application empaquetee est plus lente a repondre que les sources).
+  const releveChange = async (depart) => {
+    for (let essai = 0; essai < 40; essai += 1) {
+      await attendre(100)
+      if (releveFichier() !== depart) return releveFichier()
+    }
+    return releveFichier()
+  }
 
   // La progression arrive du fichier APRES le premier rendu (un aller-retour
   // IPC) : lire la barre laterale trop tot, c'est lire un dossier vide. On
@@ -157,8 +169,9 @@ function scenarioAller (reponses) {
     // 7. L'export par la boite « Enregistrer sous » (le fichier est impose).
     await aller(5)
     const fichiers = boutonsFichier()
+    const releveAvant = releveFichier()
     if (fichiers[0]) fichiers[0].click()
-    await attendre(${FICHIER})
+    await releveChange(releveAvant)
     const exportation = {
       releve: lire('.reglages-releve'),
       ton: ((document.querySelector('.reglages-releve') || {}).dataset || {}).ton || ''
@@ -195,8 +208,9 @@ function scenarioRetour () {
     // 5. L'import par la boite « Ouvrir » : le fichier exporte a l'aller.
     await aller(5)
     const fichiers = boutonsFichier()
+    const releveAvant = releveFichier()
     if (fichiers[1]) fichiers[1].click()
-    await attendre(${FICHIER})
+    await releveChange(releveAvant)
     const importation = {
       releve: lire('.reglages-releve'),
       ton: ((document.querySelector('.reglages-releve') || {}).dataset || {}).ton || '',
@@ -316,8 +330,9 @@ function scenarioSonde (reponses) {
     // 7. Un import de fichier invalide : refuse, et rien ne bouge.
     await aller(5)
     const fichiers = boutonsFichier()
+    const releveAvant = releveFichier()
     if (fichiers[1]) fichiers[1].click()
-    await attendre(${FICHIER})
+    await releveChange(releveAvant)
     const importRate = {
       releve: lire('.reglages-releve'),
       ton: ((document.querySelector('.reglages-releve') || {}).dataset || {}).ton || '',
@@ -332,8 +347,9 @@ function scenarioSonde (reponses) {
     if (premiere) premiere.click()
     await attendre(${RENDU})
     const seconde = document.querySelector('.modale-boutons .bouton-danger')
+    const releveAvantEffacement = releveFichier()
     if (seconde) seconde.click()
-    await attendre(${FICHIER})
+    await releveChange(releveAvantEffacement)
     const efface = {
       xp: xp(),
       boites: document.querySelectorAll('.modale').length,
