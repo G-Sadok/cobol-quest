@@ -15,6 +15,15 @@ const URL_DEV = process.env.CQ_URL_DEV || ''
 const FICHIER_INDEX = path.join(__dirname, '..', 'dist', 'index.html')
 const NOM_PROGRESSION = 'progression.json'
 
+// Le parcours de controle (T21, voir electron/parcours.cjs) joue une vraie
+// journee, donc il ECRIT. Deux garde-fous, actifs seulement quand le pilote
+// pose ces variables : le dossier utilisateur est detourne vers un dossier
+// temporaire (jamais celui de l'apprenti), et les deux boites natives rendent
+// le fichier impose au lieu d'attendre un clic que personne ne donnera.
+const DOSSIER_IMPOSE = process.env.CQ_USER_DATA || ''
+const FICHIER_IMPOSE = process.env.CQ_PARCOURS_FICHIER || ''
+if (DOSSIER_IMPOSE) app.setPath('userData', DOSSIER_IMPOSE)
+
 // Delai maximal laisse au rendu pour ecrire sa progression avant la fermeture.
 const DELAI_VIDAGE = 1200
 
@@ -108,6 +117,18 @@ async function ecrireJson (chemin, donnees) {
 async function lireJson (chemin) {
   const brut = await fs.readFile(chemin, 'utf8')
   return JSON.parse(brut)
+}
+
+// Les deux boites natives de macOS, ou le fichier impose par le parcours de
+// controle. Hors parcours, rien ne change : c'est le systeme qui demande.
+async function ouRanger (options) {
+  if (FICHIER_IMPOSE) return { canceled: false, filePath: FICHIER_IMPOSE }
+  return dialog.showSaveDialog(fenetre, options)
+}
+
+async function quoiRelire (options) {
+  if (FICHIER_IMPOSE) return { canceled: false, filePaths: [FICHIER_IMPOSE] }
+  return dialog.showOpenDialog(fenetre, options)
 }
 
 function creerFenetre () {
@@ -605,6 +626,15 @@ function creerFenetre () {
       app.exit(verdict)
     })
   }
+
+  // Le parcours de controle (T21) : contrairement a l'autotest, il joue une
+  // vraie journee et laisse tout ce qu'il ecrit derriere lui. Il vit dans son
+  // propre module pour ne pas alourdir ce fichier, et ne se charge que quand
+  // le pilote le demande.
+  if (process.env.CQ_PARCOURS) {
+    fermetureAutorisee = true
+    require('./parcours.cjs').jouer(fenetre, app)
+  }
 }
 
 function poserMenu () {
@@ -686,7 +716,7 @@ function brancherIpc () {
 
   ipcMain.handle('progression:exporter', async (_evenement, progression) => {
     if (!estObjet(progression)) return { ok: false, erreur: 'Progression invalide.' }
-    const { canceled, filePath } = await dialog.showSaveDialog(fenetre, {
+    const { canceled, filePath } = await ouRanger({
       title: 'Exporter la progression',
       defaultPath: 'cobol-quest-progression.json',
       filters: [{ name: 'Progression COBOL Quest', extensions: ['json'] }],
@@ -702,7 +732,7 @@ function brancherIpc () {
   })
 
   ipcMain.handle('progression:importer', async () => {
-    const { canceled, filePaths } = await dialog.showOpenDialog(fenetre, {
+    const { canceled, filePaths } = await quoiRelire({
       title: 'Importer une progression',
       filters: [{ name: 'Progression COBOL Quest', extensions: ['json'] }],
       properties: ['openFile'],
