@@ -13,7 +13,7 @@ disque, à vous.
 
 | | |
 |---|---|
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Plateforme | macOS (Apple Silicon et Intel) |
 | Pile | Electron + React 18 + Vite, JavaScript, CSS vanilla |
 | Langue | français |
@@ -31,8 +31,8 @@ Mac :
 
 | Votre Mac | Le fichier à prendre | Taille |
 |---|---|---|
-| Puce Apple (M1, M2, M3, M4...) | `COBOL Quest-1.0.0-arm64.dmg` | 115 Mo |
-| Processeur Intel | `COBOL Quest-1.0.0.dmg` | 120 Mo |
+| Puce Apple (M1, M2, M3, M4...) | `COBOL Quest-1.1.0-arm64.dmg` | 115 Mo |
+| Processeur Intel | `COBOL Quest-1.1.0.dmg` | 120 Mo |
 
 Si vous ne savez pas lequel vous avez : menu Pomme, en haut à gauche, puis
 « À propos de ce Mac ». La ligne « Puce » ou « Processeur » vous le dit.

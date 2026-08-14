@@ -22,8 +22,8 @@ Deux fichiers `.dmg` sont produits, un par famille de Mac :
 
 | Votre Mac | Le fichier à prendre |
 |---|---|
-| Puce Apple (M1, M2, M3, M4...) | `COBOL Quest-1.0.0-arm64.dmg` |
-| Processeur Intel | `COBOL Quest-1.0.0.dmg` |
+| Puce Apple (M1, M2, M3, M4...) | `COBOL Quest-1.1.0-arm64.dmg` |
+| Processeur Intel | `COBOL Quest-1.1.0.dmg` |
 
 Si vous ne savez pas lequel vous avez : menu Pomme (en haut à gauche) puis
 « À propos de ce Mac ». La ligne « Puce » ou « Processeur » vous le dit.
