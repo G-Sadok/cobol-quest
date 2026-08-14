@@ -8,56 +8,56 @@
       "enonce": "Dans quels trois endroits un fichier séquentiel se déclare-t-il ?",
       "choix": [
         "Le SELECT en FILE-CONTROL, le FD en FILE SECTION, la zone FILE STATUS en WORKING-STORAGE",
-        "Le SELECT en FILE-CONTROL, le FD en WORKING-STORAGE, l'OPEN en PROCEDURE DIVISION",
-        "Le FD en FILE SECTION, l'enregistrement en LINKAGE SECTION, l'OPEN en PROCEDURE DIVISION",
+        "Le SELECT en FILE-CONTROL, le FD en WORKING-STORAGE, l’OPEN en PROCEDURE DIVISION",
+        "Le FD en FILE SECTION, l’enregistrement en LINKAGE SECTION, l’OPEN en PROCEDURE DIVISION",
         "Le SELECT en CONFIGURATION SECTION, le FD en FILE SECTION, le CLOSE en PROCEDURE DIVISION"
       ],
       "bonne": 0,
-      "commentaire": "Le SELECT nomme le fichier physique et son organisation, le FD décrit l'enregistrement, et la zone FILE STATUS (PIC XX, avec ses niveaux 88) vit en WORKING-STORAGE parce qu'elle appartient au programme, pas au fichier."
+      "commentaire": "Le SELECT nomme le fichier physique et son organisation, le FD décrit l’enregistrement, et la zone FILE STATUS (PIC XX, avec ses niveaux 88) vit en WORKING-STORAGE parce qu’elle appartient au programme, pas au fichier."
     },
     {
       "id": "q2",
       "categorie": "memo",
       "enonce": "Pourquoi la boucle de lecture canonique place-t-elle un READ avant la boucle ET un READ en fin de boucle ?",
       "choix": [
-        "Pour que le premier enregistrement serve d'en-tête sans être traité",
+        "Pour que le premier enregistrement serve d’en-tête sans être traité",
         "Pour que le fichier soit ouvert deux fois et le tampon rempli",
         "Pour que le dernier enregistrement ne soit jamais traité deux fois",
         "Pour que le FILE STATUS soit contrôlé avant et après le traitement"
       ],
       "bonne": 2,
-      "commentaire": "C'est l'amorçage : la première lecture remplit l'enregistrement avant le premier test, la lecture de fin de boucle prépare le tour suivant. Avec un READ en tête de boucle seulement, le dernier enregistrement se traite une fois de trop quand le AT END tombe."
+      "commentaire": "C’est l’amorçage : la première lecture remplit l’enregistrement avant le premier test, la lecture de fin de boucle prépare le tour suivant. Avec un READ en tête de boucle seulement, le dernier enregistrement se traite une fois de trop quand le AT END tombe."
     },
     {
       "id": "q3",
       "categorie": "memo",
-      "enonce": "Quelles zones passent en COMP-3, selon l'Article 6.3 de la Norme rappelé par le mémo ?",
+      "enonce": "Quelles zones passent en COMP-3, selon l’Article 6.3 de la Norme rappelé par le mémo ?",
       "choix": [
         "Toutes les zones numériques, dans le fichier comme en mémoire",
         "Les zones du FD, les cumuls internes restant en affichage",
         "Les cumuls internes, les zones du fichier restant en affichage",
-        "Les zones d'édition, pour que le DISPLAY soit plus rapide"
+        "Les zones d’édition, pour que le DISPLAY soit plus rapide"
       ],
       "bonne": 2,
-      "commentaire": "Le fichier est un contrat avec le monde extérieur : ses zones restent lisibles en affichage (`9(7)V99`). Les cumuls internes, eux, passent en `S9(9)V99 COMP-3`. Pour les montrer, on MOVE vers une zone d'édition, jamais un DISPLAY direct du COMP-3."
+      "commentaire": "Le fichier est un contrat avec le monde extérieur : ses zones restent lisibles en affichage (`9(7)V99`). Les cumuls internes, eux, passent en `S9(9)V99 COMP-3`. Pour les montrer, on MOVE vers une zone d’édition, jamais un DISPLAY direct du COMP-3."
     },
     {
       "id": "q4",
       "categorie": "memo",
       "enonce": "Quelle est la différence entre `OPEN OUTPUT` et `OPEN EXTEND` ?",
       "choix": [
-        "OUTPUT écrase le fichier, EXTEND ajoute à la fin de l'existant",
-        "OUTPUT crée le fichier s'il manque, EXTEND échoue avec le statut 35",
+        "OUTPUT écrase le fichier, EXTEND ajoute à la fin de l’existant",
+        "OUTPUT crée le fichier s’il manque, EXTEND échoue avec le statut 35",
         "OUTPUT autorise le WRITE, EXTEND autorise le REWRITE",
         "OUTPUT ouvre en écriture seule, EXTEND ouvre en lecture et écriture"
       ],
       "bonne": 0,
-      "commentaire": "OPEN OUTPUT repart d'un fichier vide : c'est le mode du générateur et du filtre. OPEN EXTEND ajoute derrière ce qui existe, mode des journaux d'audit. Se tromper de mode, c'est effacer la production de la nuit."
+      "commentaire": "OPEN OUTPUT repart d’un fichier vide : c’est le mode du générateur et du filtre. OPEN EXTEND ajoute derrière ce qui existe, mode des journaux d’audit. Se tromper de mode, c’est effacer la production de la nuit."
     },
     {
       "id": "q5",
       "categorie": "sortie",
-      "enonce": "Dans `clients.dat`, le solde de DUPONT s'écrit `001234550`. Que vaut-il, et pourquoi cette écriture ?",
+      "enonce": "Dans `clients.dat`, le solde de DUPONT s’écrit `001234550`. Que vaut-il, et pourquoi cette écriture ?",
       "choix": [
         "1234550.00 : le fichier ne stocke que des entiers",
         "12345.50 : la décimale de `9(7)V99` est implicite, la zone occupe 9 caractères",
@@ -65,12 +65,12 @@
         "0012345.50 : la virgule est remplacée par un zéro de remplissage"
       ],
       "bonne": 1,
-      "commentaire": "Le `V` de `PIC 9(7)V99` ne consomme aucun caractère : il dit seulement où le programme doit lire la virgule. Sur disque, 9 chiffres, pas un de plus. C'est le format des fichiers bancaires, et la première cause de soldes multipliés par cent quand on se trompe de PIC."
+      "commentaire": "Le `V` de `PIC 9(7)V99` ne consomme aucun caractère : il dit seulement où le programme doit lire la virgule. Sur disque, 9 chiffres, pas un de plus. C’est le format des fichiers bancaires, et la première cause de soldes multipliés par cent quand on se trompe de PIC."
     },
     {
       "id": "q6",
       "categorie": "sortie",
-      "enonce": "Après le générateur, `wc -c clients.dat` rend `400`. D'où vient ce nombre ?",
+      "enonce": "Après le générateur, `wc -c clients.dat` rend `400`. D’où vient ce nombre ?",
       "choix": [
         "8 enregistrements de 50 caractères",
         "8 enregistrements de 49 caractères, plus 8 fins de ligne",
@@ -88,15 +88,15 @@
         "`0 CLIENTS LUS`, la boucle ne trouvant rien à lire",
         "`ERREUR ES CLIENTS STATUT 10`",
         "`ERREUR ES CLIENTS STATUT 35`",
-        "Rien : l'OPEN INPUT crée le fichier vide et le programme s'arrête"
+        "Rien : l’OPEN INPUT crée le fichier vide et le programme s’arrête"
       ],
       "bonne": 2,
-      "commentaire": "35 est le statut du fichier introuvable, contrôlé juste après l'OPEN avant tout READ ; 10 est la fin de fichier, qui arrive plus tard et normalement. Un programme qui n'annonce pas un 35 lit du vide et déclare la nuit réussie : le mémo dit quel réveil cela vaut."
+      "commentaire": "35 est le statut du fichier introuvable, contrôlé juste après l’OPEN avant tout READ ; 10 est la fin de fichier, qui arrive plus tard et normalement. Un programme qui n’annonce pas un 35 lit du vide et déclare la nuit réussie : le mémo dit quel réveil cela vaut."
     },
     {
       "id": "q8",
       "categorie": "sortie",
-      "enonce": "Le trésorier sort `TOTAL   :   1342338.60` avec l'édition `ZZZZZZZZ9.99`. Que font les `Z` ?",
+      "enonce": "Le trésorier sort `TOTAL   :   1342338.60` avec l’édition `ZZZZZZZZ9.99`. Que font les `Z` ?",
       "choix": [
         "Ils remplacent les zéros de tête par des espaces, en gardant un chiffre avant la virgule",
         "Ils remplacent les zéros de tête par des zéros affichés, comme des `9`",
@@ -104,7 +104,7 @@
         "Ils réservent la place du signe et du symbole monétaire"
       ],
       "bonne": 0,
-      "commentaire": "`Z` supprime les zéros non significatifs, `9` les affiche. Le dernier caractère avant la virgule est un `9` justement pour qu'un total nul sorte `0.00` et non une ligne blanche. Les espaces devant le montant viennent de là, pas d'une tabulation."
+      "commentaire": "`Z` supprime les zéros non significatifs, `9` les affiche. Le dernier caractère avant la virgule est un `9` justement pour qu’un total nul sorte `0.00` et non une ligne blanche. Les espaces devant le montant viennent de là, pas d’une tabulation."
     }
   ]
 }

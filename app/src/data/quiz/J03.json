@@ -9,11 +9,11 @@
       "choix": [
         "WS-X vaut 1 ou WS-X vaut 2",
         "WS-X vaut 1, ou bien 2 est une valeur vraie",
-        "WS-X vaut le résultat de 1 OR 2, c'est-à-dire 3",
+        "WS-X vaut le résultat de 1 OR 2, c’est-à-dire 3",
         "Rien : le compilateur refuse cette écriture"
       ],
       "bonne": 0,
-      "commentaire": "L'abréviation répète le terme de gauche : `WS-X = 1 OR WS-X = 2`. Pratique et piégeuse, surtout mélangée à NOT : la Norme préfère qu'on écrive la condition en entier quand le doute est possible."
+      "commentaire": "L’abréviation répète le terme de gauche : `WS-X = 1 OR WS-X = 2`. Pratique et piégeuse, surtout mélangée à NOT : la Norme préfère qu’on écrive la condition en entier quand le doute est possible."
     },
     {
       "id": "q2",
@@ -21,25 +21,25 @@
       "enonce": "Pourquoi tester `IF WS-SAISIE IS NUMERIC` avant tout calcul sur une saisie ?",
       "choix": [
         "Pour accélérer le calcul",
-        "Pour éviter l'abend S0C7, le plantage d'un calcul sur une zone non numérique",
+        "Pour éviter l’abend S0C7, le plantage d’un calcul sur une zone non numérique",
         "Parce que COBOL refuse les zones X en entrée",
         "Parce que la Norme CGBA interdit ACCEPT sans contrôle de longueur"
       ],
       "bonne": 1,
-      "commentaire": "Sur mainframe, calculer sur des caractères qui ne sont pas des chiffres provoque un S0C7, l'erreur la plus célèbre du métier. `IS NUMERIC` avant tout calcul sur une saisie : réflexe à garder à vie."
+      "commentaire": "Sur mainframe, calculer sur des caractères qui ne sont pas des chiffres provoque un S0C7, l’erreur la plus célèbre du métier. `IS NUMERIC` avant tout calcul sur une saisie : réflexe à garder à vie."
     },
     {
       "id": "q3",
       "categorie": "memo",
       "enonce": "WS-STATUT-CPT est en PIC X avec 88 CPT-CLOTURE VALUE \"C\". Que fait `SET CPT-CLOTURE TO TRUE` ?",
       "choix": [
-        "Rien : un niveau 88 se teste, il ne s'écrit pas",
+        "Rien : un niveau 88 se teste, il ne s’écrit pas",
         "Il écrit \"C\" dans WS-STATUT-CPT",
         "Il crée une variable booléenne CPT-CLOTURE",
         "Il met WS-STATUT-CPT à SPACES"
       ],
       "bonne": 1,
-      "commentaire": "Un niveau 88 n'est pas une variable : c'est un nom posé sur une valeur de la zone parente. `SET ... TO TRUE` range dans la zone parente la valeur déclarée par le VALUE, ici le caractère C."
+      "commentaire": "Un niveau 88 n’est pas une variable : c’est un nom posé sur une valeur de la zone parente. `SET ... TO TRUE` range dans la zone parente la valeur déclarée par le VALUE, ici le caractère C."
     },
     {
       "id": "q4",
@@ -49,10 +49,10 @@
         "Une condition vraie pour tout code compris entre 1 et 199",
         "Une table de 199 agences",
         "Une condition vraie pour les seules valeurs 1 et 199",
-        "Une contrainte qui empêche d'écrire un code supérieur à 199"
+        "Une contrainte qui empêche d’écrire un code supérieur à 199"
       ],
       "bonne": 0,
-      "commentaire": "THRU pose un intervalle, et plusieurs valeurs séparées par des espaces posent une liste (`VALUE \"A\" \"B\"`). Un 88 ne contraint jamais l'écriture : il ne fait que nommer un test."
+      "commentaire": "THRU pose un intervalle, et plusieurs valeurs séparées par des espaces posent une liste (`VALUE \"A\" \"B\"`). Un 88 ne contraint jamais l’écriture : il ne fait que nommer un test."
     },
     {
       "id": "q5",
@@ -61,16 +61,16 @@
       "choix": [
         "Il exécute tous les WHEN dont la condition est vraie",
         "Il exécute le premier WHEN dont la condition est vraie, puis sort",
-        "Il compare la valeur TRUE à chaque WHEN, donc n'exécute jamais rien",
+        "Il compare la valeur TRUE à chaque WHEN, donc n’exécute jamais rien",
         "Il exige un WHEN OTHER, sinon il refuse de compiler"
       ],
       "bonne": 1,
-      "commentaire": "EVALUATE TRUE est la cascade de conditions : le premier WHEN vrai gagne, les suivants sont ignorés. C'est ce qui rend l'ordre des bornes décisif dans un barème de frais."
+      "commentaire": "EVALUATE TRUE est la cascade de conditions : le premier WHEN vrai gagne, les suivants sont ignorés. C’est ce qui rend l’ordre des bornes décisif dans un barème de frais."
     },
     {
       "id": "q6",
       "categorie": "sortie",
-      "enonce": "Le nombre saisi est 7 et le verdict s'aligne sur 5 colonnes avec l'édition ZZZZ9. Quelle ligne sort exactement ?",
+      "enonce": "Le nombre saisi est 7 et le verdict s’aligne sur 5 colonnes avec l’édition ZZZZ9. Quelle ligne sort exactement ?",
       "choix": [
         "`7 EST IMPAIR`",
         "`    7 EST IMPAIR`",
@@ -78,7 +78,7 @@
         "`7     EST IMPAIR`"
       ],
       "bonne": 1,
-      "commentaire": "ZZZZ9 réserve 5 positions et remplace les zéros de tête par des espaces : 7 s'affiche donc précédé de 4 espaces. La colonne reste alignée quel que soit le nombre, c'est tout l'intérêt d'un état imprimé."
+      "commentaire": "ZZZZ9 réserve 5 positions et remplace les zéros de tête par des espaces : 7 s’affiche donc précédé de 4 espaces. La colonne reste alignée quel que soit le nombre, c’est tout l’intérêt d’un état imprimé."
     },
     {
       "id": "q7",
@@ -96,15 +96,15 @@
     {
       "id": "q8",
       "categorie": "sortie",
-      "enonce": "Divisible par 4 sauf par 100, sauf sauf par 400. Que sort le programme pour l'année 1900 ?",
+      "enonce": "Divisible par 4 sauf par 100, sauf sauf par 400. Que sort le programme pour l’année 1900 ?",
       "choix": [
         "`1900 : ANNEE BISSEXTILE`",
         "`1900 : ANNEE NORMALE`",
         "`1900 : ANNEE INVALIDE`",
-        "Rien : 1900 est hors de l'intervalle testé"
+        "Rien : 1900 est hors de l’intervalle testé"
       ],
       "bonne": 1,
-      "commentaire": "1900 est divisible par 4 et par 100, mais pas par 400 : année normale. 2000, divisible par 400, est bien bissextile. C'est l'exception qui a coûté cher à plus d'un programme de 1999."
+      "commentaire": "1900 est divisible par 4 et par 100, mais pas par 400 : année normale. 2000, divisible par 400, est bien bissextile. C’est l’exception qui a coûté cher à plus d’un programme de 1999."
     }
   ]
 }

@@ -5,7 +5,7 @@
     {
       "id": "q1",
       "categorie": "memo",
-      "enonce": "Quel code BERTHA-MIND choisit-il, et de combien d'essais dispose le joueur ?",
+      "enonce": "Quel code BERTHA-MIND choisit-il, et de combien d’essais dispose le joueur ?",
       "choix": [
         "4 chiffres de 1 à 6, répétitions autorisées, 10 essais",
         "4 chiffres de 1 à 6, tous différents, 10 essais",
@@ -13,30 +13,30 @@
         "6 chiffres de 1 à 4, répétitions autorisées, 10 essais"
       ],
       "bonne": 0,
-      "commentaire": "Répétitions autorisées : c'est justement ce qui rend le décompte des mal placés délicat, et ce que la table de marquage vient régler. Un secret à chiffres tous différents ferait un exercice deux fois plus facile et deux fois moins instructif."
+      "commentaire": "Répétitions autorisées : c’est justement ce qui rend le décompte des mal placés délicat, et ce que la table de marquage vient régler. Un secret à chiffres tous différents ferait un exercice deux fois plus facile et deux fois moins instructif."
     },
     {
       "id": "q2",
       "categorie": "memo",
       "enonce": "Le joueur saisit `12A4`. Que doit faire le programme ?",
       "choix": [
-        "Afficher `SAISIE INVALIDE` et décompter l'essai comme un échec",
-        "Afficher `SAISIE INVALIDE` sans décompter l'essai",
+        "Afficher `SAISIE INVALIDE` et décompter l’essai comme un échec",
+        "Afficher `SAISIE INVALIDE` sans décompter l’essai",
         "Traiter la lettre comme un zéro et poursuivre",
         "Afficher `PERDU` et arrêter la partie"
       ],
       "bonne": 1,
-      "commentaire": "Une faute de frappe n'est pas une tentative : le compteur ne bouge pas et le même numéro d'essai est redemandé. Le contrôle se fait chiffre par chiffre, IS NUMERIC puis bornes 1 à 6, comme la validation de saisie de J03."
+      "commentaire": "Une faute de frappe n’est pas une tentative : le compteur ne bouge pas et le même numéro d’essai est redemandé. Le contrôle se fait chiffre par chiffre, IS NUMERIC puis bornes 1 à 6, comme la validation de saisie de J03."
     },
     {
       "id": "q3",
       "categorie": "memo",
-      "enonce": "Pourquoi le secret et l'essai doivent-ils vivre dans des tables `OCCURS 4` ?",
+      "enonce": "Pourquoi le secret et l’essai doivent-ils vivre dans des tables `OCCURS 4` ?",
       "choix": [
         "Parce que la comparaison se fait position par position, pas sur la chaîne entière",
-        "Parce qu'une zone X(4) ne peut pas contenir de chiffres",
-        "Parce que le tirage aléatoire ne sait remplir qu'une table indexée",
-        "Parce qu'un OCCURS est obligatoire dès qu'une zone est saisie au clavier"
+        "Parce qu’une zone X(4) ne peut pas contenir de chiffres",
+        "Parce que le tirage aléatoire ne sait remplir qu’une table indexée",
+        "Parce qu’un OCCURS est obligatoire dès qu’une zone est saisie au clavier"
       ],
       "bonne": 0,
       "commentaire": "Un `IF WS-ESSAI = WS-SECRET` global ne répond que par oui ou non : il ne sait rien dire des bien placés ni des mal placés. Le jeu se joue chiffre par chiffre, donc les données sont des tables et les comparaisons des boucles."
@@ -44,15 +44,15 @@
     {
       "id": "q4",
       "categorie": "memo",
-      "enonce": "À quoi sert la table de marquage dans l'algorithme des mal placés ?",
+      "enonce": "À quoi sert la table de marquage dans l’algorithme des mal placés ?",
       "choix": [
         "À mémoriser les essais déjà joués pour interdire les répétitions",
         "À noter quels chiffres du secret ont déjà été consommés par un appariement",
-        "À conserver les positions à afficher dans l'historique final",
+        "À conserver les positions à afficher dans l’historique final",
         "À marquer les chiffres hors bornes repérés pendant la validation"
       ],
       "bonne": 1,
-      "commentaire": "Sans marquage, un même chiffre du secret se ferait compter par plusieurs chiffres de l'essai et le total dépasserait 4. Chaque appariement, bien placé d'abord puis mal placé, consomme définitivement un chiffre du secret. Le sujet exige que cet algorithme soit décrit en commentaire AVANT d'être codé."
+      "commentaire": "Sans marquage, un même chiffre du secret se ferait compter par plusieurs chiffres de l’essai et le total dépasserait 4. Chaque appariement, bien placé d’abord puis mal placé, consomme définitivement un chiffre du secret. Le sujet exige que cet algorithme soit décrit en commentaire AVANT d’être codé."
     },
     {
       "id": "q5",
@@ -65,7 +65,7 @@
         "`BIEN PLACES : 1` puis `MAL PLACES  : 1`"
       ],
       "bonne": 0,
-      "commentaire": "Seule la position 1 concorde, d'où BIEN 1. Restent au secret un 1, un 2 et un 3, contre un 2 et deux 1 dans l'essai : le 2 s'apparie, un seul des deux 1 s'apparie, le second ne trouve plus rien. MAL vaut donc 2 et non 3 : c'est exactement ce que la table de marquage empêche."
+      "commentaire": "Seule la position 1 concorde, d’où BIEN 1. Restent au secret un 1, un 2 et un 3, contre un 2 et deux 1 dans l’essai : le 2 s’apparie, un seul des deux 1 s’apparie, le second ne trouve plus rien. MAL vaut donc 2 et non 3 : c’est exactement ce que la table de marquage empêche."
     },
     {
       "id": "q6",
@@ -78,7 +78,7 @@
         "`BIEN PLACES : 4` puis `MAL PLACES  : 0`"
       ],
       "bonne": 0,
-      "commentaire": "Le 4 de la position 2 tombe juste, il consomme l'unique 4 du secret. Les trois autres 4 de l'essai ne trouvent plus aucun 4 disponible : zéro mal placé. Un programme qui annonce 3 compte les chiffres présents au lieu de les apparier."
+      "commentaire": "Le 4 de la position 2 tombe juste, il consomme l’unique 4 du secret. Les trois autres 4 de l’essai ne trouvent plus aucun 4 disponible : zéro mal placé. Un programme qui annonce 3 compte les chiffres présents au lieu de les apparier."
     },
     {
       "id": "q7",
@@ -91,20 +91,20 @@
         "`BRAVO - CODE TROUVE EN 02/10` puis `PERDU - LE CODE ETAIT 2416`"
       ],
       "bonne": 1,
-      "commentaire": "Le compteur d'essais est édité sur deux positions partout, dans l'invite `ESSAI 01/10 ?` comme dans le message de victoire : `02`, pas `2`. Et le code perdu s'affiche en clair, sinon le joueur repart sans savoir ce qu'il cherchait."
+      "commentaire": "Le compteur d’essais est édité sur deux positions partout, dans l’invite `ESSAI 01/10 ?` comme dans le message de victoire : `02`, pas `2`. Et le code perdu s’affiche en clair, sinon le joueur repart sans savoir ce qu’il cherchait."
     },
     {
       "id": "q8",
       "categorie": "memo",
       "enonce": "Comment BERTHA impose-t-elle le code secret pour pouvoir tester le programme ?",
       "choix": [
-        "Par un fichier `secret.dat` lu à l'ouverture de la partie",
+        "Par un fichier `secret.dat` lu à l’ouverture de la partie",
         "Par un argument de ligne de commande, lu par `ACCEPT WS-ARG FROM COMMAND-LINE`",
-        "Par la graine du tirage, passée en variable d'environnement",
+        "Par la graine du tirage, passée en variable d’environnement",
         "Par le premier essai saisi, qui sert de code lors du mode test"
       ],
       "bonne": 1,
-      "commentaire": "Un jeu vraiment aléatoire ne se teste pas automatiquement : une moulinette a besoin d'un résultat prévisible. D'où le mode test, argument présent égale code imposé, argument absent égale tirage par FUNCTION RANDOM. BERTHA teste toujours avec argument."
+      "commentaire": "Un jeu vraiment aléatoire ne se teste pas automatiquement : une moulinette a besoin d’un résultat prévisible. D’où le mode test, argument présent égale code imposé, argument absent égale tirage par FUNCTION RANDOM. BERTHA teste toujours avec argument."
     }
   ]
 }

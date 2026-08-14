@@ -8,7 +8,7 @@
       "enonce": "Combien de positions occupe en mémoire une zone déclarée PIC 9(5)V99 ?",
       "choix": ["5", "7", "8", "9"],
       "bonne": 1,
-      "commentaire": "Le V marque une virgule IMPLICITE : elle ne prend aucune place. 5 chiffres avant, 2 après, donc 7 positions. La virgule n'existe que dans la tête du compilateur et dans les zones d'édition."
+      "commentaire": "Le V marque une virgule IMPLICITE : elle ne prend aucune place. 5 chiffres avant, 2 après, donc 7 positions. La virgule n’existe que dans la tête du compilateur et dans les zones d’édition."
     },
     {
       "id": "q2",
@@ -21,10 +21,10 @@
     {
       "id": "q3",
       "categorie": "sortie",
-      "enonce": "La zone d'édition 9(7).9(4) affiche `0012345.6700`. Que contient une PIC X(8) qui reçoit ce contenu par MOVE ?",
+      "enonce": "La zone d’édition 9(7).9(4) affiche `0012345.6700`. Que contient une PIC X(8) qui reçoit ce contenu par MOVE ?",
       "choix": ["`0012345.`", "`45.6700 `", "`12345.67`", "`  0012345`"],
       "bonne": 0,
-      "commentaire": "Un MOVE alphanumérique cadre à GAUCHE et coupe à droite : les 8 premiers caractères, donc `0012345.` avec le point au bout. Le numérique cadre sur la virgule, l'alphanumérique cadre à gauche : deux lois différentes pour un seul verbe."
+      "commentaire": "Un MOVE alphanumérique cadre à GAUCHE et coupe à droite : les 8 premiers caractères, donc `0012345.` avec le point au bout. Le numérique cadre sur la virgule, l’alphanumérique cadre à gauche : deux lois différentes pour un seul verbe."
     },
     {
       "id": "q4",
@@ -37,59 +37,59 @@
         "La seconde arrondit toujours le résultat"
       ],
       "bonne": 1,
-      "commentaire": "Sans GIVING, le résultat s'écrase dans la dernière zone citée (WS-B devient WS-B + WS-A). Avec GIVING, les opérandes restent intacts et seule la zone qui suit GIVING change."
+      "commentaire": "Sans GIVING, le résultat s’écrase dans la dernière zone citée (WS-B devient WS-B + WS-A). Avec GIVING, les opérandes restent intacts et seule la zone qui suit GIVING change."
     },
     {
       "id": "q5",
       "categorie": "memo",
-      "enonce": "Que se passe-t-il si l'on oublie ROUNDED dans un COMPUTE dont le résultat tombe sur 0.005 ?",
+      "enonce": "Que se passe-t-il si l’on oublie ROUNDED dans un COMPUTE dont le résultat tombe sur 0.005 ?",
       "choix": [
-        "Le calcul est refusé à l'exécution",
+        "Le calcul est refusé à l’exécution",
         "Le résultat est tronqué, pas arrondi",
         "Le résultat est arrondi quand même : ROUNDED est le comportement par défaut",
         "La zone réceptrice passe à zéro"
       ],
       "bonne": 1,
-      "commentaire": "Sans ROUNDED, COBOL tronque : ce qui dépasse la précision de la zone est jeté. ROUNDED applique l'arrondi commercial (0.005 donne 0.01). Sur quatre millions de comptes, l'écart finit par se voir au bilan."
+      "commentaire": "Sans ROUNDED, COBOL tronque : ce qui dépasse la précision de la zone est jeté. ROUNDED applique l’arrondi commercial (0.005 donne 0.01). Sur quatre millions de comptes, l’écart finit par se voir au bilan."
     },
     {
       "id": "q6",
       "categorie": "memo",
-      "enonce": "À quoi sert la clause ON SIZE ERROR d'un COMPUTE ?",
+      "enonce": "À quoi sert la clause ON SIZE ERROR d’un COMPUTE ?",
       "choix": [
         "À reprendre la main quand le résultat ne tient pas dans la zone réceptrice",
         "À refuser les opérandes non numériques",
         "À vérifier que la zone réceptrice est bien signée",
-        "À interdire la division par zéro, et rien d'autre"
+        "À interdire la division par zéro, et rien d’autre"
       ],
       "bonne": 0,
-      "commentaire": "ON SIZE ERROR est le filet de sécurité : au lieu d'un résultat silencieusement faux (les chiffres de gauche coupés), on reprend la main et on affiche un diagnostic. C'est la différence entre un incident et une catastrophe."
+      "commentaire": "ON SIZE ERROR est le filet de sécurité : au lieu d’un résultat silencieusement faux (les chiffres de gauche coupés), on reprend la main et on affiche un diagnostic. C’est la différence entre un incident et une catastrophe."
     },
     {
       "id": "q7",
       "categorie": "sortie",
-      "enonce": "Le montant 1234.50 s'affiche `***1234.50` sur le chèque. Quelle zone d'édition l'a produit, et pourquoi ?",
+      "enonce": "Le montant 1234.50 s’affiche `***1234.50` sur le chèque. Quelle zone d’édition l’a produit, et pourquoi ?",
       "choix": [
         "`ZZZZ9.99` : les zéros de tête deviennent des espaces",
-        "`****9.99` : l'astérisque remplit les positions vides pour interdire toute surcharge",
+        "`****9.99` : l’astérisque remplit les positions vides pour interdire toute surcharge",
         "`ZBZZZBZZ9.99` : le B insère des espaces de lisibilité",
         "`+ZZZZ9.99` : le signe est affiché devant le montant"
       ],
       "bonne": 1,
-      "commentaire": "L'astérisque est la protection de chèque : impossible de rajouter un chiffre devant à la main. Le Z laisse un espace (bon pour un relevé), le B insère un séparateur de milliers, l'astérisque bouche le trou."
+      "commentaire": "L’astérisque est la protection de chèque : impossible de rajouter un chiffre devant à la main. Le Z laisse un espace (bon pour un relevé), le B insère un séparateur de milliers, l’astérisque bouche le trou."
     },
     {
       "id": "q8",
       "categorie": "memo",
-      "enonce": "Que sait-on d'une zone PIC S9(7)V99 COMP-3 ?",
+      "enonce": "Que sait-on d’une zone PIC S9(7)V99 COMP-3 ?",
       "choix": [
-        "Elle stocke un chiffre par octet et s'affiche comme une zone X",
-        "Elle stocke deux chiffres par octet plus le signe, et ne s'affiche pas directement",
+        "Elle stocke un chiffre par octet et s’affiche comme une zone X",
+        "Elle stocke deux chiffres par octet plus le signe, et ne s’affiche pas directement",
         "Elle interdit les montants négatifs",
-        "Elle est réservée aux zones d'édition"
+        "Elle est réservée aux zones d’édition"
       ],
       "bonne": 1,
-      "commentaire": "Le décimal condensé (COMP-3) tient deux chiffres par octet et garde le signe dans le dernier demi-octet : moitié moins de place, calculs exacts. On ne l'affiche jamais tel quel, il faut d'abord un MOVE vers une zone d'édition."
+      "commentaire": "Le décimal condensé (COMP-3) tient deux chiffres par octet et garde le signe dans le dernier demi-octet : moitié moins de place, calculs exacts. On ne l’affiche jamais tel quel, il faut d’abord un MOVE vers une zone d’édition."
     }
   ]
 }

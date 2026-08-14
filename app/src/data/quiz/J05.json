@@ -8,8 +8,8 @@
       "enonce": "Pourquoi préférer `INITIALIZE WS-CLIENT` à `MOVE SPACES TO WS-CLIENT` sur une structure mixte ?",
       "choix": [
         "Parce que MOVE SPACES est interdit sur un niveau 01",
-        "Parce qu'INITIALIZE met SPACES dans les zones X et ZERO dans les zones 9",
-        "Parce qu'INITIALIZE est plus rapide à l'exécution",
+        "Parce qu’INITIALIZE met SPACES dans les zones X et ZERO dans les zones 9",
+        "Parce qu’INITIALIZE est plus rapide à l’exécution",
         "Parce que MOVE SPACES ne touche que le premier champ du groupe"
       ],
       "bonne": 1,
@@ -26,12 +26,12 @@
         "Il convertit la zone numérique en zone alphanumérique"
       ],
       "bonne": 1,
-      "commentaire": "REDEFINES, ce sont deux lunettes sur la même mémoire : on écrit dans l'une, on lit dans l'autre, sans un seul MOVE. La Norme exige un commentaire expliquant pourquoi on superpose ces deux vues."
+      "commentaire": "REDEFINES, ce sont deux lunettes sur la même mémoire : on écrit dans l’une, on lit dans l’autre, sans un seul MOVE. La Norme exige un commentaire expliquant pourquoi on superpose ces deux vues."
     },
     {
       "id": "q3",
       "categorie": "memo",
-      "enonce": "Une table est déclarée OCCURS 8 TIMES INDEXED BY IDX-AGE. Comment place-t-on l'index sur le premier poste ?",
+      "enonce": "Une table est déclarée OCCURS 8 TIMES INDEXED BY IDX-AGE. Comment place-t-on l’index sur le premier poste ?",
       "choix": [
         "`MOVE 1 TO IDX-AGE`",
         "`SET IDX-AGE TO 1`",
@@ -39,17 +39,17 @@
         "`ADD 1 TO IDX-AGE`"
       ],
       "bonne": 1,
-      "commentaire": "Un index n'est pas un nombre : il porte un déplacement en mémoire. On le manipule uniquement par SET (`SET IDX TO 1`, `SET IDX UP BY 1`), jamais par MOVE ni par calcul."
+      "commentaire": "Un index n’est pas un nombre : il porte un déplacement en mémoire. On le manipule uniquement par SET (`SET IDX TO 1`, `SET IDX UP BY 1`), jamais par MOVE ni par calcul."
     },
     {
       "id": "q4",
       "categorie": "memo",
-      "enonce": "Qu'exige SEARCH ALL, et que risque-t-on à l'employer sans cela ?",
+      "enonce": "Qu’exige SEARCH ALL, et que risque-t-on à l’employer sans cela ?",
       "choix": [
         "Une clause ASCENDING KEY et une table réellement triée, sinon les résultats sont aléatoires",
         "Un index initialisé à 1, sinon la recherche démarre au hasard",
         "Une clause AT END, sinon le programme boucle",
-        "Une table d'au moins 100 postes, sinon la dichotomie est refusée"
+        "Une table d’au moins 100 postes, sinon la dichotomie est refusée"
       ],
       "bonne": 0,
       "commentaire": "SEARCH ALL procède par dichotomie : il suppose la table triée sur la clé annoncée par ASCENDING KEY. Sur une table mal triée, il ne plante pas, il répond faux - le pire type de bug."
@@ -57,10 +57,10 @@
     {
       "id": "q5",
       "categorie": "sortie",
-      "enonce": "Le registre des 8 agences se charge par l'idiome REDEFINES : codes en 9(3) et noms en X(12). Quelle largeur pour le FILLER ?",
+      "enonce": "Le registre des 8 agences se charge par l’idiome REDEFINES : codes en 9(3) et noms en X(12). Quelle largeur pour le FILLER ?",
       "choix": ["X(96)", "X(104)", "X(120)", "X(128)"],
       "bonne": 2,
-      "commentaire": "Un poste pèse 3 + 12 = 15 caractères, et il y a 8 agences : 8 x 15 = 120. Les noms doivent être complétés d'espaces jusqu'à 12, sinon tout le registre se décale d'un cran."
+      "commentaire": "Un poste pèse 3 + 12 = 15 caractères, et il y a 8 agences : 8 x 15 = 120. Les noms doivent être complétés d’espaces jusqu’à 12, sinon tout le registre se décale d’un cran."
     },
     {
       "id": "q6",
@@ -73,12 +73,12 @@
         "`WS-CASE(2 + 3)`"
       ],
       "bonne": 1,
-      "commentaire": "Une table à deux dimensions se lit avec ses deux indices dans les mêmes parenthèses, dans l'ordre des niveaux : d'abord la ligne, puis la colonne."
+      "commentaire": "Une table à deux dimensions se lit avec ses deux indices dans les mêmes parenthèses, dans l’ordre des niveaux : d’abord la ligne, puis la colonne."
     },
     {
       "id": "q7",
       "categorie": "sortie",
-      "enonce": "La fiche client sort par un seul DISPLAY : `[00042] DUPONT               COTONOU         SOLDE:    1234.56`. Pourquoi tant d'espaces après DUPONT ?",
+      "enonce": "La fiche client sort par un seul DISPLAY : `[00042] DUPONT               COTONOU         SOLDE:    1234.56`. Pourquoi tant d’espaces après DUPONT ?",
       "choix": [
         "Le DISPLAY insère un séparateur entre deux zones",
         "Le nom est en PIC X(20) : la zone occupe ses 20 positions, quel que soit le nom",
@@ -86,12 +86,12 @@
         "La ville est éditée avec un B de séparation"
       ],
       "bonne": 1,
-      "commentaire": "Rien n'est ajouté par le DISPLAY : chaque zone occupe exactement sa largeur déclarée, X(20) pour le nom et X(15) pour la ville. C'est cet alignement naturel des PIC qui fait tenir un état sans une seule tabulation."
+      "commentaire": "Rien n’est ajouté par le DISPLAY : chaque zone occupe exactement sa largeur déclarée, X(20) pour le nom et X(15) pour la ville. C’est cet alignement naturel des PIC qui fait tenir un état sans une seule tabulation."
     },
     {
       "id": "q8",
       "categorie": "sortie",
-      "enonce": "L'annuaire cherche le code 999, absent de la table. Que sort-il ?",
+      "enonce": "L’annuaire cherche le code 999, absent de la table. Que sort-il ?",
       "choix": [
         "`AGENCE 999 : INCONNUE`, par la clause AT END du SEARCH",
         "`AGENCE 999 : `, la table renvoyant des espaces",
@@ -99,7 +99,7 @@
         "La dernière agence trouvée, BRUXELLES"
       ],
       "bonne": 0,
-      "commentaire": "AT END est la branche du SEARCH quand l'index dépasse le dernier poste sans qu'aucun WHEN ne soit vrai. Sans elle, un code inconnu passerait sans bruit : dans un batch de nuit, personne ne le verrait jamais."
+      "commentaire": "AT END est la branche du SEARCH quand l’index dépasse le dernier poste sans qu’aucun WHEN ne soit vrai. Sans elle, un code inconnu passerait sans bruit : dans un batch de nuit, personne ne le verrait jamais."
     }
   ]
 }
