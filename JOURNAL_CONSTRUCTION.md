@@ -1517,3 +1517,30 @@ Commits créés :
 - `electron: passer le guide dans l autotest`
 - `doc: le guide dans les deux README`
 - `doc: consigner le septieme ecran`
+
+## 2026-08-14 - Version 1.1.0
+
+Le septième écran ne pouvait pas se distribuer sous le nom de la 1.0.0 : le tag
+`v1.0.0` pointe sur le contrôle final, dix commits en arrière, sans le guide.
+Un `.dmg` nommé 1.0.0 mais contenant le guide aurait fait mentir le tag, et
+quelqu'un compilant depuis le tag n'aurait pas obtenu la même application.
+
+D'où la 1.1.0 : `app/package.json` passe en 1.1.0, les deux README suivent, et
+`RELEASE_v1.1.0.md` porte les notes de version (nouveautés, empreintes
+SHA-256, marche à suivre de la première ouverture). Les notes de la 1.0.0
+restent où elles sont : une version publiée ne se réécrit pas.
+
+Le format du fichier de progression ne bouge pas (`version: 1`) : la 1.1.0 relit
+sans rien convertir le dossier écrit par la 1.0.0. C'est vérifié par le parcours,
+qui lit et réécrit ce fichier à chaque exécution.
+
+Livrables : `COBOL Quest-1.1.0-arm64.dmg` (114,9 Mio) et
+`COBOL Quest-1.1.0.dmg` (119,5 Mio).
+
+Verdict : `npx vitest run` vert (21 fichiers, 376 tests), autotest Electron vert
+sur l'application empaquetée, `npm run parcours` et `npm run parcours -- --sonde`
+verts sur l'application empaquetée.
+
+Commits créés :
+- `app: passer en version 1.1.0`
+- `doc: les notes de version de la 1.1.0`
