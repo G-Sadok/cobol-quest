@@ -71,7 +71,7 @@ dessus de cette taille, jamais en dessous.
 
 ## 2. Se servir de l'application
 
-Six écrans, toujours accessibles par la barre latérale de gauche ou par les
+Sept écrans, toujours accessibles par la barre latérale de gauche ou par les
 raccourcis clavier :
 
 | Raccourci | Écran | À quoi il sert |
@@ -82,6 +82,13 @@ raccourcis clavier :
 | Cmd + 4 | Le quiz | Les huit questions du soir sur la journée écoulée |
 | Cmd + 5 | Le livret | Les décorations et la grille des neuf échelons |
 | Cmd + 6 | Réglages | Progression, rythme et affichage |
+| Cmd + 7 | Le guide | Le mode d'emploi, qui parle de votre dossier à vous |
+
+**Si vous ne savez pas par où commencer, ouvrez Le guide (Cmd + 7).** Il n'est
+pas un texte figé : il lit votre progression et vous dit quelle salle ouvrir,
+quelle commande BERTHA taper, quelle séance du soir vous devez encore, et ce
+qu'il vous manque avant l'échelon suivant. Chaque chapitre porte un bouton qui
+vous emmène directement à l'endroit dont il parle.
 
 Le déroulé d'une journée type :
 

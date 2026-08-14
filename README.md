@@ -71,7 +71,7 @@ installé, est dans [`app/README.md`](app/README.md).
 
 ---
 
-## 2. Les six écrans
+## 2. Les sept écrans
 
 | Raccourci | Écran | À quoi il sert |
 |---|---|---|
@@ -81,6 +81,26 @@ installé, est dans [`app/README.md`](app/README.md).
 | Cmd + 4 | Le quiz | Les huit questions du soir sur la journée écoulée |
 | Cmd + 5 | Le livret | Les 26 décorations et la grille des neuf échelons |
 | Cmd + 6 | Réglages | Progression, rythme et affichage |
+| Cmd + 7 | Le guide | Le mode d'emploi, écrit à partir de votre dossier |
+
+### Le guide (Cmd + 7)
+
+C'est la porte d'entrée pour quelqu'un qui ouvre l'application la première
+fois, et il ne raconte pas un parcours imaginaire : il lit la progression réelle
+et parle de celle-là. En tête, ce qu'il y a à faire maintenant, en une phrase et
+un bouton. Puis six chapitres dépliables :
+
+| Chapitre | Ce qu'il dit de vous |
+|---|---|
+| Le plan des sous-sols | La salle où vous en êtes, nommée, et le bouton qui l'ouvre |
+| Cocher un exercice | Les XP qui manquent avant le seuil, et la commande BERTHA exacte de l'exercice qui vient |
+| Le quiz du soir | La séance ouverte, celle encore verrouillée et ce qui l'ouvrira, ou les 10 XP déjà acquis |
+| Décorations et échelons | Combien vous en avez, et ce qui manque avant le grade suivant |
+| La progression est un fichier | Où il est, ce qu'il contient en ce moment, comment le déplacer |
+| Raccourcis et dépannage | Les raccourcis, tirés du registre des écrans : ils ne peuvent pas mentir |
+
+Chaque chapitre finit par un bouton qui emmène à l'écran dont il parle, et le
+guide s'ouvre tout seul sur le chapitre qui correspond à votre situation.
 
 Le déroulé d'une journée : ouvrir la salle disponible sur **La carte**, lire le
 sujet, faire les exercices sur sa machine, les faire juger par BERTHA
@@ -140,8 +160,8 @@ derniers valent aussi bien sur les sources que sur le `.app` empaqueté.
 
 | Commande | Ce qu'elle prouve |
 |---|---|
-| `npm test` | La logique pure : XP, seuils, déblocage séquentiel, échelons, unicité des XP de quiz, aller-retour export/import. 358 tests. |
-| `CQ_AUTOTEST=1 npx electron .` | L'application démarre, les six écrans se posent, le pont IPC répond, la mise en page tient à 1280, 1440 et 1680 px. Ne laisse aucune trace. |
+| `npm test` | La logique pure : XP, seuils, déblocage séquentiel, échelons, unicité des XP de quiz, aller-retour export/import. 376 tests. |
+| `CQ_AUTOTEST=1 npx electron .` | L'application démarre, les sept écrans se posent, le pont IPC répond, la mise en page tient à 1280, 1440 et 1680 px. Ne laisse aucune trace. |
 | `npm run parcours` | Le parcours complet, **relance comprise** : J00 cochée, XP crédités, décoration accordée, J01 ouverte, quiz réussi, export, puis l'application est relancée de zéro et la progression est toujours là. |
 | `npm run parcours -- --sonde` | Les chemins d'échec : quiz raté, case décochée qui reprend ses XP et reverrouille la suite, échelon qui exige plus que des XP, import invalide refusé, remise à zéro menée au bout. |
 
@@ -180,7 +200,7 @@ compilation, elle ne le modifie jamais.
 Dans `app/` : `src/data/` porte le manifeste des 20 épreuves, les 9 échelons,
 les 26 décorations et les 11 quiz du soir ; `src/store/` la progression et sa
 persistance ; `src/ui/` les modules purs qui décident quoi afficher, tous
-testés ; `src/ecrans/` les six écrans, qui ne font que poser le résultat ;
+testés ; `src/ecrans/` les sept écrans, qui ne font que poser le résultat ;
 `electron/` le processus principal, le pont IPC et les harnais de vérification.
 
 ---
